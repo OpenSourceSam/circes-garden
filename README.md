@@ -20,58 +20,17 @@ Circe, the witch-goddess, lives in exile on the island of Aiaia. She cannot undo
 
 **Core loop:** Farm herbs &rarr; Craft potion &rarr; Sail to Scylla &rarr; Potion fails &rarr; Acceptance
 
-**Target device:** [Retroid Pocket Classic](https://www.goretroid.com/) (3.92" portrait AMOLED, D-pad input, Android 14) &mdash; a handheld gaming device designed for retro and indie games.
-
----
-
-## Visual Showcase
-
-### Prologue Cutscenes
-
-The game opens with a narrated prologue telling Scylla's story through seven painted illustrations. Each fills the full portrait viewport (1080x1240).
-
 <p align="center">
-  <img src="showcase/prologue_01.png" alt="Circe on Aiaia" width="220">
-  <img src="showcase/prologue_03.png" alt="Circe, Glaucus, and Scylla" width="220">
-  <img src="showcase/prologue_05.png" alt="Scylla's transformation" width="220">
-  <img src="showcase/prologue_07.png" alt="Circe in her garden with hope" width="220">
-</p>
-
-<p align="center"><em>Left to right: Exile on Aiaia &bull; The love triangle &bull; Scylla's transformation &bull; A fragile hope</em></p>
-
-### Character Sprites
-
-Each character has a 4-direction sprite sheet (idle + walk animations) on a 4x4 grid at 64x64 pixels per frame.
-
-<p align="center">
-  <img src="showcase/circe_idle.png" alt="Circe idle sprite sheet" width="200">
-  &nbsp;&nbsp;&nbsp;
-  <img src="showcase/hermes_idle.png" alt="Hermes idle sprite sheet" width="200">
-  &nbsp;&nbsp;&nbsp;
-  <img src="showcase/scylla_idle.png" alt="Scylla idle sprite sheet" width="200">
-</p>
-
-<p align="center"><em>Circe (player) &bull; Hermes (guide) &bull; Scylla (tragic monster)</em></p>
-
-### World Assets
-
-<p align="center">
-  <img src="showcase/boat.png" alt="Greek boat sprite" width="200">
+  <img src="showcase/prologue_03.png" alt="Circe, Glaucus, and Scylla" width="200">
   &nbsp;&nbsp;
-  <img src="showcase/crafting_table.png" alt="Pharmaka crafting table" width="150">
+  <img src="showcase/circe_idle.png" alt="Circe sprite sheet" width="140">
   &nbsp;&nbsp;
-  <img src="showcase/farm_plot_stage_ready.png" alt="Moly herb ready for harvest" width="150">
+  <img src="showcase/boat.png" alt="Greek boat sprite" width="140">
+  &nbsp;&nbsp;
+  <img src="showcase/aiaia_tileset_32.png" alt="Aiaia tileset" width="200">
 </p>
 
-<p align="center"><em>Boat travel between islands &bull; Pharmaka crafting table &bull; Moly herb ready for harvest</em></p>
-
-### Tileset
-
-<p align="center">
-  <img src="showcase/aiaia_tileset_32.png" alt="Aiaia island tileset" width="500">
-</p>
-
-<p align="center"><em>32x32 tileset for Aiaia &mdash; grass, water, stone, Greek architecture, farm plots</em></p>
+<p align="center"><em>Cutscene painting &bull; Character sprite sheet &bull; World asset &bull; Island tileset &mdash; all AI-generated via a structured pipeline</em></p>
 
 ---
 
@@ -142,109 +101,15 @@ The meta-skill is directing AI the way a creative director manages a design team
 
 ---
 
-## Quest Progression
+## Project Details
 
-| Quest | What Happens | Game Systems Used |
-|-------|-------------|-------------------|
-| **0 - Prologue** | Flashback: Scylla's transformation, arrival on Aiaia | Cutscene system, narrated screens |
-| **1 - Pharmaka** | Meet Hermes, learn herb magic, herb identification minigame | NPC dialogue, minigame |
-| **2 - Farming** | Grow moly (the cure herb) in Circe's garden | Farming system, day cycle |
-| **3 - Crafting** | Craft the Calming Draught potion | Crafting system, inventory |
-| **4 - The Voyage** | Sail to Scylla's cove, administer potion &mdash; it fails | Boat travel, story climax |
-| **5 - Acceptance** | Return to Aiaia, find peace with what cannot be changed | Epilogue, credits |
+**Quest structure:** 6 quests spanning prologue, herb farming, potion crafting, a voyage to confront Scylla, and an acceptance ending. Book-accurate &mdash; the potion fails.
 
-*The ending is book-accurate: the potion fails. Scylla remains a monster. The story is about acceptance, not reversal.*
+**Architecture:** Three global singletons (game state, scene transitions, audio), test-first development with headless unit tests and visual QA screenshots, dependency injection for testability.
 
----
+**Target device:** [Retroid Pocket Classic](https://www.goretroid.com/) &mdash; a 3.92" portrait AMOLED handheld (Android 14, D-pad input). All UI and world design is portrait-first at 1080x1240.
 
-## Technical Highlights
-
-### Architecture
-
-Three autoloads keep things simple:
-
-```
-GameState      — Inventory, quest flags, farm state, day cycle
-SceneManager   — Scene transitions with crossfade
-AudioController — Music and SFX playback
-```
-
-### Test-First Development
-
-The project uses a multi-level test suite:
-
-```
-tests/
-  unit/          — Logic tests (inventory, flags, farming)
-  checkpoints/   — Quest milestone verification (Q0-Q5)
-  visual/        — Headed screenshot capture for visual QA
-```
-
-Tests use dependency injection &mdash; `RefCounted` scripts that accept a `game_state: Node` parameter rather than relying on autoload globals. This makes them runnable in headless mode:
-
-```bash
-# Run all logic tests
-Godot --headless --script tests/run_all.gd
-
-# Capture visual screenshots
-Godot --path . res://tests/visual/test_screenshot.tscn
-```
-
-### Portrait-First Design
-
-Everything is designed for a vertical 1080x1240 viewport &mdash; the world map, UI layout, camera zoom, and dialogue positioning are all built for portrait handheld play with D-pad controls.
-
-### Context-Aware NPCs
-
-Characters respond differently based on quest progress. Hermes has unique dialogue for each quest state, teaches mechanics when appropriate, and launches the herb minigame at the right moment. Scylla's encounter plays out the potion failure as a scripted narrative beat.
-
-### Asset Pipeline as Code
-
-The image generation spec ([`ASSET_GENERATION_V3.md`](game/ASSET_GENERATION_V3.md)) lives in the repo alongside the game code. It's a versioned, reviewable production document &mdash; character briefs, prompt templates, QA checklists, and naming conventions &mdash; so every regeneration pass builds on the last instead of starting from scratch. The same principles as infrastructure-as-code, applied to creative assets.
-
----
-
-## Project Structure
-
-```
-circes-garden/
-  project.godot               # Godot project config
-  game/
-    autoload/                  # GameState, SceneManager, AudioController
-    scenes/                    # Main menu, world, prologue, credits, minigame
-    entities/
-      player/                  # Player character (movement, interaction)
-      npcs/                    # Hermes, Scylla, Pig
-      interactables/           # Boat, farm plot, crafting table, sleep spot
-    ui/                        # Dialogue box, inventory, quest display
-    resources/                 # Data classes (dialogue, items, crops)
-    Generated_Image_Assets/    # All AI-generated visual assets
-    ASSET_GENERATION_V3.md     # The image generation spec (process artifact)
-  assets/
-    audio/                     # Music tracks + SFX
-    sprites/                   # Active game sprites
-  tests/
-    unit/                      # Headless logic tests
-    checkpoints/               # Quest milestone tests
-    visual/                    # Screenshot capture tests
-```
-
----
-
-## Status
-
-**~75% complete** &mdash; core gameplay loop is fully functional, all quests playable.
-
-| Phase | Status |
-|-------|--------|
-| Foundation (menu, world, player, travel) | Done |
-| Core gameplay (NPCs, dialogue, farming, crafting, quests) | Done |
-| Visual assets (sprites, tilesets, cutscenes) | Done |
-| Portrait conversion for handheld | Done |
-| Audio integration (music + SFX) | Done |
-| Dialogue polish | Done |
-| Final polish pass | In Progress |
-| Android export + device testing | Planned |
+**Status:** ~75% complete. Core gameplay loop functional, all quests playable. Final polish and Android export remaining.
 
 ---
 
