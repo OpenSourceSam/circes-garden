@@ -75,6 +75,19 @@ Each character has a 4-direction sprite sheet (idle + walk animations) on a 4x4 
 
 ---
 
+## What I Learned
+
+Building this game was a crash course in working with AI at scale. These lessons transfer directly to anyone building with AI agents, managing AI-assisted workflows, or compounding their growth in any field.
+
+- **Discipline is the bottleneck, not capability.** AI agents are competent enough to make you lazy. Without rigorous review of every output, errors compound silently &mdash; one wrong assumption propagates through code, tests, and docs until the rot is everywhere.
+- **Compound engineering: never make the same mistake twice.** Every failure gets root-caused, the system gets patched, and the fix gets documented. AI makes capture and analysis cheap enough to actually sustain this. Progress compounds exponentially instead of linearly.
+- **Route tasks to the cheapest capable model.** Not every job needs the frontier model. Breaking work into subtasks and assigning each to the right level of capability saved thousands while improving output quality.
+- **Benchmarks don't tell the real story.** Leaderboard rankings didn't predict which tool would produce consistent pixel art at scale. Evaluate models on your actual workload, not someone else's test suite.
+- **The work shifts from producing to directing.** AI-assisted work inverts the traditional rhythm: intense preparation and spec writing, then monitoring and course-correction. More film director than assembly line.
+- **AI eliminates friction; you still do the reflection.** The compound effect comes from the process around the tools &mdash; spec documents, QA checklists, post-mortems &mdash; not the tools themselves.
+
+---
+
 ## How It Was Built &mdash; AI-Assisted Development
 
 This project is a case study in **using AI tools to build something complete as a solo non-technical creator**. Every aspect &mdash; game architecture, visual assets, testing, deployment planning &mdash; was produced through deliberate AI collaboration.
@@ -106,31 +119,26 @@ I created [`ASSET_GENERATION_V3.md`](game/ASSET_GENERATION_V3.md) as a comprehen
 
 This approach produced **33 required asset files** across characters, props, tilesets, UI icons, and full-screen cutscene paintings &mdash; all with consistent style and identity.
 
-`[PLACEHOLDER: Specific learnings about prompt engineering iterations — what failed, what worked, how many regeneration passes were needed]`
+**What failed first:** Early single-shot prompts produced wildly inconsistent sprites &mdash; Circe would have brown hair in one frame and black in another, or her outfit would change between directions. Treating image generation like a single API call doesn't work when you need identity consistency across a 4x4 sprite grid.
 
-`[PLACEHOLDER: How the FRAME consistency method was developed through trial and error]`
+**What worked:** Treating prompts like QA specification documents. Each character prompt locked an exact hex palette, silhouette description, and the FRAME consistency method. Every sprite sheet required 3-5 regeneration passes before acceptance. Cutscene illustrations were more forgiving at 1-2 passes each. Total across the project: roughly 120-150 generation calls to produce the 33 final assets that shipped.
+
+**How FRAME was born:** After generating a full Circe sprite sheet where the south-facing frame had brown hair and the east-facing frame had a completely different outfit, I needed a systematic fix. FRAME started as a checklist taped to a failed generation and evolved into the standard header prepended to every prompt. Each letter solved a specific failure mode: identity drift (Focus), random shadow artifacts (Radiance), perspective shifts (Angle), feature mutation (Matter), and unsolicited "improvements" (Extras). The key insight: consistency in AI image generation is a specification problem, not a model quality problem.
 
 ### Transferable Skills: Beyond Game Dev
 
 The same structured approach to AI asset generation applies directly to other domains:
 
-`[PLACEHOLDER: How this pipeline approach applies to marketing and sales asset generation — consistent brand imagery at scale using JSON prompting]`
+The core principle: **don't prompt for outputs, prompt for systems that produce outputs.** A spec doc beats a clever prompt every time.
 
-`[PLACEHOLDER: Examples of applying structured AI prompting to other professional contexts]`
+The same pipeline &mdash; spec doc, structured prompts, consistency protocol, QA checklist &mdash; applies to:
 
-`[PLACEHOLDER: The meta-skill of "directing AI" — maintaining creative vision while delegating production to AI tools]`
+- **Sales enablement:** Personalized pitch decks, one-pagers, and competitive battle cards with locked brand identity across every asset
+- **Marketing campaigns:** Consistent ad creative at scale using the same spec-driven approach that kept 33 game assets visually unified
+- **Product documentation:** Onboarding materials, feature walkthroughs, and help articles that follow a single style guide
+- **Client-facing content:** Any domain where you need volume, speed, and brand consistency from AI generation tools
 
-### What I Learned
-
-`[PLACEHOLDER: Key meta-skills that transfer beyond gamedev — structured thinking, spec-driven development, quality gates]`
-
-`[PLACEHOLDER: Learnings about using AI agents across multiple tools and platforms (Claude Code, Gemini, Notion agents)]`
-
-`[PLACEHOLDER: How to maintain creative direction while delegating execution to AI — the "creative director" mindset]`
-
-`[PLACEHOLDER: Structured prompting as a general skill — getting consistent, high-quality output at scale from any AI system]`
-
-`[PLACEHOLDER: What surprised you most about this process]`
+The meta-skill is directing AI the way a creative director manages a design team: set the standards, write the brief, review against the spec &mdash; not line-by-line production.
 
 ---
 
@@ -190,7 +198,9 @@ Everything is designed for a vertical 1080x1240 viewport &mdash; the world map, 
 
 Characters respond differently based on quest progress. Hermes has unique dialogue for each quest state, teaches mechanics when appropriate, and launches the herb minigame at the right moment. Scylla's encounter plays out the potion failure as a scripted narrative beat.
 
-`[PLACEHOLDER: Other technical insights worth highlighting]`
+### Asset Pipeline as Code
+
+The image generation spec ([`ASSET_GENERATION_V3.md`](game/ASSET_GENERATION_V3.md)) lives in the repo alongside the game code. It's a versioned, reviewable production document &mdash; character briefs, prompt templates, QA checklists, and naming conventions &mdash; so every regeneration pass builds on the last instead of starting from scratch. The same principles as infrastructure-as-code, applied to creative assets.
 
 ---
 
