@@ -1,0 +1,35 @@
+[gd_scene load_steps=4 format=3 uid="uid://bh7r9w4k6x8y2"]
+
+[ext_resource type="Script" path="res://game/entities/interactables/sleep_spot.gd" id="1_sleep"]
+[ext_resource type="Texture2D" uid="uid://sleep_sprite" path="res://assets/sprites/entities/sleep_spot.png" id="2_sprite"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sleep"]
+size = Vector2(32, 24)
+
+[node name="SleepSpot" type="Area2D"]
+collision_layer = 1
+collision_mask = 0
+script = ExtResource("1_sleep")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_sleep")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture = ExtResource("2_sprite")
+offset = Vector2(0, 0)
+
+[node name="Label" type="Label" parent="."]
+offset_left = -16.0
+offset_top = -26.0
+offset_right = 16.0
+offset_bottom = -16.0
+text = "REST"
+horizontal_alignment = 1
+
+[node name="DayLabel" type="Label" parent="."]
+offset_left = -16.0
+offset_top = 14.0
+offset_right = 16.0
+offset_bottom = 24.0
+text = "Day 1"
+horizontal_alignment = 1

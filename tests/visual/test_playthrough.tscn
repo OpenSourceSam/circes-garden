@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cpt8k2m4play1"]
+
+[ext_resource type="Script" path="res://tests/visual/test_playthrough.gd" id="1_script"]
+
+[node name="Playtest" type="Node"]
+script = ExtResource("1_script")

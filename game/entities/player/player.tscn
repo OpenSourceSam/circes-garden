@@ -1,0 +1,46 @@
+[gd_scene load_steps=6 format=3 uid="uid://c4qj8bx2vn7yp"]
+
+[ext_resource type="Script" path="res://game/entities/player/player.gd" id="1_player"]
+[ext_resource type="Texture2D" uid="uid://player_sprite" path="res://assets/sprites/characters/circe.png" id="2_sprite"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_1"]
+radius = 8.0
+height = 24.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_1"]
+radius = 40.0
+
+[sub_resource type="LabelSettings" id="LabelSettings_1"]
+font_size = 12
+
+[node name="Player" type="CharacterBody2D" groups=["player"]]
+script = ExtResource("1_player")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_1")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture = ExtResource("2_sprite")
+offset = Vector2(0, -12)
+
+[node name="InteractionZone" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionZone"]
+shape = SubResource("CircleShape2D_1")
+
+[node name="InteractionPrompt" type="Label" parent="."]
+visible = false
+offset_left = -20.0
+offset_top = -40.0
+offset_right = 20.0
+offset_bottom = -20.0
+text = "Press E"
+label_settings = SubResource("LabelSettings_1")
+horizontal_alignment = 1
+
+[connection signal="area_entered" from="InteractionZone" to="." method="_on_interaction_zone_area_entered"]
+[connection signal="area_exited" from="InteractionZone" to="." method="_on_interaction_zone_area_exited"]
+[connection signal="body_entered" from="InteractionZone" to="." method="_on_interaction_zone_body_entered"]
+[connection signal="body_exited" from="InteractionZone" to="." method="_on_interaction_zone_body_exited"]

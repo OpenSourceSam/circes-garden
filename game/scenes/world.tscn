@@ -1,0 +1,77 @@
+[gd_scene load_steps=11 format=3 uid="uid://d2world123"]
+
+[ext_resource type="Script" path="res://game/scenes/world.gd" id="1_world"]
+[ext_resource type="PackedScene" uid="uid://c2k3m4n5o6p7" path="res://game/entities/interactables/boat.tscn" id="2_boat"]
+[ext_resource type="PackedScene" uid="uid://chr5m8k2npc01" path="res://game/entities/npcs/hermes.tscn" id="3_hermes"]
+[ext_resource type="PackedScene" uid="uid://csc8y4k2mon01" path="res://game/entities/npcs/scylla.tscn" id="4_scylla"]
+[ext_resource type="PackedScene" uid="uid://djt5v8k2m3p4q" path="res://game/entities/interactables/farm_plot.tscn" id="5_farm"]
+[ext_resource type="PackedScene" uid="uid://bh7r9w4k6x8y2" path="res://game/entities/interactables/sleep_spot.tscn" id="6_sleep"]
+[ext_resource type="PackedScene" uid="uid://cct4j8k2crf01" path="res://game/entities/interactables/crafting_table.tscn" id="7_craft"]
+[ext_resource type="PackedScene" uid="uid://dialoguebox01" path="res://game/ui/dialogue_box.tscn" id="8_dialogue"]
+[ext_resource type="PackedScene" uid="uid://cqm1jn5yvhpqs" path="res://game/ui/inventory_display.tscn" id="9_inventory"]
+[ext_resource type="PackedScene" uid="uid://cqd7kx2nm4h9p" path="res://game/ui/quest_display.tscn" id="10_quest"]
+
+[node name="World" type="Node2D"]
+script = ExtResource("1_world")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(2, 2)
+limit_left = 0
+limit_top = 0
+limit_right = 1080
+limit_bottom = 3500
+position_smoothing_enabled = true
+position_smoothing_speed = 8.0
+
+[node name="AiaiaBackground" type="ColorRect" parent="."]
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 1080.0
+offset_bottom = 1500.0
+color = Color(0.6, 0.8, 0.5, 1)
+
+[node name="ScyllaBackground" type="ColorRect" parent="."]
+offset_left = 0.0
+offset_top = 2000.0
+offset_right = 1080.0
+offset_bottom = 3500.0
+color = Color(0.2, 0.3, 0.5, 1)
+
+[node name="Hermes" parent="." instance=ExtResource("3_hermes")]
+position = Vector2(270, 200)
+
+[node name="CraftingTable" parent="." instance=ExtResource("7_craft")]
+position = Vector2(270, 400)
+
+[node name="FarmPlot1" parent="." instance=ExtResource("5_farm")]
+position = Vector2(170, 600)
+plot_id = Vector2i(0, 0)
+
+[node name="FarmPlot2" parent="." instance=ExtResource("5_farm")]
+position = Vector2(270, 600)
+plot_id = Vector2i(1, 0)
+
+[node name="FarmPlot3" parent="." instance=ExtResource("5_farm")]
+position = Vector2(370, 600)
+plot_id = Vector2i(2, 0)
+
+[node name="SleepSpot" parent="." instance=ExtResource("6_sleep")]
+position = Vector2(270, 800)
+
+[node name="BoatAiaia" parent="." instance=ExtResource("2_boat")]
+position = Vector2(270, 1100)
+destination = Vector2(270, 2400)
+requires_flag = "can_sail_to_scylla"
+
+[node name="BoatScylla" parent="." instance=ExtResource("2_boat")]
+position = Vector2(270, 2200)
+destination = Vector2(270, 500)
+
+[node name="Scylla" parent="." instance=ExtResource("4_scylla")]
+position = Vector2(270, 2800)
+
+[node name="DialogueBox" parent="." instance=ExtResource("8_dialogue")]
+
+[node name="InventoryDisplay" parent="." instance=ExtResource("9_inventory")]
+
+[node name="QuestDisplay" parent="." instance=ExtResource("10_quest")]
