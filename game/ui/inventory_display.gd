@@ -1,6 +1,7 @@
 extends CanvasLayer
 ## The inventory panel in the top-right corner: an icon, name and count for each item Circe carries.
 
+const UiStyle := preload("res://game/ui/ui_style.gd")
 const TextureLoaderUtil = preload("res://game/util/texture_loader.gd")
 
 var panel: PanelContainer
@@ -49,18 +50,7 @@ func _build_ui() -> void:
 	panel.offset_bottom = 10
 	panel.grow_horizontal = Control.GROW_DIRECTION_BEGIN
 
-	# Semi-transparent dark background
-	var style = StyleBoxFlat.new()
-	style.bg_color = Color(0.1, 0.1, 0.1, 0.8)
-	style.border_width_left = 2
-	style.border_width_right = 2
-	style.border_width_top = 2
-	style.border_width_bottom = 2
-	style.border_color = Color(0.3, 0.3, 0.3, 0.9)
-	style.content_margin_left = 8
-	style.content_margin_right = 8
-	style.content_margin_top = 8
-	style.content_margin_bottom = 8
+	var style := UiStyle.panel(8, 8)
 	panel.add_theme_stylebox_override("panel", style)
 
 	add_child(panel)
@@ -75,7 +65,7 @@ func _build_ui() -> void:
 	title.text = "Inventory"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", 16)
-	title.add_theme_color_override("font_color", Color(0.9, 0.9, 0.9))
+	title.add_theme_color_override("font_color", UiStyle.GOLD_TEXT)
 	vbox.add_child(title)
 
 	# Separator
@@ -131,7 +121,7 @@ func _add_item_row(item_id: String, quantity: int) -> void:
 	var display_name = _item_names.get(item_id, item_id)
 	label.text = "%s x%d" % [display_name, quantity]
 	label.add_theme_font_size_override("font_size", 14)
-	label.add_theme_color_override("font_color", Color(0.95, 0.95, 0.95))
+	label.add_theme_color_override("font_color", UiStyle.TEXT)
 	hbox.add_child(label)
 
 	items_container.add_child(hbox)

@@ -1,6 +1,7 @@
 extends CanvasLayer
 ## The panel in the top-left corner: the current day and the current quest goal, updated as flags change.
 
+const UiStyle := preload("res://game/ui/ui_style.gd")
 const StoryText := preload("res://game/data/story_text.gd")
 
 var panel: PanelContainer
@@ -32,18 +33,7 @@ func _build_ui() -> void:
 	panel.offset_bottom = 10
 	panel.grow_horizontal = Control.GROW_DIRECTION_END
 
-	# Semi-transparent dark background
-	var style = StyleBoxFlat.new()
-	style.bg_color = Color(0.1, 0.1, 0.1, 0.8)
-	style.border_width_left = 2
-	style.border_width_right = 2
-	style.border_width_top = 2
-	style.border_width_bottom = 2
-	style.border_color = Color(0.3, 0.3, 0.3, 0.9)
-	style.content_margin_left = 10
-	style.content_margin_right = 10
-	style.content_margin_top = 8
-	style.content_margin_bottom = 8
+	var style := UiStyle.panel(10, 8)
 	panel.add_theme_stylebox_override("panel", style)
 
 	add_child(panel)
@@ -58,7 +48,7 @@ func _build_ui() -> void:
 	day_label.text = "Day 1"
 	day_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	day_label.add_theme_font_size_override("font_size", 15)
-	day_label.add_theme_color_override("font_color", Color(0.9, 0.8, 0.5))
+	day_label.add_theme_color_override("font_color", UiStyle.GOLD_TEXT)
 	vbox.add_child(day_label)
 
 	# Separator
@@ -71,7 +61,7 @@ func _build_ui() -> void:
 	quest_label.text = "No active quest"
 	quest_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	quest_label.add_theme_font_size_override("font_size", 14)
-	quest_label.add_theme_color_override("font_color", Color(0.95, 0.95, 0.95))
+	quest_label.add_theme_color_override("font_color", UiStyle.TEXT)
 	vbox.add_child(quest_label)
 
 func _on_flag_changed(_flag: String, _value: bool) -> void:

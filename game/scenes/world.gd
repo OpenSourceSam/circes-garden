@@ -12,6 +12,15 @@ const TILE_SIZE: int = WorldMapData.TILE
 ## A ground cell value packs the atlas and tile: atlas_index * 10000 + ty * 100 + tx.
 const CELL_ATLAS_STRIDE := 10000
 const CELL_ROW_STRIDE := 100
+const BUTTERFLY_SCRIPT := preload("res://game/entities/ambient/butterfly.gd")
+## [position, wing colour]: pale yellow, white and lilac, the colours of the flowers in the paintings.
+const BUTTERFLIES := [
+	[Vector2(112, 560), Color(0.98, 0.93, 0.62)],
+	[Vector2(432, 556), Color(0.96, 0.96, 0.98)],
+	[Vector2(340, 170), Color(0.82, 0.72, 0.95)],
+	[Vector2(400, 420), Color(0.98, 0.93, 0.62)],
+	[Vector2(150, 930), Color(0.96, 0.96, 0.98)],
+]
 
 var _ending_transition_started: bool = false
 
@@ -73,6 +82,14 @@ func _setup_ambience() -> void:
 	mist.color = Color(0.75, 0.8, 0.9, 0.07)
 	mist.z_index = 6
 	add_child(mist)
+
+	# A few butterflies over the flower beds, the terrace and the well. None in the cove.
+	for spot in BUTTERFLIES:
+		var butterfly: Node2D = BUTTERFLY_SCRIPT.new()
+		butterfly.name = "Butterfly%d" % get_child_count()
+		butterfly.position = spot[0]
+		butterfly.wing_color = spot[1]
+		add_child(butterfly)
 
 func _setup_gradient_backgrounds() -> void:
 	_replace_with_gradient($AiaiaBackground, Color(0.7, 0.85, 0.4), Color(0.35, 0.55, 0.25))

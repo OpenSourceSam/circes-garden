@@ -180,6 +180,19 @@ const MINIGAME_TEXT := {
 	"wrong": "No, that was %s. Hermes winces for you.",
 }
 
+## Hermes reacts to each right answer; the herb lesson takes them in order.
+const MINIGAME_CORRECT_QUIPS := [
+	"Right. Hermes looks faintly disappointed.",
+	"Right again. He claims he taught you that.",
+]
+
+## And to each wrong one; %s is the herb it really was.
+const MINIGAME_WRONG_QUIPS := [
+	"No, that was %s. Hermes winces for you.",
+	"%s. Hermes mimes dying, at length.",
+	"That was %s. \"A second monster, then,\" says Hermes.",
+]
+
 ## Keys match the flags quest_display.gd checks, latest quest first.
 const QUEST_TITLES := {
 	"game_complete": "Tend your garden",

@@ -3,6 +3,7 @@ extends Area2D
 
 const TextureLoaderUtil := preload("res://game/util/texture_loader.gd")
 const StoryText := preload("res://game/data/story_text.gd")
+const WorldLabel := preload("res://game/util/world_label.gd")
 const DialogueBox := preload("res://game/ui/dialogue_box.gd")
 const SLEEP_TEXTURE_PATH := "res://assets/image_pipeline/generated/raw/sprites/entities/sleep_spot.png"
 
@@ -10,8 +11,15 @@ const SLEEP_TEXTURE_PATH := "res://assets/image_pipeline/generated/raw/sprites/e
 @onready var day_label: Label = $DayLabel
 
 func _ready() -> void:
+	WorldLabel.setup(day_label, 22.0, false)
 	sprite.texture = TextureLoaderUtil.load_texture(SLEEP_TEXTURE_PATH)
 	day_label.text = "Rest (Day %d)" % GameState.current_day
+
+func prompt_text() -> String:
+	return "Sleep until morning"
+
+func world_label() -> Label:
+	return day_label
 
 func interact() -> void:
 	var day := GameState.current_day

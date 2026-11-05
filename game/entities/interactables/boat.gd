@@ -13,6 +13,9 @@ const BOAT_TEXTURE_PATH := "res://assets/image_pipeline/generated/raw/sprites/en
 func _ready() -> void:
 	sprite.texture = TextureLoaderUtil.load_texture(BOAT_TEXTURE_PATH)
 
+func prompt_text() -> String:
+	return "Take the boat"
+
 func interact() -> void:
 	if requires_flag != "" and not GameState.get_flag(requires_flag):
 		DialogueBox.open(self, "boat_blocked")

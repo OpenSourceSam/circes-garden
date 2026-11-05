@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from px import OUTLINE, WHITE, Px, rgb, darken, lighten
+import herbs
 
 WOOD = rgb("#9c6b3c")
 WOOD_DARK = rgb("#6e4826")
@@ -159,48 +160,6 @@ def icon_calming_draught() -> Px:
     return p
 
 
-BERRY = rgb("#3b1f5e")
-BERRY_L = rgb("#6a3fa0")
-STEM = rgb("#5f8f3a")
-SPOT = rgb("#7a2a6a")
-BELL = rgb("#b8a0e0")
-
-
-def herb_card(kind: str) -> Px:
-    """64x64 herb portrait for the identification minigame."""
-    p = Px(64, 64)
-    p.rect(14, 54, 49, 57, SOIL)
-    p.hline(14, 49, 54, SOIL_LIGHT)
-    if kind == "moly":
-        # Black root, milk-white flower (as in Homer and in Miller).
-        p.rect(30, 44, 33, 54, SEED)
-        p.rect(27, 50, 29, 53, SEED); p.rect(34, 49, 36, 52, SEED)
-        p.rect(31, 24, 32, 44, LEAF_DARK)
-        p.poly([(31, 38), (20, 34), (22, 40)], LEAF); p.poly([(32, 34), (43, 30), (41, 36)], LEAF)
-        p.ellipse(22, 10, 41, 29, PETAL)
-        p.dot(31, 7, PETAL); p.dot(32, 7, PETAL); p.dot(19, 19, PETAL); p.dot(44, 19, PETAL)
-        p.rect(29, 17, 34, 22, POLLEN)
-    elif kind == "nightshade":
-        p.rect(31, 20, 32, 54, STEM)
-        p.poly([(31, 30), (18, 24), (22, 34)], LEAF_DARK); p.poly([(32, 38), (46, 32), (42, 44)], LEAF_DARK)
-        p.poly([(31, 46), (20, 44), (24, 52)], LEAF)
-        for (x, y) in ((26, 16), (34, 12), (38, 20), (28, 24), (36, 28)):
-            p.ellipse(x - 3, y - 3, x + 3, y + 3, BERRY)
-            p.dot(x - 1, y - 1, BERRY_L)
-        p.ellipse(22, 6, 30, 12, BELL)
-        p.rect(24, 12, 28, 14, BELL)
-    elif kind == "hemlock":
-        p.rect(31, 14, 32, 54, STEM)
-        for y in range(18, 52, 6):
-            p.dot(31, y, SPOT)
-        p.poly([(31, 40), (16, 36), (20, 46)], LEAF); p.poly([(32, 32), (48, 28), (44, 38)], LEAF)
-        for (x, y) in ((22, 12), (31, 8), (40, 12), (26, 18), (36, 18)):
-            p.rect(x - 2, y - 1, x + 2, y + 1, PETAL)
-            p.dot(x, y - 2, PETAL); p.dot(x, y + 2, PETAL)
-            p.vline(x, y + 2, 20, STEM)
-        p.rect(28, 20, 35, 22, STEM)
-    p.outline(OUTLINE)
-    return p
 
 
 def particle_soft() -> Px:
@@ -220,9 +179,9 @@ def particle_soft() -> Px:
 def all_props() -> dict[str, Px]:
     return {
         "sprites/ui/particle_soft.png": particle_soft(),
-        "sprites/ui/herb_moly.png": herb_card("moly"),
-        "sprites/ui/herb_nightshade.png": herb_card("nightshade"),
-        "sprites/ui/herb_hemlock.png": herb_card("hemlock"),
+        "sprites/ui/herb_moly.png": herbs.herb_card("moly"),
+        "sprites/ui/herb_nightshade.png": herbs.herb_card("nightshade"),
+        "sprites/ui/herb_hemlock.png": herbs.herb_card("hemlock"),
         "sprites/entities/boat.png": boat(),
         "sprites/entities/crafting_table.png": crafting_table(),
         "sprites/entities/sleep_spot.png": sleep_spot(),

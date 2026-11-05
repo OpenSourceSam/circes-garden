@@ -19,7 +19,7 @@ const BOX_HEIGHT := 200.0
 var panel: PanelContainer
 var portrait: TextureRect
 var speaker_label: Label
-var dialogue_label: Label
+var dialogue_label: RichTextLabel
 
 var _current_dialogue: DialogueData = null
 var _current_line_index: int = 0
@@ -55,7 +55,7 @@ func _build_ui() -> void:
 	var viewport_width := get_viewport().get_visible_rect().size.x
 	var box_width := minf(viewport_width - 100.0, MAX_BOX_WIDTH)
 	panel.offset_left = (viewport_width - box_width) / 2.0
-	panel.offset_right = panel.offset_left + box_width
+	panel.offset_right = -panel.offset_left   # right edge is anchored to the screen's right side
 	panel.offset_bottom = -30
 	panel.offset_top = panel.offset_bottom - BOX_HEIGHT
 
@@ -76,9 +76,12 @@ func _build_ui() -> void:
 
 func _panel_style() -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.1, 0.1, 0.1, 0.9)
-	style.border_color = Color(0.3, 0.3, 0.3, 1.0)
-	style.set_border_width_all(2)
+	style.bg_color = Color(0.11, 0.08, 0.06, 0.94)
+	style.border_color = Color(0.78, 0.62, 0.36, 1.0)
+	style.set_border_width_all(3)
+	style.set_corner_radius_all(6)
+	style.shadow_color = Color(0, 0, 0, 0.45)
+	style.shadow_size = 6
 	style.content_margin_left = 20
 	style.content_margin_right = 20
 	style.content_margin_top = 15
@@ -100,12 +103,17 @@ func _build_text_column() -> VBoxContainer:
 	spacer.custom_minimum_size = Vector2(0, 5)
 	column.add_child(spacer)
 
-	dialogue_label = Label.new()
+	dialogue_label = RichTextLabel.new()
 	dialogue_label.name = "DialogueLabel"
+	dialogue_label.bbcode_enabled = true
+	dialogue_label.fit_content = true
+	dialogue_label.scroll_active = false
 	dialogue_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	dialogue_label.add_theme_font_size_override("font_size", 16)
-	dialogue_label.add_theme_color_override("font_color", Color(1, 1, 1, 1))
-	dialogue_label.custom_minimum_size = Vector2(700, 80)
+	dialogue_label.add_theme_font_size_override("normal_font_size", 16)
+	dialogue_label.add_theme_font_size_override("italics_font_size", 16)
+	dialogue_label.add_theme_color_override("default_color", Color(1, 0.97, 0.9, 1))
+	dialogue_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	dialogue_label.custom_minimum_size = Vector2(0, 80)
 	column.add_child(dialogue_label)
 
 	var continue_prompt := Label.new()
@@ -152,7 +160,7 @@ func _display_current_line() -> void:
 	var speaker: String = line.get("speaker", "")
 	var text: String = line.get("text", "")
 	speaker_label.text = speaker
-	dialogue_label.text = text
+	dialogue_label.text = _to_bbcode(text)
 	dialogue_label.visible_characters = 0
 	_type_progress = 0.0
 	_typing = true
@@ -165,12 +173,19 @@ func _process(delta: float) -> void:
 	if not _typing:
 		return
 	_type_progress += delta * CHARS_PER_SECOND
-	var total := dialogue_label.text.length()
+	var total := dialogue_label.get_total_character_count()
 	var shown := mini(int(_type_progress), total)
 	dialogue_label.visible_characters = shown
 	if shown >= total:
 		_typing = false
 		dialogue_label.visible_characters = -1
+
+## Story text marks narration and stage directions with *asterisks*; they show as soft italics.
+static func _to_bbcode(text: String) -> String:
+	var out := text.replace("[", "[lb]")
+	var regex := RegEx.new()
+	regex.compile("\\*([^*]+)\\*")
+	return regex.sub(out, "[i][color=#e8d9b8]$1[/color][/i]", true)
 
 func _set_portrait(speaker: String) -> void:
 	var sheet: Texture2D = null
@@ -199,8 +214,7 @@ func end_dialogue() -> void:
 func _set_player_active(enabled: bool) -> void:
 	var player := get_tree().get_first_node_in_group("player")
 	if player:
-		player.set_physics_process(enabled)
-		player.set_process_unhandled_input(enabled)
+		player.set_controls_enabled(enabled)
 
 func is_active() -> bool:
 	return _is_active

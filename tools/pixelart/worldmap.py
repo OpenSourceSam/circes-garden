@@ -142,7 +142,7 @@ AIAIA_PROPS = [
     ("column", 5, 2), ("column2", 11, 2),
     ("olive", 12, 5), ("olive2", 1, 9), ("round_tree", 13, 9),
     ("well", 11, 12), ("olive3", 1, 13), ("shrub", 14, 14), ("shrub2", 2, 22),
-    ("big_rock", 13, 11), ("olive", 1, 25), ("olive2", 13, 27),
+    ("big_rock", 4, 10), ("olive", 1, 25), ("olive2", 13, 27),
     ("shrub", 1, 20), ("shrub2", 15, 21), ("rock_s", 3, 28),
 ]
 

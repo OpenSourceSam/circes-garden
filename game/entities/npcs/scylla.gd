@@ -3,8 +3,19 @@ extends "res://game/entities/npcs/wandering_npc.gd"
 ## Circe tries the cure and it fails, as in the novel.
 
 const DialogueBox := preload("res://game/ui/dialogue_box.gd")
+const WorldLabel := preload("res://game/util/world_label.gd")
 
 @onready var label: Label = $Label
+
+func _ready() -> void:
+	super()
+	WorldLabel.setup(label, -100.0)
+
+func prompt_text() -> String:
+	return "Face Scylla" if GameState.get_flag("quest_4_active") else "Look at Scylla"
+
+func world_label() -> Label:
+	return label
 
 func interact() -> void:
 	if not GameState.get_flag("quest_4_active"):

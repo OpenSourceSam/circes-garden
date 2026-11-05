@@ -3,6 +3,7 @@ extends Area2D
 
 const TextureLoaderUtil := preload("res://game/util/texture_loader.gd")
 const StoryText := preload("res://game/data/story_text.gd")
+const WorldLabel := preload("res://game/util/world_label.gd")
 const DialogueBox := preload("res://game/ui/dialogue_box.gd")
 const CRAFTING_TEXTURE_PATH := "res://assets/image_pipeline/generated/raw/sprites/entities/crafting_table.png"
 
@@ -10,6 +11,7 @@ const CRAFTING_TEXTURE_PATH := "res://assets/image_pipeline/generated/raw/sprite
 @onready var status_label: Label = $StatusLabel
 
 func _ready() -> void:
+	WorldLabel.setup(status_label, 22.0, false)
 	sprite.texture = TextureLoaderUtil.load_texture(CRAFTING_TEXTURE_PATH)
 	GameState.flag_changed.connect(_on_flag_changed)
 	GameState.inventory_changed.connect(_on_inventory_changed)
@@ -25,6 +27,14 @@ func interact() -> void:
 		var lines: Array = StoryText.LINES["crafting_need_more"].duplicate(true)
 		lines[0]["text"] = lines[0]["text"] % GameState.get_item_count("moly")
 		DialogueBox.open(self, "crafting_need_more", lines)
+
+func prompt_text() -> String:
+	if GameState.get_flag("quest_3_active"):
+		return "Brew the Calming Draught"
+	return "Your worktable"
+
+func world_label() -> Label:
+	return status_label
 
 func _on_flag_changed(_flag: String, _value: bool) -> void:
 	_update_display()

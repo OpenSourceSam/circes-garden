@@ -197,7 +197,7 @@ def pick_component(sheet: Image.Image, boxes, near: tuple[int, int]) -> Image.Im
     x, y = near
     inside = [b for b in boxes if b[0] <= x < b[2] and b[1] <= y < b[3]]
     if inside:
-        b = inside[0]
+        b = min(inside, key=lambda b: (b[2] - b[0]) * (b[3] - b[1]))   # the tightest, not a merged blob
     else:
         b = min(boxes, key=lambda b: (abs((b[0] + b[2]) / 2 - x) + abs((b[1] + b[3]) / 2 - y)))
     return sheet.crop(b)
@@ -256,11 +256,18 @@ def build() -> dict[str, Image.Image]:
     def prop(sheet, box, name, max_w=4, max_h=5):
         decor.put(mood(sprite_to_tiles(pick_box(sheet, box), max_w, max_h)), name)
 
-    prop(trees, (600, 250, 760, 390), "olive", 4, 4)          # dark gnarled tree
-    prop(trees, (512, 380, 650, 512), "olive2", 4, 4)         # dark round tree
-    prop(trees, (760, 380, 910, 512), "olive3", 4, 4)         # olive-green round tree
-    prop(trees, (128, 128, 256, 256), "round_tree", 3, 4)
-    prop(trees, (512, 128, 640, 256), "big_tree", 4, 4)
+    # Trees are cut along their own outline (canopy and shadow), found by components(), so no
+    # tree is sliced by a hand-typed box. `near` is any point inside the tree on the sheet.
+    tree_boxes = components(trees, min_size=8, block=2)
+
+    def tree(near, name, max_w=4, max_h=4):
+        decor.put(mood(sprite_to_tiles(pick_component(trees, tree_boxes, near), max_w, max_h)), name)
+
+    tree((640, 290), "olive")          # dark gnarled tree with roots
+    tree((370, 160), "olive2")         # dark round tree
+    tree((770, 290), "olive3")         # bright round tree
+    tree((175, 160), "round_tree", 3, 4)
+    tree((590, 150), "big_tree", 3, 4)
     prop(trees, (0, 28, 64, 66), "shrub", 2, 2)
     prop(trees, (64, 0, 128, 64), "shrub2", 2, 2)
     prop(conifers, (225, 0, 300, 165), "cypress", 2, 6)
@@ -281,9 +288,16 @@ def build() -> dict[str, Image.Image]:
     decor.put(mood(greek(12, 9, 2, 2)), "altar")          # round altar 2x2
     decor.put(mood(greek(14, 16, 3, 1)), "bench")
     decor.put(mood(greek(18, 16, 2, 1)), "doors")
+    # The pediment roof region's top-left tile holds a stray piece of the next roof on the sheet;
+    # it showed as a floating red square above the house, so it is cleared.
+    def roof() -> Image.Image:
+        r = greek(7, 1, 5, 4).copy()
+        r.paste((0, 0, 0, 0), (0, 0, T, T))
+        return r
+
     # Circe's house: tiled roof (4x4) over stone walls (4x2) with a door.
     house = Image.new("RGBA", (5 * T, 6 * T), (0, 0, 0, 0))
-    house.alpha_composite(greek(7, 1, 5, 4), (0, 0))             # pediment roof
+    house.alpha_composite(roof(), (0, 0))                        # pediment roof
     house.alpha_composite(greek(7, 6, 5, 2), (0, 4 * T))         # stone walls
     house.alpha_composite(greek(12, 6, 1, 2), (2 * T, 4 * T))    # door
     house.alpha_composite(greek(6, 18), (4 * T, 5 * T))          # pot by the door
@@ -291,7 +305,7 @@ def build() -> dict[str, Image.Image]:
     decor.put(mood(house), "house")
     # Small temple/shrine for the terrace: pediment roof over two columns.
     shrine = Image.new("RGBA", (5 * T, 6 * T), (0, 0, 0, 0))
-    shrine.alpha_composite(greek(7, 1, 5, 4), (0, 0))
+    shrine.alpha_composite(roof(), (0, 0))
     shrine.alpha_composite(greek(0, 1, 1, 2), (0, 4 * T))
     shrine.alpha_composite(greek(0, 1, 1, 2), (4 * T, 4 * T))
     decor.put(mood(shrine), "shrine")
