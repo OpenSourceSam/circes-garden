@@ -32,9 +32,9 @@ Hermes drops by, teases her, and teaches her about a magic herb called moly. She
 The draught calms Scylla for one breath. Then she is the monster again. Circe sails home and tends her garden.
 That is the ending in the book, and it is the ending here.
 
-| The prologue | The island | Meeting Hermes |
+| The prologue | The island | Hermes' herb lesson |
 |---|---|---|
-| ![prologue](docs/screenshots/prologue.png) | ![island](docs/screenshots/terrace.png) | ![Hermes](docs/screenshots/hermes.png) |
+| ![The prologue: Circe on a cliff at sunset](docs/screenshots/prologue.png) | ![Circe on Aiaia, with Hermes on his terrace](docs/screenshots/terrace.png) | ![The herb lesson: nightshade on a cream card, with three answers](docs/screenshots/lesson.png) |
 
 ## How it was made, in plain words
 

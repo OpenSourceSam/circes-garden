@@ -3,8 +3,21 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
+		<meta name="description" content="Circe's Garden: a short story game about the witch Circe, made by Sam Cloutier with Claude Code.">
 		<title>Circe's Garden</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=EB+Garamond:ital@0;1&display=swap" rel="stylesheet">
 		<style>
+/* Circe's Garden web shell: Godot 4.5's own shell, restyled. While the 60 MB game downloads,
+   the player sees the garden painting, the title, the controls and a few lines from the island. */
+:root {
+	--ink: #1a120d;
+	--gold: #d8b872;
+	--gold-soft: rgba(216, 184, 114, 0.35);
+	--cream: #f7eedb;
+}
+
 html, body, #canvas {
 	margin: 0;
 	padding: 0;
@@ -12,8 +25,8 @@ html, body, #canvas {
 }
 
 body {
-	color: white;
-	background-color: black;
+	color: var(--cream);
+	background-color: var(--ink);
 	overflow: hidden;
 	touch-action: none;
 }
@@ -26,57 +39,143 @@ body {
 	outline: none;
 }
 
-#status, #status-splash, #status-progress {
-	position: absolute;
-	left: 0;
-	right: 0;
-}
-
-#status, #status-splash {
-	top: 0;
-	bottom: 0;
-}
-
 #status {
-	background-color: #241f1a;
+	position: absolute;
+	inset: 0;
+	background-color: #1a120d;
 	display: flex;
-	flex-direction: column;
-	justify-content: center;
 	align-items: center;
+	justify-content: center;
 	visibility: hidden;
+	overflow: hidden;
+	transition: opacity 0.8s ease;
+	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
+}
+
+#status.fading {
+	opacity: 0;
+}
+
+/* The same painting twice: blurred to fill any window shape, and sharp in the middle. */
+#backdrop {
+	position: absolute;
+	inset: -40px;
+	background-position: center;
+	background-size: cover;
+	filter: blur(28px) brightness(0.45) saturate(1.1);
 }
 
 #status-splash {
-	max-height: 100%;
+	position: relative;
+	height: 100%;
 	max-width: 100%;
-	margin: auto;
+	object-fit: contain;
+	box-shadow: 0 0 80px rgba(0, 0, 0, 0.6);
 }
 
 #status-splash.show-image--false {
 	display: none;
 }
 
-#status-splash.fullsize--true {
+#veil {
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(to bottom, rgba(20, 13, 9, 0.15) 0%, rgba(20, 13, 9, 0) 35%,
+		rgba(20, 13, 9, 0.55) 65%, rgba(20, 13, 9, 0.92) 100%);
+}
+
+#card {
+	position: absolute;
+	left: 50%;
+	bottom: 7%;
+	transform: translateX(-50%);
+	width: min(520px, 88vw);
+	text-align: center;
+}
+
+#card h1 {
+	margin: 0;
+	font-family: 'Cinzel', Georgia, serif;
+	font-weight: 700;
+	font-size: clamp(30px, 6vw, 52px);
+	letter-spacing: 0.06em;
+	color: var(--cream);
+	text-shadow: 0 2px 14px rgba(0, 0, 0, 0.8);
+}
+
+#card .subtitle {
+	margin: 4px 0 22px;
+	font-style: italic;
+	font-size: clamp(15px, 2.4vw, 19px);
+	color: var(--gold);
+	text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8);
+}
+
+#bar {
+	height: 8px;
+	border: 1px solid var(--gold);
+	border-radius: 6px;
+	background: rgba(0, 0, 0, 0.5);
+	overflow: hidden;
+}
+
+#bar-fill {
 	height: 100%;
-	width: 100%;
-	object-fit: contain;
+	width: 0%;
+	background: linear-gradient(90deg, #a8803f, var(--gold), #f3dfa6);
+	transition: width 0.3s ease;
 }
 
-#status-splash.use-filter--false {
-	image-rendering: pixelated;
+#bar.waiting #bar-fill {
+	width: 30%;
+	animation: drift 1.4s ease-in-out infinite alternate;
 }
 
-#status-progress, #status-notice {
+@keyframes drift {
+	from { margin-left: 0%; }
+	to { margin-left: 70%; }
+}
+
+#loading-line {
+	margin-top: 10px;
+	min-height: 1.4em;
+	font-style: italic;
+	font-size: 16px;
+	color: var(--cream);
+	opacity: 0.9;
+	transition: opacity 0.5s ease;
+}
+
+#controls {
+	margin-top: 16px;
+	font-size: 15px;
+	color: rgba(247, 238, 219, 0.8);
+}
+
+kbd {
+	display: inline-block;
+	min-width: 1.2em;
+	padding: 0 6px;
+	margin: 0 2px;
+	border: 1px solid var(--gold-soft);
+	border-bottom-width: 2px;
+	border-radius: 4px;
+	font-family: 'EB Garamond', Georgia, serif;
+	font-size: 14px;
+	color: var(--cream);
+	background: rgba(0, 0, 0, 0.35);
+}
+
+#phone-note {
 	display: none;
-}
-
-#status-progress {
-	bottom: 10%;
-	width: 50%;
-	margin: 0 auto;
+	margin-top: 14px;
+	font-size: 15px;
+	color: var(--gold);
 }
 
 #status-notice {
+	display: none;
+	position: relative;
 	background-color: #5b3943;
 	border-radius: 0.5rem;
 	border: 1px solid #9b3943;
@@ -84,10 +183,9 @@ body {
 	font-family: 'Noto Sans', 'Droid Sans', Arial, sans-serif;
 	line-height: 1.3;
 	margin: 0 2rem;
-	overflow: hidden;
 	padding: 1rem;
 	text-align: center;
-	z-index: 1;
+	z-index: 2;
 }
 		</style>
 		<link id="-gd-engine-icon" rel="icon" type="image/png" href="index.icon.png" />
@@ -104,46 +202,78 @@ body {
 		</noscript>
 
 		<div id="status">
-			<img id="status-splash" class="show-image--true fullsize--true use-filter--true" src="index.png" alt="">
-			<progress id="status-progress"></progress>
+			<div id="backdrop"></div>
+			<img id="status-splash" class="show-image--true fullsize--true use-filter--true" src="index.png" alt="Circe in her garden on the island of Aiaia">
+			<div id="veil"></div>
+			<div id="card">
+				<h1>Circe's Garden</h1>
+				<div class="subtitle">A short story from the island of Aiaia</div>
+				<div id="bar" class="waiting"><div id="bar-fill"></div></div>
+				<div id="loading-line">Waking the island…</div>
+				<div id="controls"><kbd>←</kbd><kbd>↑</kbd><kbd>↓</kbd><kbd>→</kbd> walk &nbsp;·&nbsp; <kbd>E</kbd> talk &nbsp;·&nbsp; <kbd>Enter</kbd> continue</div>
+				<div id="phone-note">This game needs a keyboard. On a phone, come back on a laptop to play.</div>
+			</div>
 			<div id="status-notice"></div>
 		</div>
 
 		<script src="index.js"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":22606332,"index.wasm":38034280},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":25312620,"index.wasm":38034280},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
 const GODOT_THREADS_ENABLED = false;
 const engine = new Engine(GODOT_CONFIG);
 
 (function () {
 	const statusOverlay = document.getElementById('status');
-	const statusProgress = document.getElementById('status-progress');
 	const statusNotice = document.getElementById('status-notice');
+	const splash = document.getElementById('status-splash');
+	const backdrop = document.getElementById('backdrop');
+	const bar = document.getElementById('bar');
+	const barFill = document.getElementById('bar-fill');
+	const loadingLine = document.getElementById('loading-line');
+
+	backdrop.style.backgroundImage = 'url("' + splash.getAttribute('src') + '")';
+	if (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) {
+		document.getElementById('phone-note').style.display = 'block';
+	}
+
+	// A few lines from the island while the game downloads.
+	const lines = [
+		'Waking the island…',
+		'The pigs are being counted. Again.',
+		'Hermes is late. He is always late.',
+		'Watering the moly…',
+		'Sweeping sand off the terrace…',
+		'Lighting the hearth…',
+		'Somewhere to the south, something with six heads stirs.',
+	];
+	let lineIndex = 0;
+	const lineTimer = setInterval(function () {
+		lineIndex = (lineIndex + 1) % lines.length;
+		loadingLine.style.opacity = 0;
+		setTimeout(function () {
+			loadingLine.textContent = lines[lineIndex];
+			loadingLine.style.opacity = 0.9;
+		}, 500);
+	}, 3200);
 
 	let initializing = true;
-	let statusMode = '';
 
-	function setStatusMode(mode) {
-		if (statusMode === mode || !initializing) {
-			return;
-		}
-		if (mode === 'hidden') {
-			statusOverlay.remove();
-			initializing = false;
-			return;
-		}
+	function showOverlay() {
 		statusOverlay.style.visibility = 'visible';
-		statusProgress.style.display = mode === 'progress' ? 'block' : 'none';
-		statusNotice.style.display = mode === 'notice' ? 'block' : 'none';
-		statusMode = mode;
+	}
+
+	function hideOverlay() {
+		clearInterval(lineTimer);
+		initializing = false;
+		statusOverlay.classList.add('fading');
+		setTimeout(function () { statusOverlay.remove(); }, 850);
 	}
 
 	function setStatusNotice(text) {
 		while (statusNotice.lastChild) {
 			statusNotice.removeChild(statusNotice.lastChild);
 		}
-		const lines = text.split('\n');
-		lines.forEach((line) => {
+		text.split('\n').forEach((line) => {
 			statusNotice.appendChild(document.createTextNode(line));
 			statusNotice.appendChild(document.createElement('br'));
 		});
@@ -158,7 +288,10 @@ const engine = new Engine(GODOT_CONFIG);
 		} else {
 			setStatusNotice('An unknown error occurred.');
 		}
-		setStatusMode('notice');
+		clearInterval(lineTimer);
+		document.getElementById('card').style.display = 'none';
+		statusNotice.style.display = 'block';
+		showOverlay();
 		initializing = false;
 	}
 
@@ -174,7 +307,6 @@ const engine = new Engine(GODOT_CONFIG);
 			} catch (err) {
 				serviceWorkerRegistrationPromise = Promise.reject(new Error('Service worker registration failed.'));
 			}
-			// There's a chance that installing the service worker would fix the issue
 			Promise.race([
 				serviceWorkerRegistrationPromise.then((registration) => {
 					if (registration != null) {
@@ -182,35 +314,34 @@ const engine = new Engine(GODOT_CONFIG);
 					}
 					return registration;
 				}).then(() => engine.installServiceWorker()),
-				// For some reason, `getRegistration()` can stall
 				new Promise((resolve) => {
 					setTimeout(() => resolve(), 2000);
 				}),
 			]).then(() => {
-				// Reload if there was no error.
 				window.location.reload();
 			}).catch((err) => {
 				console.error('Error while registering service worker:', err);
 			});
 		} else {
-			// Display the message as usual
 			const missingMsg = 'Error\nThe following features required to run Godot projects on the Web are missing:\n';
 			displayFailureNotice(missingMsg + missing.join('\n'));
 		}
 	} else {
-		setStatusMode('progress');
+		showOverlay();
 		engine.startGame({
 			'onProgress': function (current, total) {
+				if (!initializing) {
+					return;
+				}
 				if (current > 0 && total > 0) {
-					statusProgress.value = current;
-					statusProgress.max = total;
+					bar.classList.remove('waiting');
+					barFill.style.width = Math.min(100, (100 * current) / total).toFixed(1) + '%';
 				} else {
-					statusProgress.removeAttribute('value');
-					statusProgress.removeAttribute('max');
+					bar.classList.add('waiting');
 				}
 			},
 		}).then(() => {
-			setStatusMode('hidden');
+			hideOverlay();
 		}, displayFailureNotice);
 	}
 }());
