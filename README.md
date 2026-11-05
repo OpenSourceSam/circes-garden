@@ -1,7 +1,11 @@
 # Circe's Garden
 
 A short story game you can play in your browser, about the witch Circe from Greek myth, inspired by Madeline Miller's novel *Circe*.
-Made by Sam Cloutier, with an AI tool (Claude Code) writing the code and a script that replays the game to catch bugs.
+
+I made this game as a gift for a friend, and as a way to build something moderately complex with AI while learning Git, GitHub and vibe coding.
+It taught me a lot. Vibe coding a simple web game with no rules to follow is easy. A game that has to follow a specific story and run on a Game Boy Color-style handheld console is a very different job.
+
+Built by Sam Cloutier with Claude Code, an AI coding tool.
 
 ### ▶ [Play it in your browser](https://opensourcesam.github.io/circes-garden/)
 
@@ -34,7 +38,7 @@ That is the ending in the book, and it is the ending here.
 
 ## How it was made, in plain words
 
-- **One person, with AI doing the typing.** Sam directed the game and wrote the rules the AI worked from; Claude Code wrote the code.
+- **One person, with AI doing the typing.** I directed the game and wrote the rules the AI worked from; Claude Code wrote the code.
 - **The art is free art shared by artists online, put together by code.** Every artist is credited in [docs/CREDITS.md](docs/CREDITS.md).
 - **The first attempt failed, and that is documented.** AI-generated character art did not hold together, so it was replaced. [How it was made](docs/MAKING-OF.md) tells that story.
 - **A script plays the whole game automatically.** It opens the game in a browser, plays the story from start to finish, and takes a screenshot at each step. The screenshots on this page come from it.
