@@ -103,7 +103,8 @@ func night_transition(day_number: int) -> void:
 		stars.append(star)
 	var banner := Label.new()
 	banner.text = "Day %d" % day_number
-	banner.add_theme_font_size_override("font_size", 40)
+	banner.add_theme_font_override("font", preload("res://assets/fonts/title.tres"))
+	banner.add_theme_font_size_override("font_size", 48)
 	banner.add_theme_color_override("font_color", Color(0.95, 0.9, 0.75, 0.0))
 	banner.set_anchors_preset(Control.PRESET_CENTER)
 	banner.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER

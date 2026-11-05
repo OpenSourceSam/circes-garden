@@ -144,8 +144,8 @@ SCRIPTS = {
         ("enter", 2, 0.3, None),
         ("walk", "ArrowUp y<=250", 20.0, None),
         ("interact", "start hermes_epilogue", 15.0, "19_epilogue"),
-        ("enter", 7, 0.6, None),
-        ("wait_for", "game_complete = true", 6.0, None),
+        ("enter", 24, 0.6, None),  # 11 lines; the first press of each only finishes the typing
+        ("wait_for", "game_complete = true", 10.0, None),
         ("wait", 0, 2.5, "20_credits"),
     ],
 }
@@ -240,15 +240,24 @@ class Runner:
         # Console latency means we learn the position ~20 px late; stop a little early.
         margin = 24
         goal = target - margin if op == ">=" else target + margin
-        deadline = time.time() + timeout
+        # Headless Chromium renders in software, several times slower than a real browser, so a
+        # fixed time limit fails on slow runs. The walk keeps going while the player keeps moving;
+        # `timeout` is the allowance without progress, with an overall cap of four times it.
+        start = time.time()
+        deadline = start + timeout
+        cap = start + timeout * 4
+        last_pos = self.player_pos()
         ok = False
         self.page.keyboard.down(key)
         try:
-            while time.time() < deadline:
+            while time.time() < min(deadline, cap):
                 self.page.wait_for_timeout(50)
                 self.tick()  # GIF frames; the closed loop below tolerates the stall
                 pos = self.player_pos()
                 if pos is not None:
+                    if pos != last_pos:
+                        last_pos = pos
+                        deadline = time.time() + min(timeout, 4.0)
                     v = pos[0] if axis == "x" else pos[1]
                     if (op == ">=" and v >= goal) or (op == "<=" and v <= goal):
                         ok = True

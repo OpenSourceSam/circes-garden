@@ -3,18 +3,21 @@ extends CanvasLayer
 ## Entities start dialogue through open(); the box pauses the player until the last line.
 
 signal dialogue_ended(dialogue_id: String)
+## Each line as it appears, so a scene can act on a moment inside a conversation.
+signal line_shown(dialogue_id: String, text: String)
 
 const TextureLoaderUtil := preload("res://game/util/texture_loader.gd")
 const StoryText := preload("res://game/data/story_text.gd")
+const UiStyle := preload("res://game/ui/ui_style.gd")
 const PORTRAITS := {
 	"Circe": "res://assets/image_pipeline/generated/raw/sprites/characters/circe/circe_idle.png",
 	"Hermes": "res://assets/image_pipeline/generated/raw/sprites/characters/hermes/hermes_idle.png",
 }
 ## Head and shoulders of the first (standing, facing down) frame of a 64-px character sheet.
-const PORTRAIT_REGION := Rect2(16, 2, 32, 32)
+const PORTRAIT_REGION := Rect2(16, 10, 32, 32)
 const CHARS_PER_SECOND := 55.0
 const MAX_BOX_WIDTH := 900.0
-const BOX_HEIGHT := 200.0
+const BOX_HEIGHT := 230.0
 
 var panel: PanelContainer
 var portrait: TextureRect
@@ -66,7 +69,7 @@ func _build_ui() -> void:
 
 	portrait = TextureRect.new()
 	portrait.name = "Portrait"
-	portrait.custom_minimum_size = Vector2(96, 96)
+	portrait.custom_minimum_size = Vector2(128, 128)
 	portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	portrait.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
@@ -76,7 +79,7 @@ func _build_ui() -> void:
 
 func _panel_style() -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.11, 0.08, 0.06, 0.94)
+	style.bg_color = Color(0.11, 0.08, 0.06, 1.0)
 	style.border_color = Color(0.78, 0.62, 0.36, 1.0)
 	style.set_border_width_all(3)
 	style.set_corner_radius_all(6)
@@ -95,7 +98,8 @@ func _build_text_column() -> VBoxContainer:
 
 	speaker_label = Label.new()
 	speaker_label.name = "SpeakerLabel"
-	speaker_label.add_theme_font_size_override("font_size", 20)
+	speaker_label.add_theme_font_override("font", UiStyle.TITLE_FONT)
+	speaker_label.add_theme_font_size_override("font_size", 24)
 	speaker_label.add_theme_color_override("font_color", Color(0.9, 0.8, 0.6, 1.0))
 	column.add_child(speaker_label)
 
@@ -109,8 +113,9 @@ func _build_text_column() -> VBoxContainer:
 	dialogue_label.fit_content = true
 	dialogue_label.scroll_active = false
 	dialogue_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	dialogue_label.add_theme_font_size_override("normal_font_size", 16)
-	dialogue_label.add_theme_font_size_override("italics_font_size", 16)
+	dialogue_label.add_theme_font_size_override("normal_font_size", 23)
+	dialogue_label.add_theme_font_size_override("italics_font_size", 23)
+	dialogue_label.add_theme_font_override("italics_font", UiStyle.ITALIC_FONT)
 	dialogue_label.add_theme_color_override("default_color", Color(1, 0.97, 0.9, 1))
 	dialogue_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	dialogue_label.custom_minimum_size = Vector2(0, 80)
@@ -118,9 +123,9 @@ func _build_text_column() -> VBoxContainer:
 
 	var continue_prompt := Label.new()
 	continue_prompt.name = "ContinuePrompt"
-	continue_prompt.text = "[A / E] Continue"
+	continue_prompt.text = "Enter  continue"
 	continue_prompt.size_flags_horizontal = Control.SIZE_SHRINK_END
-	continue_prompt.add_theme_font_size_override("font_size", 12)
+	continue_prompt.add_theme_font_size_override("font_size", 16)
 	continue_prompt.add_theme_color_override("font_color", Color(0.7, 0.7, 0.7, 1.0))
 	column.add_child(continue_prompt)
 	return column
@@ -165,6 +170,7 @@ func _display_current_line() -> void:
 	_type_progress = 0.0
 	_typing = true
 	_set_portrait(speaker)
+	line_shown.emit(_current_dialogue.id, text)
 	var lower := text.to_lower()
 	if "scream" in lower or "shriek" in lower:
 		SceneManager.shake_camera(0.7, 8.0)

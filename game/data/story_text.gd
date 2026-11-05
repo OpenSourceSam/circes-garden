@@ -164,8 +164,8 @@ const PROLOGUE := [
 
 const CREDITS := {
 	"title": "Circe's Garden",
-	"body": "The draught calmed Scylla for one breath.\nThen she was the monster again, and she still is.\nOn Aiaia, Circe tends her garden.\nShe does not forget. She plants anyway.",
-	"prompt": "Press A / E to return to menu",
+	"body": "The draught calmed Scylla for one breath.\nThen she was the monster again, and she still is.\nOn Aiaia, Circe tends her garden.\nShe does not forget. She plants anyway.\n\n\nMade by Sam Cloutier, with Claude Code.\nPixel art by the Liberated Pixel Cup artists.\nAfter Madeline Miller's novel Circe.",
+	"prompt": "Press Enter to return to the title screen",
 }
 
 const HERB_HINTS := {
@@ -192,6 +192,9 @@ const MINIGAME_WRONG_QUIPS := [
 	"%s. Hermes mimes dying, at length.",
 	"That was %s. \"A second monster, then,\" says Hermes.",
 ]
+
+## Shown instead of the quest 2 title once the moly has flowered.
+const QUEST_HARVEST := "The moly has flowered. Harvest it"
 
 ## Keys match the flags quest_display.gd checks, latest quest first.
 const QUEST_TITLES := {

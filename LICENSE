@@ -27,5 +27,7 @@ project. It does not cover the pixel art under assets/, which is composed from
 Liberated Pixel Cup assets and keeps their own licences (CC-BY-SA 3.0 and
 others), listed with every author in docs/CREDITS.md; nor the prologue
 paintings and audio, which are placeholders made for this project and are not
-offered for reuse. Story and characters after Madeline Miller's novel "Circe";
+offered for reuse; nor the fonts under assets/fonts/ (EB Garamond and Cinzel, SIL Open
+Font License 1.1, licence files next to them). Story and characters after Madeline
+Miller's novel "Circe";
 this is a fan project with no affiliation to the author or publisher.

@@ -4,7 +4,6 @@ extends Area2D
 const TextureLoaderUtil := preload("res://game/util/texture_loader.gd")
 const DialogueBox := preload("res://game/ui/dialogue_box.gd")
 const SPARKLE_TEXTURE := "res://assets/image_pipeline/generated/raw/sprites/ui/particle_soft.png"
-const WorldLabel := preload("res://game/util/world_label.gd")
 const STAGE_TEXTURES := {
 	"empty": "res://assets/image_pipeline/generated/raw/sprites/entities/farm_plot_stage_empty.png",
 	"planted": "res://assets/image_pipeline/generated/raw/sprites/entities/farm_plot_stage_planted.png",
@@ -16,12 +15,10 @@ const STAGE_TEXTURES := {
 @export var plot_id: Vector2i = Vector2i(0, 0)
 
 @onready var sprite: Sprite2D = $Sprite
-@onready var label: Label = $Label
 
 var _textures: Dictionary = {}
 
 func _ready() -> void:
-	WorldLabel.setup(label, -18.0)
 	for key in STAGE_TEXTURES:
 		_textures[key] = TextureLoaderUtil.load_texture(STAGE_TEXTURES[key])
 	GameState.crop_planted.connect(_on_plot_changed)
@@ -54,9 +51,6 @@ func prompt_text() -> String:
 		return "Harvest the moly"
 	return "Check the moly"
 
-func world_label() -> Label:
-	return label
-
 ## A small one-shot burst: soil when planting, motes of light when the moly comes up.
 func _sparkle(color: Color, amount: int) -> void:
 	var burst := CPUParticles2D.new()
@@ -87,17 +81,17 @@ func _on_day_advanced(_new_day: int) -> void:
 func _update_display() -> void:
 	var plot_data = GameState.farm_plots.get(plot_id)
 	if plot_data == null:
-		_show_stage("empty", "Empty")
+		_show_stage("empty")
 	elif plot_data.get("ready", false):
-		_show_stage("ready", "Ready!")
+		_show_stage("ready")
 	elif plot_data.get("stage", 0) == 0:
-		_show_stage("planted", "Planted")
+		_show_stage("planted")
 	elif plot_data.get("stage", 0) == 1:
-		_show_stage("stage_1", "Growing...")
+		_show_stage("stage_1")
 	else:
-		_show_stage("stage_2", "Growing...")
+		_show_stage("stage_2")
 
-func _show_stage(key: String, text: String) -> void:
+## The bed shows its stage by itself; the prompt says what E will do when Circe is beside it.
+func _show_stage(key: String) -> void:
 	var texture: Texture2D = _textures.get(key)
 	sprite.texture = texture if texture else _textures.get("empty")
-	label.text = text

@@ -138,8 +138,9 @@ AIAIA_DECOR = """
 
 # Multi-tile props on Aiaia: (prop name, col, row of the TOP-LEFT tile)
 AIAIA_PROPS = [
-    ("house", 1, 1), ("cypress", 5, 0), ("cypress2", 12, 1),
-    ("column", 5, 2), ("column2", 11, 2),
+    # The cypress stands in front of the house's right end, where the LPC roof piece stops.
+    ("house", 1, 1), ("cypress", 5, 2), ("cypress2", 12, 1),
+    ("column2", 11, 2), ("column_short", 7, 3), ("column_short", 9, 3),
     ("olive", 12, 5), ("olive2", 1, 9), ("round_tree", 13, 9),
     ("well", 11, 12), ("olive3", 1, 13), ("shrub", 14, 14), ("shrub2", 2, 22),
     ("big_rock", 4, 10), ("olive", 1, 25), ("olive2", 13, 27),

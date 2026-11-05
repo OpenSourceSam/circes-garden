@@ -75,10 +75,16 @@ destination = Vector2(270, 500)
 position = Vector2(270, 2800)
 
 [node name="PigAiaia" parent="." instance=ExtResource("11_pig")]
-position = Vector2(410, 740)
+position = Vector2(414, 796)
+roam_radius = 24.0
 
-[node name="PigCove" parent="." instance=ExtResource("11_pig")]
-position = Vector2(360, 2520)
+[node name="PigPen2" parent="." instance=ExtResource("11_pig")]
+position = Vector2(452, 808)
+roam_radius = 20.0
+
+[node name="PigWander" parent="." instance=ExtResource("11_pig")]
+position = Vector2(470, 500)
+roam_radius = 50.0
 
 [node name="DialogueBox" parent="." instance=ExtResource("8_dialogue")]
 

@@ -344,9 +344,16 @@ https://opengameart.org/content/a-cute-dungeon
 - Licence: CC-BY 3.0 / GPL 2.0.
 - Page: https://opengameart.org/content/lpc-style-farm-animals
 
+## Fonts
+
+- EB Garamond, by The EB Garamond Project Authors (Octavio Pardo, after Georg Duffner) — SIL Open
+  Font License 1.1 — https://github.com/octaviopardo/EBGaramond12 (licence: `assets/fonts/EBGaramond-OFL.txt`)
+- Cinzel, by The Cinzel Project Authors (Natanael Gama) — SIL Open Font License 1.1 —
+  https://github.com/NDISCOVER/Cinzel (licence: `assets/fonts/Cinzel-OFL.txt`)
+
 ## Everything else
 
-Scylla, the farm plots, icons, herb cards, fences, the well, the cave, the crafting table and the
-boat are drawn by code in `tools/pixelart/` for this game. The seven prologue paintings were made
+Scylla, the farm beds, icons, herb cards, butterflies, fences, the well, the cave, the crafting table
+and the boat are drawn by code in `tools/pixelart/` for this game. The seven prologue paintings were made
 in February 2026 with an image model for this project. Story and characters after Madeline
 Miller's novel *Circe*; this is a fan project.

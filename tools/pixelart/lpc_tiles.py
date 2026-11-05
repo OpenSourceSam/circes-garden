@@ -192,6 +192,20 @@ def pick_box(sheet: Image.Image, box: tuple[int, int, int, int]) -> Image.Image:
     return region.crop(b)
 
 
+def fade_shadow_edges(sprite: Image.Image, band: int = 12) -> Image.Image:
+    """Fade the soft (semi-transparent) shadow pixels near the left, right and bottom edges, so a
+    shadow that the sheet's neighbour cut off ends softly instead of in a straight grey line."""
+    arr = np.array(sprite.convert("RGBA")).astype(np.float32)
+    h, w = arr.shape[:2]
+    xs = np.arange(w)[None, :]
+    ys = np.arange(h)[:, None]
+    dist = np.minimum(np.minimum(xs, w - 1 - xs), h - 1 - ys).astype(np.float32)
+    fade = np.clip(dist / band, 0.0, 1.0)
+    soft = arr[:, :, 3] < 200
+    arr[:, :, 3] = np.where(soft, arr[:, :, 3] * fade, arr[:, :, 3])
+    return Image.fromarray(arr.astype(np.uint8), "RGBA")
+
+
 def pick_component(sheet: Image.Image, boxes, near: tuple[int, int]) -> Image.Image:
     """The component whose box contains or is closest to the point `near` (sheet pixels)."""
     x, y = near
@@ -232,13 +246,23 @@ def build() -> dict[str, Image.Image]:
         aiaia.put(mood(greek(gx, gy)), f"marble{i}")
     for i, (gx, gy) in enumerate(((12, 11), (13, 11), (12, 12), (13, 12))):
         aiaia.put(mood(greek(gx, gy)), f"mosaic{i}")
+    # Tilled soil: dark, slightly wavy furrows with lit ridges and a few clods, so the beds read
+    # as earth and not as wooden planks (straight full-width lines looked like boards).
     for i in range(4):
-        t = mood(terrain_block_tile(3, 1, ["c", "c1", "c2", "c3"][i]), saturation=0.85, contrast=1.1, warmth=0)
-        arr = np.array(t)
-        for y in (6, 14, 22, 30):
-            arr[y, :, :3] = (arr[y, :, :3] * 0.6).astype(np.uint8)
-            arr[min(31, y + 1), :, :3] = np.clip(arr[min(31, y + 1), :, :3] * 1.15, 0, 255).astype(np.uint8)
-        aiaia.put(Image.fromarray(arr, "RGBA"), f"soil{i}")
+        t = mood(terrain_block_tile(3, 1, ["c", "c1", "c2", "c3"][i]), saturation=0.8, contrast=1.05, warmth=0)
+        arr = np.array(t).astype(np.int16)
+        arr[:, :, :3] = (arr[:, :, :3] * 0.82).astype(np.int16)      # damp, darker earth
+        rng = _random.Random(900 + i)
+        for row in (4, 12, 20, 28):
+            for x in range(T):
+                y = row + (1 if (x // 5 + i) % 3 == 0 else 0)
+                arr[y, x, :3] = (arr[y, x, :3] * 0.62).astype(np.int16)          # furrow
+                arr[min(T - 1, y + 2), x, :3] = np.minimum(arr[min(T - 1, y + 2), x, :3] * 1.18, 255)  # ridge
+        for _ in range(6):
+            x, y = rng.randrange(1, T - 2), rng.randrange(1, T - 2)
+            arr[y, x, :3] = np.minimum(arr[y, x, :3] * 1.3, 255)
+            arr[y + 1, x + 1, :3] = (arr[y + 1, x + 1, :3] * 0.7).astype(np.int16)
+        aiaia.put(Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8), "RGBA"), f"soil{i}")
     import tiles as gen
     aiaia.put(gen.plank_tile(60, True).im, "plank_v")
 
@@ -261,7 +285,8 @@ def build() -> dict[str, Image.Image]:
     tree_boxes = components(trees, min_size=8, block=2)
 
     def tree(near, name, max_w=4, max_h=4):
-        decor.put(mood(sprite_to_tiles(pick_component(trees, tree_boxes, near), max_w, max_h)), name)
+        sprite = fade_shadow_edges(pick_component(trees, tree_boxes, near))
+        decor.put(mood(sprite_to_tiles(sprite, max_w, max_h)), name)
 
     tree((640, 290), "olive")          # dark gnarled tree with roots
     tree((370, 160), "olive2")         # dark round tree
@@ -273,16 +298,21 @@ def build() -> dict[str, Image.Image]:
     prop(conifers, (225, 0, 300, 165), "cypress", 2, 6)
     prop(conifers, (440, 0, 560, 150), "cypress2", 3, 5)
     prop(rocks, (0, 0, 64, 64), "rock_s", 2, 2)
-    prop(rocks, (290, 30, 380, 110), "big_rock", 3, 3)
+    prop(rocks, (288, 2, 388, 100), "big_rock", 4, 4)       # two standing stones
     prop(rocks, (0, 512, 64, 576), "rock_sd", 2, 2)
-    prop(rocks, (290, 540, 380, 620), "big_rock_d", 3, 3)
+    prop(rocks, (288, 514, 388, 612), "big_rock_d", 4, 4)
     prop(rocks, (640, 640, 768, 768), "boulder_d", 4, 4)
     prop(rocks, (384, 520, 520, 620), "arch_d", 4, 3)
     prop(rocks, (512, 610, 560, 700), "spire_d", 2, 3)
     # Greek architecture pieces.
     decor.put(mood(greek(0, 0, 1, 4)), "column")          # full Ionic column, 1x4
     decor.put(mood(greek(0, 9, 1, 4)), "column2")
-    decor.put(mood(greek(0, 4, 1, 1)), "column_b")        # broken stub
+    stub = greek(0, 7, 1, 2).copy()                       # lower half of a column...
+    for x in range(T):                                    # ...with a broken, jagged top
+        depth = (3, 5, 7, 4, 2, 6, 8, 5, 3, 1, 4, 6)[x % 12]
+        for y in range(depth):
+            stub.putpixel((x, y), (0, 0, 0, 0))
+    decor.put(mood(stub), "column_short")
     for i, gx in enumerate((0, 1, 2, 4, 6, 9)):
         decor.put(mood(greek(gx, 18)), f"amphora{i}")
     decor.put(mood(greek(12, 9, 2, 2)), "altar")          # round altar 2x2

@@ -66,7 +66,8 @@ func _build_ui() -> void:
 	var title = Label.new()
 	title.text = "Hermes' herb lesson"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 32)
+	title.add_theme_font_override("font", UiStyle.TITLE_FONT)
+	title.add_theme_font_size_override("font_size", 30)
 	title.add_theme_color_override("font_color", UiStyle.GOLD_TEXT)
 	vbox.add_child(title)
 

@@ -43,7 +43,9 @@ func _on_inventory_changed(_item_id: String, _quantity: int) -> void:
 	_update_display()
 
 func _update_display() -> void:
-	if GameState.get_flag("quest_3_complete"):
+	if GameState.get_flag("quest_4_complete"):
+		status_label.text = "Crafting Table"
+	elif GameState.get_flag("quest_3_complete"):
 		status_label.text = "Draught brewed!"
 	elif GameState.get_flag("quest_3_active"):
 		status_label.text = "Calming Draught\n(%d/%d moly)" % [GameState.get_item_count("moly"), GameState.MOLY_PER_DRAUGHT]

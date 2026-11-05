@@ -178,12 +178,13 @@ def game_sheets(char: Character) -> dict[str, Image.Image]:
 
 MOOD = {"saturation": 0.92, "contrast": 1.06, "warmth": 4}
 
+# Purple gown and lavender cape, as in the prologue paintings.
 CIRCE = Character("circe", [
-    Layer("cape/solid/bg", 5, recolor=("cloth", "navy")),
+    Layer("cape/solid/bg", 5, recolor=("cloth", "lavender")),
     Layer("body/bodies/female", 10, recolor=("body", "olive")),
     Layer("feet/sandals/thin", 15, recolor=("cloth", "leather")),
-    Layer("dress/slit/female", 30, color="white"),
-    Layer("cape/solid/fg", 85, recolor=("cloth", "navy")),
+    Layer("dress/slit/female", 30, color="purple"),
+    Layer("cape/solid/fg", 85, recolor=("cloth", "lavender")),
     Layer("head/heads/human/female", 100, recolor=("body", "olive")),
     Layer("eyes/human/adult/default", 110, color="yellow", optional=True),
     Layer("hair/long/adult", 120, recolor=("hair", "dark_brown")),

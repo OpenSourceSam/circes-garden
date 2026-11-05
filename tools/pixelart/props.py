@@ -3,13 +3,11 @@ from __future__ import annotations
 
 from px import OUTLINE, WHITE, Px, rgb, darken, lighten
 import herbs
+import garden
 
 WOOD = rgb("#9c6b3c")
 WOOD_DARK = rgb("#6e4826")
 WOOD_LIGHT = rgb("#c08a52")
-SOIL = rgb("#5c3a21")
-SOIL_DARK = rgb("#3e2715")
-SOIL_LIGHT = rgb("#7a5230")
 LEAF = rgb("#4f9a3a")
 LEAF_DARK = rgb("#2f6b26")
 LEAF_LIGHT = rgb("#8ccf5a")
@@ -84,50 +82,6 @@ def sleep_spot() -> Px:
     return p
 
 
-def _soil(p: Px) -> None:
-    p.rect(8, 26, 55, 55, SOIL)
-    for y in (31, 37, 43, 49):
-        p.hline(10, 53, y, SOIL_DARK)
-        p.hline(10, 53, y + 1, SOIL_LIGHT)
-    p.hline(8, 55, 26, SOIL_LIGHT)
-    p.hline(8, 55, 55, SOIL_DARK)
-
-
-def _plant(p: Px, x: int, y: int, size: int, flower: bool) -> None:
-    """Moly: a small plant with a white flower at full size."""
-    p.rect(x, y - size * 3, x + 1, y, LEAF_DARK)
-    for i in range(size):
-        ly = y - 2 - i * 3
-        p.rect(x - 2 - i, ly, x - 1, ly + 1, LEAF)
-        p.rect(x + 2, ly, x + 3 + i, ly + 1, LEAF)
-        p.dot(x - 2 - i, ly, LEAF_LIGHT)
-    if flower:
-        fy = y - size * 3 - 3
-        p.rect(x - 2, fy - 1, x + 3, fy + 2, PETAL)
-        p.dot(x - 3, fy, PETAL); p.dot(x + 4, fy, PETAL); p.dot(x, fy - 2, PETAL); p.dot(x + 1, fy + 3, PETAL)
-        p.rect(x, fy, x + 1, fy + 1, POLLEN)
-
-
-def farm_plot(stage: str) -> Px:
-    p = Px(64, 64)
-    _soil(p)
-    xs = (18, 32, 46)
-    if stage == "planted":
-        for x in xs:
-            p.rect(x - 1, 38, x + 1, 40, SEED); p.dot(x - 1, 38, SEED_LIGHT)
-    elif stage == "stage_1":
-        for x in xs:
-            _plant(p, x, 44, 1, False)
-    elif stage == "stage_2":
-        for x in xs:
-            _plant(p, x, 46, 2, False)
-    elif stage == "ready":
-        for x in xs:
-            _plant(p, x, 48, 3, True)
-    p.outline(OUTLINE)
-    return p
-
-
 def icon_moly_seed() -> Px:
     p = Px(32, 32)
     p.ellipse(9, 10, 22, 23, SEED)
@@ -185,12 +139,12 @@ def all_props() -> dict[str, Px]:
         "sprites/entities/boat.png": boat(),
         "sprites/entities/crafting_table.png": crafting_table(),
         "sprites/entities/sleep_spot.png": sleep_spot(),
-        "sprites/entities/farm_plot.png": farm_plot("empty"),
-        "sprites/entities/farm_plot_stage_empty.png": farm_plot("empty"),
-        "sprites/entities/farm_plot_stage_planted.png": farm_plot("planted"),
-        "sprites/entities/farm_plot_stage_1.png": farm_plot("stage_1"),
-        "sprites/entities/farm_plot_stage_2.png": farm_plot("stage_2"),
-        "sprites/entities/farm_plot_stage_ready.png": farm_plot("ready"),
+        "sprites/entities/farm_plot.png": garden.plot("empty"),
+        "sprites/entities/farm_plot_stage_empty.png": garden.plot("empty"),
+        "sprites/entities/farm_plot_stage_planted.png": garden.plot("planted"),
+        "sprites/entities/farm_plot_stage_1.png": garden.plot("stage_1"),
+        "sprites/entities/farm_plot_stage_2.png": garden.plot("stage_2"),
+        "sprites/entities/farm_plot_stage_ready.png": garden.plot("ready"),
         "sprites/ui/icon_moly_seed.png": icon_moly_seed(),
         "sprites/ui/icon_moly.png": icon_moly(),
         "sprites/ui/icon_calming_draught.png": icon_calming_draught(),

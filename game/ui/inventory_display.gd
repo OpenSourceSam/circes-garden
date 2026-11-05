@@ -64,6 +64,7 @@ func _build_ui() -> void:
 	var title = Label.new()
 	title.text = "Inventory"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_override("font", UiStyle.TITLE_FONT)
 	title.add_theme_font_size_override("font_size", 16)
 	title.add_theme_color_override("font_color", UiStyle.GOLD_TEXT)
 	vbox.add_child(title)
@@ -120,7 +121,7 @@ func _add_item_row(item_id: String, quantity: int) -> void:
 	var label = Label.new()
 	var display_name = _item_names.get(item_id, item_id)
 	label.text = "%s x%d" % [display_name, quantity]
-	label.add_theme_font_size_override("font_size", 14)
+	label.add_theme_font_size_override("font_size", 17)
 	label.add_theme_color_override("font_color", UiStyle.TEXT)
 	hbox.add_child(label)
 

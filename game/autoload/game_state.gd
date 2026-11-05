@@ -4,8 +4,9 @@ extends Node
 ## them without a scene.
 
 const DAYS_TO_MATURE := 3
-const STARTING_SEEDS := 3
-const HERB_LESSON_SEEDS := 5
+## Circe starts with no seeds: Hermes gives her exactly one per plot after the herb lesson.
+const STARTING_SEEDS := 0
+const HERB_LESSON_SEEDS := 3
 const MOLY_PER_DRAUGHT := 3
 
 signal inventory_changed(item_id: String, new_quantity: int)
@@ -60,7 +61,8 @@ func new_game() -> void:
 	farm_plots.clear()
 	current_day = 1
 
-	add_item("moly_seed", STARTING_SEEDS)
+	if STARTING_SEEDS > 0:
+		add_item("moly_seed", STARTING_SEEDS)
 	set_flag("prologue_complete", true)
 	set_flag("quest_1_active", true)
 

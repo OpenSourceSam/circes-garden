@@ -61,3 +61,6 @@ assets/image_pipeline/qa/audit_screenshots/
 assets/image_pipeline/prompts/*.pdf
 *.aseprite
 assets/image_pipeline/reference/concept_art/
+
+# Font import settings are kept: the fonts use scalable (MSDF) rendering, set in these files.
+!assets/fonts/*.import

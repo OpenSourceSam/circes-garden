@@ -13,17 +13,19 @@ CELL = 96
 CX = 48
 BASE = 90
 
-OUT = rgb("#0f2628")
-BODY = rgb("#2f6f6a")
-DARK = rgb("#1d4a49")
-LIGHT = rgb("#4f9a92")
-BELLY = rgb("#8fb8ad")
-EYE = rgb("#ffd34d")
+# A drowned, slate-green hide with ember eyes: a monster, not a mascot.
+OUT = rgb("#0b1616")
+BODY = rgb("#2e4744")
+DARK = rgb("#1a2c2b")
+LIGHT = rgb("#4d6c64")
+BELLY = rgb("#3d5852")
+EYE = rgb("#ff8a2a")
 PUPIL = rgb("#5a1a0a")
 TOOTH = rgb("#f2f2e6")
 MOUTH = rgb("#4a1020")
 FOAM = rgb("#dff1ff")
-WATER = rgb("#2f6594")
+WATER = rgb("#1f3f5c")
+WATER_D = rgb("#142c42")
 
 
 def _neck(p: Px, x0: float, y0: float, x1: float, y1: float, bulge: float, thick: int = 3) -> None:
@@ -75,16 +77,29 @@ def _legs(p: Px, xs: list[int], top: int, phase: int, side: bool) -> None:
             p.dot(x + 3, BASE - lift, darken(shade, 0.8))
 
 
+def _scales(p: Px, x0: int, y0: int, x1: int, y1: int) -> None:
+    """Mottled scales over the bulk of the body: dark crescents with a pale edge, in rows."""
+    for row, y in enumerate(range(y0, y1, 5)):
+        for x in range(x0 + (row % 2) * 3, x1, 6):
+            if p.im.getpixel((x, y))[3] and p.im.getpixel((x + 2, y + 1))[3]:
+                p.hline(x, x + 2, y + 1, DARK)
+                p.dot(x + 1, y, BELLY)
+
+
 def frame(view: str, action: str, f: int) -> Px:
     p = Px(CELL, CELL)
     sway = [0, 1, 0, -1][f]
     phase = [1, 0, -1, 0][f] if action == "walk" else 0
     bob = -1 if (action == "walk" and f % 2 == 1) else 0
     jaw = (f == 2) if action == "idle" else (f % 2 == 0)
-    # Shallow water and foam under her: she stands in the strait.
-    p.ellipse(CX - 30, BASE - 5, CX + 30, BASE + 3, WATER)
-    for i in range(-30, 31, 6):
-        p.dot(CX + i + (f % 2), BASE - 5 + ((i // 6) % 2), FOAM)
+    # She stands in the strait: dark water churning into a ragged ring of foam around her legs.
+    p.ellipse(CX - 34, BASE - 7, CX + 34, BASE + 4, WATER_D)
+    p.ellipse(CX - 30, BASE - 6, CX + 30, BASE + 2, WATER)
+    for i in range(-33, 34, 3):
+        y = BASE - 6 + int(2.5 * math.sin(i * 0.7 + f * 1.6)) + (3 if abs(i) > 24 else 0)
+        p.dot(CX + i, y, FOAM)
+        if (i + f) % 2 == 0:
+            p.dot(CX + i + 1, y + 1, FOAM)
 
     if view in ("down", "up"):
         back = view == "up"
@@ -93,7 +108,7 @@ def frame(view: str, action: str, f: int) -> Px:
         p.ellipse(CX - 28, 44 + bob, CX + 28, 86 + bob, BODY)
         p.ellipse(CX - 24, 36 + bob, CX + 24, 60 + bob, BODY)
         if not back:
-            p.ellipse(CX - 16, 54 + bob, CX + 16, 82 + bob, BELLY)
+            _scales(p, CX - 22, 50 + bob, CX + 22, 82 + bob)
             p.hline(CX - 18, CX + 18, 83 + bob, DARK)
         else:
             p.ellipse(CX - 20, 50 + bob, CX + 20, 80 + bob, DARK)
@@ -115,7 +130,7 @@ def frame(view: str, action: str, f: int) -> Px:
         _legs(p, [CX - 22, CX - 16, CX - 10, CX - 4, CX + 2, CX + 8, CX + 14, CX + 20], 70 + bob, phase, True)
         p.ellipse(CX - 26, 46 + bob, CX + 30, 86 + bob, BODY)
         p.ellipse(CX - 14, 38 + bob, CX + 26, 62 + bob, BODY)
-        p.ellipse(CX - 16, 60 + bob, CX + 20, 82 + bob, darken(BELLY, 0.9))
+        _scales(p, CX - 18, 56 + bob, CX + 24, 82 + bob)
         p.hline(CX - 10, CX + 14, 42 + bob, LIGHT)
         # tail curling behind (right side)
         p.rect(CX + 26, 62 + bob, CX + 34, 66 + bob, BODY); p.rect(CX + 32, 56 + bob, CX + 36, 64 + bob, BODY)

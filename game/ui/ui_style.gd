@@ -6,6 +6,10 @@ const BG := Color(0.11, 0.08, 0.06, 0.9)
 const BORDER := Color(0.78, 0.62, 0.36, 1.0)
 const GOLD_TEXT := Color(0.95, 0.82, 0.52)
 const TEXT := Color(1.0, 0.97, 0.9)
+## EB Garamond is the game-wide default (project setting gui/theme/custom_font); Cinzel is for
+## titles and names, like the inscriptions on the loading page.
+const TITLE_FONT := preload("res://assets/fonts/title.tres")
+const ITALIC_FONT := preload("res://assets/fonts/text_italic.tres")
 
 static func panel(margin_x: int = 10, margin_y: int = 8, border: int = 2) -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()

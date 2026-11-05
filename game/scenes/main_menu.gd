@@ -65,7 +65,8 @@ func _place_title_block() -> void:
 	$CenterContainer/VBoxContainer.add_theme_constant_override("separation", 18)
 
 func _style_title() -> void:
-	title_label.add_theme_font_size_override("font_size", 84)
+	title_label.add_theme_font_override("font", UiStyle.TITLE_FONT)
+	title_label.add_theme_font_size_override("font_size", 80)
 	title_label.add_theme_color_override("font_color", CREAM)
 	title_label.add_theme_color_override("font_outline_color", INK)
 	title_label.add_theme_constant_override("outline_size", 14)

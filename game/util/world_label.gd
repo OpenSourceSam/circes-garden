@@ -3,7 +3,7 @@ extends RefCounted
 ## a dark outline, centred on their node. A label above its node grows upwards and one below it
 ## grows downwards, so a second line never spills onto the sprite it describes.
 
-const FONT_SIZE := 11
+const FONT_SIZE := 15
 const TEXT_COLOR := Color(1.0, 0.96, 0.86)
 const OUTLINE_COLOR := Color(0.13, 0.08, 0.05, 0.95)
 const WIDTH := 200.0

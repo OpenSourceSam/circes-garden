@@ -1,5 +1,5 @@
 extends RefCounted
-## Quest 0: starting a new game leaves the prologue done, quest 1 active and seeds in hand.
+## Quest 0: starting a new game leaves the prologue done, quest 1 active and no seeds yet.
 
 func run(gs: Node) -> bool:
 	gs.add_item("calming_draught", 1)

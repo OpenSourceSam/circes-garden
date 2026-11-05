@@ -15,6 +15,7 @@ func _ready() -> void:
 	_build_ui()
 	GameState.flag_changed.connect(_on_flag_changed)
 	GameState.day_advanced.connect(_on_day_advanced)
+	GameState.crop_harvested.connect(func(_p, _c): _refresh())
 	_refresh()
 
 func _build_ui() -> void:
@@ -47,7 +48,8 @@ func _build_ui() -> void:
 	day_label = Label.new()
 	day_label.text = "Day 1"
 	day_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	day_label.add_theme_font_size_override("font_size", 15)
+	day_label.add_theme_font_override("font", UiStyle.TITLE_FONT)
+	day_label.add_theme_font_size_override("font_size", 17)
 	day_label.add_theme_color_override("font_color", UiStyle.GOLD_TEXT)
 	vbox.add_child(day_label)
 
@@ -60,7 +62,7 @@ func _build_ui() -> void:
 	quest_label = Label.new()
 	quest_label.text = "No active quest"
 	quest_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	quest_label.add_theme_font_size_override("font_size", 14)
+	quest_label.add_theme_font_size_override("font_size", 18)
 	quest_label.add_theme_color_override("font_color", UiStyle.TEXT)
 	vbox.add_child(quest_label)
 
@@ -69,6 +71,12 @@ func _on_flag_changed(_flag: String, _value: bool) -> void:
 
 func _on_day_advanced(_new_day: int) -> void:
 	_refresh()
+
+func _any_moly_ready() -> bool:
+	for plot in GameState.farm_plots.values():
+		if plot.get("ready", false):
+			return true
+	return false
 
 func _refresh() -> void:
 	# Update day counter
@@ -88,6 +96,8 @@ func _refresh() -> void:
 	for quest_flag in quest_order:
 		if GameState.get_flag(quest_flag):
 			quest_text = _quest_texts.get(quest_flag, "Unknown quest")
+			if quest_flag == "quest_2_active" and _any_moly_ready():
+				quest_text = StoryText.QUEST_HARVEST
 			break
 
 	quest_label.text = quest_text
