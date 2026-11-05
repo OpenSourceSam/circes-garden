@@ -1,0 +1,95 @@
+{
+  "spritesheet": {
+    "canvas": {
+      "width_px": 1024,
+      "height_px": 1024,
+      "aspect_ratio": "1:1",
+      "background": "transparent"
+    },
+    "grid": {
+      "columns": 4,
+      "rows": 2,
+      "cell_width_px": 256,
+      "cell_height_px": 256,
+      "total_cells": 8,
+      "gaps_between_cells": "none — cells touch edge to edge",
+      "borders": "none",
+      "margins": "none",
+      "labels_or_text_anywhere": "none",
+      "layout_note": "Draw pigs ONLY in the top 2 rows (y=0 to y=511). Leave rows 3-4 (y=512 to y=1023) completely empty — no sprites, fully transparent."
+    },
+    "alignment_guides": {
+      "instruction": "The uploaded reference image shows the grid. Black lines (#000000) are cell boundaries. Magenta lines (#FF00FF) are character alignment guides — the character's head must touch the magenta head-line and feet must touch the magenta feet-line in each row. AFTER drawing all characters, DELETE every #FF00FF magenta pixel. Keep characters INSIDE the black #000000 grid cells.",
+      "grid_dividers": {
+        "color": "#000000 black",
+        "positions": "horizontal at y=256 and vertical at x=256, x=512, x=768",
+        "purpose": "cell boundaries — no character part may cross these"
+      },
+      "character_guides": {
+        "color": "#FF00FF magenta",
+        "lines": [
+          {"y_px": 38, "role": "row 1 — top of head"},
+          {"y_px": 218, "role": "row 1 — bottom of feet"},
+          {"y_px": 294, "role": "row 2 — top of head"},
+          {"y_px": 474, "role": "row 2 — bottom of feet"}
+        ],
+        "purpose": "character height alignment — head touches top guide, feet touch bottom guide",
+        "removal": "delete all #FF00FF magenta pixels from the final image"
+      }
+    },
+    "rows": [
+      {
+        "row_number": 1,
+        "pixel_range_y": "0 to 255",
+        "facing": "profile-left — pig looks toward 9 o'clock (left edge of image), viewer sees pig's right side",
+        "clock_direction": "9 o'clock",
+        "what_viewer_sees": "the right side of the pig's body in profile, head lowered to eat",
+        "column_1": "eating frame 1 — head lowered toward ground, snout near floor, nibbling posture",
+        "column_2": "eating frame 2 — jaw moves in chewing motion, ears relaxed forward, snout touching ground",
+        "column_3": "eating frame 3 — head lifts slightly while chewing, brief pause mid-bite",
+        "column_4": "eating frame 4 — head lowers back down for another nibble, returning to frame 1 posture"
+      },
+      {
+        "row_number": 2,
+        "pixel_range_y": "256 to 511",
+        "facing": "profile-right — pig looks toward 3 o'clock (right edge of image), viewer sees pig's left side",
+        "clock_direction": "3 o'clock",
+        "what_viewer_sees": "the left side of the pig's body in profile, head lowered to eat",
+        "column_1": "eating frame 1 — head lowered toward ground, snout near floor, nibbling posture",
+        "column_2": "eating frame 2 — jaw moves in chewing motion, ears relaxed forward, snout touching ground",
+        "column_3": "eating frame 3 — head lifts slightly while chewing, brief pause mid-bite",
+        "column_4": "eating frame 4 — head lowers back down for another nibble, returning to frame 1 posture"
+      }
+    ],
+    "subject": {
+      "name": "Pig",
+      "type": "pixel art animal sprite",
+      "description": "cozy domesticated farm pig, stylized to match a Greek mythology farming game world",
+      "body": "rounded, warm pink/rose tones with earthy shadow tones",
+      "features": "small floppy ears, stubby snout, curly tail, short legs",
+      "expression": "focused on food, happily eating",
+      "build": "small and rounded — readable at small scale, friendly not realistic",
+      "pose_notes": "head is lowered with snout near ground level — the eating posture should be clearly distinct from the idle standing pose"
+    },
+    "style": {
+      "aesthetic": "pixelated retro style, high quality and modern like Stardew Valley — clean readable sprites with flat shading",
+      "outline": "dark 1-pixel outline around the entire character",
+      "shading": "flat cluster shading, no smooth gradients",
+      "antialiasing": "none — crisp pixel edges only, no blur",
+      "character_height": "70% of cell height (approximately 180 pixels in each 256-pixel cell)",
+      "character_centering": "horizontally centered in each cell, head touching top guide, feet touching bottom guide"
+    },
+    "rules": [
+      "this is ONE image containing 8 small pigs in the top half of a grid — NOT 8 separate images",
+      "every pig in all 8 cells is the SAME pig with the SAME body shape, proportions, and colors",
+      "this is a PIG — a small, round, cute farm animal. Not a person. Not a boar.",
+      "MUST match the pig_walk spritesheet exactly — same pig, same proportions, same colors. Only the pose changes from walking to eating",
+      "ONLY draw pigs in the TOP 2 ROWS (y=0 to y=511). The bottom half of the image must be completely empty and transparent",
+      "no pig may cross a cell boundary into a neighboring cell",
+      "all tops within a row must align on the row's top guide line",
+      "all bases within a row must align on the row's bottom guide line",
+      "identical top-left lighting across all 8 cells",
+      "no tilt or rotation on any pig"
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+[gd_scene load_steps=3 format=3 uid="uid://chr5m8k2npc01"]
+
+[ext_resource type="Script" path="res://game/entities/npcs/hermes.gd" id="1_script"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(16, 24)
+
+[node name="Hermes" type="CharacterBody2D"]
+collision_layer = 1
+collision_mask = 0
+script = ExtResource("1_script")
+idle_sheet = "res://assets/image_pipeline/generated/raw/sprites/characters/hermes/hermes_idle.png"
+walk_sheet = "res://assets/image_pipeline/generated/raw/sprites/characters/hermes/hermes_walk.png"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_1")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+scale = Vector2(1, 1)
+offset = Vector2(0, -12)
+
+[node name="Label" type="Label" parent="."]
+offset_left = -25.0
+offset_top = -38.0
+offset_right = 25.0
+offset_bottom = -24.0
+text = "Hermes"
+horizontal_alignment = 1

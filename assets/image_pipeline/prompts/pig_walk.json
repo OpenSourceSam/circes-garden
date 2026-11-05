@@ -1,0 +1,118 @@
+{
+  "spritesheet": {
+    "canvas": {
+      "width_px": 1024,
+      "height_px": 1024,
+      "aspect_ratio": "1:1",
+      "background": "transparent"
+    },
+    "grid": {
+      "columns": 4,
+      "rows": 4,
+      "cell_width_px": 256,
+      "cell_height_px": 256,
+      "total_cells": 16,
+      "gaps_between_cells": "none — cells touch edge to edge",
+      "borders": "none",
+      "margins": "none",
+      "labels_or_text_anywhere": "none"
+    },
+    "alignment_guides": {
+      "instruction": "The uploaded reference image shows the grid. Black lines (#000000) are cell boundaries. Magenta lines (#FF00FF) are character alignment guides — the character's head must touch the magenta head-line and feet must touch the magenta feet-line in each row. AFTER drawing all characters, DELETE every #FF00FF magenta pixel. Keep characters INSIDE the black #000000 grid cells.",
+      "grid_dividers": {
+        "color": "#000000 black",
+        "positions": "horizontal at y=256, y=512, y=768 and vertical at x=256, x=512, x=768",
+        "purpose": "cell boundaries — no character part may cross these"
+      },
+      "character_guides": {
+        "color": "#FF00FF magenta",
+        "lines": [
+          {"y_px": 38, "role": "row 1 — top of head"},
+          {"y_px": 218, "role": "row 1 — bottom of feet"},
+          {"y_px": 294, "role": "row 2 — top of head"},
+          {"y_px": 474, "role": "row 2 — bottom of feet"},
+          {"y_px": 550, "role": "row 3 — top of head"},
+          {"y_px": 730, "role": "row 3 — bottom of feet"},
+          {"y_px": 806, "role": "row 4 — top of head"},
+          {"y_px": 986, "role": "row 4 — bottom of feet"}
+        ],
+        "purpose": "character height alignment — head touches top guide, feet touch bottom guide",
+        "removal": "delete all #FF00FF magenta pixels from the final image"
+      }
+    },
+    "rows": [
+      {
+        "row_number": 1,
+        "pixel_range_y": "0 to 255",
+        "facing": "front-facing — pig looks straight toward the viewer",
+        "clock_direction": "6 o'clock",
+        "what_viewer_sees": "the pig's face, snout, and front of body",
+        "column_1": "trotting walk frame 1 — relaxed happy gait, little legs moving, left legs forward",
+        "column_2": "trotting walk frame 2 — relaxed happy gait, little legs moving, passing center",
+        "column_3": "trotting walk frame 3 — relaxed happy gait, little legs moving, right legs forward",
+        "column_4": "trotting walk frame 4 — relaxed happy gait, little legs moving, return toward frame 1"
+      },
+      {
+        "row_number": 2,
+        "pixel_range_y": "256 to 511",
+        "facing": "back-facing — pig faces away from viewer, showing its back",
+        "clock_direction": "12 o'clock",
+        "what_viewer_sees": "the back of the pig's head, back, curly tail, and rear of body",
+        "column_1": "trotting walk frame 1 — relaxed happy gait, little legs moving, left legs forward",
+        "column_2": "trotting walk frame 2 — relaxed happy gait, little legs moving, passing center",
+        "column_3": "trotting walk frame 3 — relaxed happy gait, little legs moving, right legs forward",
+        "column_4": "trotting walk frame 4 — relaxed happy gait, little legs moving, return toward frame 1"
+      },
+      {
+        "row_number": 3,
+        "pixel_range_y": "512 to 767",
+        "facing": "profile-left — pig looks toward 9 o'clock (left edge of image), viewer sees pig's right side",
+        "clock_direction": "9 o'clock",
+        "what_viewer_sees": "the right side of the pig's body in profile",
+        "column_1": "trotting walk frame 1 — front-right leg extended forward, back-left leg extended back, ears bouncing up",
+        "column_2": "trotting walk frame 2 — legs crossing under body, passing through center stride",
+        "column_3": "trotting walk frame 3 — front-left leg extended forward, back-right leg extended back, ears bouncing down",
+        "column_4": "trotting walk frame 4 — legs crossing under body, returning toward frame 1 stride"
+      },
+      {
+        "row_number": 4,
+        "pixel_range_y": "768 to 1023",
+        "facing": "profile-right — pig looks toward 3 o'clock (right edge of image), viewer sees pig's left side",
+        "clock_direction": "3 o'clock",
+        "what_viewer_sees": "the left side of the pig's body in profile",
+        "column_1": "trotting walk frame 1 — front-left leg extended forward, back-right leg extended back, ears bouncing up",
+        "column_2": "trotting walk frame 2 — legs crossing under body, passing through center stride",
+        "column_3": "trotting walk frame 3 — front-right leg extended forward, back-left leg extended back, ears bouncing down",
+        "column_4": "trotting walk frame 4 — legs crossing under body, returning toward frame 1 stride"
+      }
+    ],
+    "subject": {
+      "name": "Pig",
+      "type": "pixel art animal sprite",
+      "description": "cozy domesticated farm pig, stylized to match a Greek mythology farming game world",
+      "body": "rounded, warm pink/rose tones with earthy shadow tones",
+      "features": "small floppy ears, stubby snout, curly tail, short legs",
+      "expression": "content, happy farm animal",
+      "build": "small and rounded — readable at small scale, friendly not realistic",
+      "movement_notes": "relaxed trotting gait, ears bounce slightly with each step"
+    },
+    "style": {
+      "aesthetic": "pixelated retro style, high quality and modern like Stardew Valley — clean readable sprites with flat shading",
+      "outline": "dark 1-pixel outline around the entire character",
+      "shading": "flat cluster shading, no smooth gradients",
+      "antialiasing": "none — crisp pixel edges only, no blur",
+      "character_height": "70% of cell height (approximately 180 pixels in each 256-pixel cell)",
+      "character_centering": "horizontally centered in each cell, head touching top guide, feet touching bottom guide"
+    },
+    "rules": [
+      "this is ONE image containing 16 small pigs in a grid — NOT 16 separate images",
+      "every pig in all 16 cells is the SAME pig with the SAME body shape, proportions, and colors",
+      "this is a PIG — a small, round, cute farm animal. Not a person. Not a boar.",
+      "no pig may cross a cell boundary into a neighboring cell",
+      "all tops within a row must align on the row's top guide line",
+      "all bases within a row must align on the row's bottom guide line",
+      "identical top-left lighting across all 16 cells",
+      "no tilt or rotation on any pig"
+    ]
+  }
+}

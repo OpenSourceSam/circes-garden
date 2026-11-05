@@ -1,0 +1,625 @@
+{
+  "asset_root": "assets/image_pipeline/generated/normalized",
+  "required_count": 33,
+  "mode": "STRICT (exact dimensions enforced)",
+  "checks": {
+    "prologue_exact_size": [
+      864,
+      1184
+    ],
+    "character_4dir_exact": [
+      256,
+      256
+    ],
+    "pig_4dir_exact": [
+      256,
+      256
+    ],
+    "pig_2dir_exact": [
+      256,
+      128
+    ],
+    "entity_exact": "per-asset (boat=128x64, others=64x64)",
+    "icon_exact": [
+      32,
+      32
+    ],
+    "tileset_grid": "32x32 aligned",
+    "alpha_policy": "sprites/tilesets require alpha, prologue may be RGB"
+  },
+  "assets": [
+    {
+      "path": "cutscenes/prologue/prologue_01.png",
+      "kind": "prologue",
+      "width": 864,
+      "height": 1184,
+      "target": "864x1184",
+      "bands": [
+        "R",
+        "G",
+        "B"
+      ],
+      "has_alpha": false,
+      "alpha_min": null,
+      "alpha_max": null,
+      "transparent_pixels": 0,
+      "transparent_pct": 0.0
+    },
+    {
+      "path": "cutscenes/prologue/prologue_02.png",
+      "kind": "prologue",
+      "width": 864,
+      "height": 1184,
+      "target": "864x1184",
+      "bands": [
+        "R",
+        "G",
+        "B"
+      ],
+      "has_alpha": false,
+      "alpha_min": null,
+      "alpha_max": null,
+      "transparent_pixels": 0,
+      "transparent_pct": 0.0
+    },
+    {
+      "path": "cutscenes/prologue/prologue_03.png",
+      "kind": "prologue",
+      "width": 864,
+      "height": 1184,
+      "target": "864x1184",
+      "bands": [
+        "R",
+        "G",
+        "B"
+      ],
+      "has_alpha": false,
+      "alpha_min": null,
+      "alpha_max": null,
+      "transparent_pixels": 0,
+      "transparent_pct": 0.0
+    },
+    {
+      "path": "cutscenes/prologue/prologue_04.png",
+      "kind": "prologue",
+      "width": 864,
+      "height": 1184,
+      "target": "864x1184",
+      "bands": [
+        "R",
+        "G",
+        "B"
+      ],
+      "has_alpha": false,
+      "alpha_min": null,
+      "alpha_max": null,
+      "transparent_pixels": 0,
+      "transparent_pct": 0.0
+    },
+    {
+      "path": "cutscenes/prologue/prologue_05.png",
+      "kind": "prologue",
+      "width": 864,
+      "height": 1184,
+      "target": "864x1184",
+      "bands": [
+        "R",
+        "G",
+        "B"
+      ],
+      "has_alpha": false,
+      "alpha_min": null,
+      "alpha_max": null,
+      "transparent_pixels": 0,
+      "transparent_pct": 0.0
+    },
+    {
+      "path": "cutscenes/prologue/prologue_06.png",
+      "kind": "prologue",
+      "width": 864,
+      "height": 1184,
+      "target": "864x1184",
+      "bands": [
+        "R",
+        "G",
+        "B"
+      ],
+      "has_alpha": false,
+      "alpha_min": null,
+      "alpha_max": null,
+      "transparent_pixels": 0,
+      "transparent_pct": 0.0
+    },
+    {
+      "path": "cutscenes/prologue/prologue_07.png",
+      "kind": "prologue",
+      "width": 864,
+      "height": 1184,
+      "target": "864x1184",
+      "bands": [
+        "R",
+        "G",
+        "B"
+      ],
+      "has_alpha": false,
+      "alpha_min": null,
+      "alpha_max": null,
+      "transparent_pixels": 0,
+      "transparent_pct": 0.0
+    },
+    {
+      "path": "sprites/characters/circe/circe_idle.png",
+      "kind": "character_4dir",
+      "width": 256,
+      "height": 256,
+      "target": "256x256",
+      "bands": [
+        "R",
+        "G",
+        "B",
+        "A"
+      ],
+      "has_alpha": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "transparent_pixels": 41224,
+      "transparent_pct": 62.903
+    },
+    {
+      "path": "sprites/characters/circe/circe_walk.png",
+      "kind": "character_4dir",
+      "width": 256,
+      "height": 256,
+      "target": "256x256",
+      "bands": [
+        "R",
+        "G",
+        "B",
+        "A"
+      ],
+      "has_alpha": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "transparent_pixels": 41472,
+      "transparent_pct": 63.281
+    },
+    {
+      "path": "sprites/characters/hermes/hermes_idle.png",
+      "kind": "character_4dir",
+      "width": 256,
+      "height": 256,
+      "target": "256x256",
+      "bands": [
+        "R",
+        "G",
+        "B",
+        "A"
+      ],
+      "has_alpha": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "transparent_pixels": 39804,
+      "transparent_pct": 60.736
+    },
+    {
+      "path": "sprites/characters/hermes/hermes_walk.png",
+      "kind": "character_4dir",
+      "width": 256,
+      "height": 256,
+      "target": "256x256",
+      "bands": [
+        "R",
+        "G",
+        "B",
+        "A"
+      ],
+      "has_alpha": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "transparent_pixels": 42983,
+      "transparent_pct": 65.587
+    },
+    {
+      "path": "sprites/characters/scylla/scylla_idle.png",
+      "kind": "character_4dir",
+      "width": 256,
+      "height": 256,
+      "target": "256x256",
+      "bands": [
+        "R",
+        "G",
+        "B",
+        "A"
+      ],
+      "has_alpha": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "transparent_pixels": 29629,
+      "transparent_pct": 45.21
+    },
+    {
+      "path": "sprites/characters/scylla/scylla_walk.png",
+      "kind": "character_4dir",
+      "width": 256,
+      "height": 256,
+      "target": "256x256",
+      "bands": [
+        "R",
+        "G",
+        "B",
+        "A"
+      ],
+      "has_alpha": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "transparent_pixels": 36450,
+      "transparent_pct": 55.618
+    },
+    {
+      "path": "sprites/characters/pig/pig_walk.png",
+      "kind": "pig_4dir",
+      "width": 256,
+      "height": 256,
+      "target": "256x256",
+      "bands": [
+        "R",
+        "G",
+        "B",
+        "A"
+      ],
+      "has_alpha": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "transparent_pixels": 40600,
+      "transparent_pct": 61.951
+    },
+    {
+      "path": "sprites/characters/pig/pig_run.png",
+      "kind": "pig_4dir",
+      "width": 256,
+      "height": 256,
+      "target": "256x256",
+      "bands": [
+        "R",
+        "G",
+        "B",
+        "A"
+      ],
+      "has_alpha": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "transparent_pixels": 43919,
+      "transparent_pct": 67.015
+    },
+    {
+      "path": "sprites/characters/pig/pig_idle.png",
+      "kind": "pig_2dir",
+      "width": 256,
+      "height": 128,
+      "target": "256x128",
+      "bands": [
+        "R",
+        "G",
+        "B",
+        "A"
+      ],
+      "has_alpha": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "transparent_pixels": 23762,
+      "transparent_pct": 72.516
+    },
+    {
+      "path": "sprites/characters/pig/pig_eat.png",
+      "kind": "pig_2dir",
+      "width": 256,
+      "height": 128,
+      "target": "256x128",
+      "bands": [
+        "R",
+        "G",
+        "B",
+        "A"
+      ],
+      "has_alpha": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "transparent_pixels": 23839,
+      "transparent_pct": 72.751
+    },
+    {
+      "path": "sprites/characters/pig/pig_sleep.png",
+      "kind": "pig_2dir",
+      "width": 256,
+      "height": 128,
+      "target": "256x128",
+      "bands": [
+        "R",
+        "G",
+        "B",
+        "A"
+      ],
+      "has_alpha": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "transparent_pixels": 24099,
+      "transparent_pct": 73.544
+    },
+    {
+      "path": "sprites/entities/boat.png",
+      "kind": "entity",
+      "width": 128,
+      "height": 64,
+      "target": "128x64",
+      "bands": [
+        "R",
+        "G",
+        "B",
+        "A"
+      ],
+      "has_alpha": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "transparent_pixels": 5976,
+      "transparent_pct": 72.949
+    },
+    {
+      "path": "sprites/entities/crafting_table.png",
+      "kind": "entity",
+      "width": 64,
+      "height": 64,
+      "target": "64x64",
+      "bands": [
+        "R",
+        "G",
+        "B",
+        "A"
+      ],
+      "has_alpha": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "transparent_pixels": 3072,
+      "transparent_pct": 75.0
+    },
+    {
+      "path": "sprites/entities/farm_plot.png",
+      "kind": "entity",
+      "width": 64,
+      "height": 64,
+      "target": "64x64",
+      "bands": [
+        "R",
+        "G",
+        "B",
+        "A"
+      ],
+      "has_alpha": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "transparent_pixels": 2366,
+      "transparent_pct": 57.764
+    },
+    {
+      "path": "sprites/entities/farm_plot_stage_empty.png",
+      "kind": "entity",
+      "width": 64,
+      "height": 64,
+      "target": "64x64",
+      "bands": [
+        "R",
+        "G",
+        "B",
+        "A"
+      ],
+      "has_alpha": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "transparent_pixels": 2655,
+      "transparent_pct": 64.819
+    },
+    {
+      "path": "sprites/entities/farm_plot_stage_planted.png",
+      "kind": "entity",
+      "width": 64,
+      "height": 64,
+      "target": "64x64",
+      "bands": [
+        "R",
+        "G",
+        "B",
+        "A"
+      ],
+      "has_alpha": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "transparent_pixels": 3207,
+      "transparent_pct": 78.296
+    },
+    {
+      "path": "sprites/entities/farm_plot_stage_1.png",
+      "kind": "entity",
+      "width": 64,
+      "height": 64,
+      "target": "64x64",
+      "bands": [
+        "R",
+        "G",
+        "B",
+        "A"
+      ],
+      "has_alpha": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "transparent_pixels": 3372,
+      "transparent_pct": 82.324
+    },
+    {
+      "path": "sprites/entities/farm_plot_stage_2.png",
+      "kind": "entity",
+      "width": 64,
+      "height": 64,
+      "target": "64x64",
+      "bands": [
+        "R",
+        "G",
+        "B",
+        "A"
+      ],
+      "has_alpha": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "transparent_pixels": 3114,
+      "transparent_pct": 76.025
+    },
+    {
+      "path": "sprites/entities/farm_plot_stage_ready.png",
+      "kind": "entity",
+      "width": 64,
+      "height": 64,
+      "target": "64x64",
+      "bands": [
+        "R",
+        "G",
+        "B",
+        "A"
+      ],
+      "has_alpha": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "transparent_pixels": 3227,
+      "transparent_pct": 78.784
+    },
+    {
+      "path": "sprites/entities/sleep_spot.png",
+      "kind": "entity",
+      "width": 64,
+      "height": 64,
+      "target": "64x64",
+      "bands": [
+        "R",
+        "G",
+        "B",
+        "A"
+      ],
+      "has_alpha": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "transparent_pixels": 2783,
+      "transparent_pct": 67.944
+    },
+    {
+      "path": "sprites/ui/icon_moly_seed.png",
+      "kind": "icon",
+      "width": 32,
+      "height": 32,
+      "target": "32x32",
+      "bands": [
+        "R",
+        "G",
+        "B",
+        "A"
+      ],
+      "has_alpha": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "transparent_pixels": 848,
+      "transparent_pct": 82.812
+    },
+    {
+      "path": "sprites/ui/icon_moly.png",
+      "kind": "icon",
+      "width": 32,
+      "height": 32,
+      "target": "32x32",
+      "bands": [
+        "R",
+        "G",
+        "B",
+        "A"
+      ],
+      "has_alpha": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "transparent_pixels": 932,
+      "transparent_pct": 91.016
+    },
+    {
+      "path": "sprites/ui/icon_calming_draught.png",
+      "kind": "icon",
+      "width": 32,
+      "height": 32,
+      "target": "32x32",
+      "bands": [
+        "R",
+        "G",
+        "B",
+        "A"
+      ],
+      "has_alpha": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "transparent_pixels": 931,
+      "transparent_pct": 90.918
+    },
+    {
+      "path": "tilesets/aiaia_tileset_32.png",
+      "kind": "tileset",
+      "width": 1248,
+      "height": 832,
+      "target": "32-grid",
+      "bands": [
+        "R",
+        "G",
+        "B",
+        "A"
+      ],
+      "has_alpha": true,
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "transparent_pixels": 0,
+      "transparent_pct": 0.0
+    },
+    {
+      "path": "tilesets/scylla_cove_tileset_32.png",
+      "kind": "tileset",
+      "width": 1248,
+      "height": 832,
+      "target": "32-grid",
+      "bands": [
+        "R",
+        "G",
+        "B",
+        "A"
+      ],
+      "has_alpha": true,
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "transparent_pixels": 0,
+      "transparent_pct": 0.0
+    },
+    {
+      "path": "tilesets/greek_decor_tileset_32.png",
+      "kind": "tileset",
+      "width": 1536,
+      "height": 1024,
+      "target": "32-grid",
+      "bands": [
+        "R",
+        "G",
+        "B",
+        "A"
+      ],
+      "has_alpha": true,
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "transparent_pixels": 940974,
+      "transparent_pct": 59.826
+    }
+  ],
+  "errors": [],
+  "warnings": [
+    "tilesets/aiaia_tileset_32.png: fully opaque alpha channel",
+    "tilesets/scylla_cove_tileset_32.png: fully opaque alpha channel"
+  ],
+  "extras": []
+}

@@ -1,0 +1,63 @@
+# Godot 4+ specific ignores
+.godot/
+
+# Godot-specific ignores
+*.import
+export.cfg
+
+# Imported translations (for Godot 4+)
+*.translation
+
+# Mono-specific ignores
+.mono/
+data_*/
+mono_crash.*.json
+
+# System/tool ignores
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/
+.idea/
+*.code-workspace
+
+# Build outputs
+build/
+export/
+*.exe
+*.x86_64
+*.pck
+!docs/*.pck
+
+# Temp files
+temp/
+*.tmp
+*.log
+
+# Visual test screenshots (regenerated on demand)
+tests/visual/screenshots/
+
+# Reference materials (not project source)
+Circe - Madeline Miller.txt
+
+# Generated previews and the archived February 2026 art (still in git history, commit 0a4a36a)
+tools/pixelart/preview/
+__pycache__/
+assets/image_pipeline/generated/kimi_2026-02/
+
+# Local-only material, kept on disk but not published
+.claude/
+.planning/
+For_Humans/
+HANDOFF.md
+PROJECT.md
+DEPLOYMENT.md
+assets/image_pipeline/generated/normalized/
+assets/image_pipeline/qa/audit_screenshots/
+assets/image_pipeline/prompts/*.pdf
+*.aseprite
+assets/image_pipeline/reference/concept_art/

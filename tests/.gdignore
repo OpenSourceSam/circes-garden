@@ -1,0 +1,2 @@
+# Prevents Godot from scanning test files as game resources
+# Tests are run via command line, not included in game build

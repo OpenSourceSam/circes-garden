@@ -1,0 +1,123 @@
+{
+  "spritesheet": {
+    "canvas": {
+      "width_px": 1024,
+      "height_px": 1024,
+      "aspect_ratio": "1:1",
+      "background": "transparent"
+    },
+    "grid": {
+      "columns": 4,
+      "rows": 4,
+      "cell_width_px": 256,
+      "cell_height_px": 256,
+      "total_cells": 16,
+      "gaps_between_cells": "none — cells touch edge to edge",
+      "borders": "none",
+      "margins": "none",
+      "labels_or_text_anywhere": "none"
+    },
+    "alignment_guides": {
+      "instruction": "The uploaded reference image shows the grid. Black lines (#000000) are cell boundaries. Magenta lines (#FF00FF) are character alignment guides — the character's head must touch the magenta head-line and feet must touch the magenta feet-line in each row. AFTER drawing all characters, DELETE every #FF00FF magenta pixel. Keep characters INSIDE the black #000000 grid cells.",
+      "grid_dividers": {
+        "color": "#000000 black",
+        "positions": "horizontal at y=256, y=512, y=768 and vertical at x=256, x=512, x=768",
+        "purpose": "cell boundaries — no character part may cross these"
+      },
+      "character_guides": {
+        "color": "#FF00FF magenta",
+        "lines": [
+          {"y_px": 38, "role": "row 1 — top of head"},
+          {"y_px": 218, "role": "row 1 — bottom of feet"},
+          {"y_px": 294, "role": "row 2 — top of head"},
+          {"y_px": 474, "role": "row 2 — bottom of feet"},
+          {"y_px": 550, "role": "row 3 — top of head"},
+          {"y_px": 730, "role": "row 3 — bottom of feet"},
+          {"y_px": 806, "role": "row 4 — top of head"},
+          {"y_px": 986, "role": "row 4 — bottom of feet"}
+        ],
+        "purpose": "character height alignment — top of mass touches top guide, base touches bottom guide",
+        "removal": "delete all #FF00FF magenta pixels from the final image"
+      }
+    },
+    "rows": [
+      {
+        "row_number": 1,
+        "pixel_range_y": "0 to 255",
+        "facing": "front-facing — creature faces straight toward the viewer",
+        "clock_direction": "6 o'clock",
+        "what_viewer_sees": "the front of the monster — multiple heads facing viewer, front of body mass",
+        "column_1": "lurching movement frame 1 — heavy forward drag, base shifts beneath the mass, heads dip with momentum, body weight commits to the lurch",
+        "column_2": "lurching movement frame 2 — body mass heaves forward, heads sway and pull with the motion, weight transfers visibly",
+        "column_3": "lurching movement frame 3 — dragging pull, opposite shift as the trailing mass catches up, heads recoil from the momentum change",
+        "column_4": "lurching movement frame 4 — settling back, completing lurch cycle, body mass stabilizes before next heave"
+      },
+      {
+        "row_number": 2,
+        "pixel_range_y": "256 to 511",
+        "facing": "back-facing — creature faces away from viewer, showing its back",
+        "clock_direction": "12 o'clock",
+        "what_viewer_sees": "the back of the monster — rear of body mass, backs of heads",
+        "column_1": "lurching movement frame 1 — heavy forward drag, base shifts",
+        "column_2": "lurching movement frame 2 — body mass heaves forward, heads sway",
+        "column_3": "lurching movement frame 3 — dragging pull, opposite shift",
+        "column_4": "lurching movement frame 4 — settling back, completing lurch cycle"
+      },
+      {
+        "row_number": 3,
+        "pixel_range_y": "512 to 767",
+        "facing": "profile-left — creature faces toward 9 o'clock (left edge of image), viewer sees its RIGHT side",
+        "clock_direction": "9 o'clock",
+        "what_viewer_sees": "the right side profile of the monster",
+        "column_1": "lurching movement frame 1 — heavy forward drag, base/legs push and stretch toward the left",
+        "column_2": "lurching movement frame 2 — body mass heaves forward, legs drag behind the bulk",
+        "column_3": "lurching movement frame 3 — dragging pull, legs bunch up as trailing mass catches up",
+        "column_4": "lurching movement frame 4 — settling back, legs reset to starting spread"
+      },
+      {
+        "row_number": 4,
+        "pixel_range_y": "768 to 1023",
+        "facing": "profile-right — creature faces toward 3 o'clock (right edge of image), viewer sees its LEFT side",
+        "clock_direction": "3 o'clock",
+        "what_viewer_sees": "the left side profile of the monster",
+        "column_1": "lurching movement frame 1 — heavy forward drag, base shifts",
+        "column_2": "lurching movement frame 2 — body mass heaves forward, heads sway",
+        "column_3": "lurching movement frame 3 — dragging pull, opposite shift",
+        "column_4": "lurching movement frame 4 — settling back, completing lurch cycle"
+      }
+    ],
+    "subject": {
+      "name": "Scylla (Monster Form)",
+      "type": "pixel art monster sprite",
+      "description": "tragic sea monster from Greek mythology — once a beautiful woman, now a horrific multi-headed creature. Monstrous and dangerous but clearly tragic rather than generic evil.",
+      "form": "broad distorted upper mass with multiple head suggestion (simplify to 2-3 readable grouped head forms), unstable asymmetry acceptable, sea-monster anatomy with human-remnant cues",
+      "palette": {
+        "body": "teal/sea-green with deep blue-gray shadows",
+        "accents": "bruised purple or cold cyan highlights",
+        "eyes_mouth": "restrained glow — avoid cartoon neon"
+      },
+      "expression": "suffering/rage hybrid — this creature is in pain, not just angry",
+      "movement_notes": "heavy, lurching, dragging movement — Scylla is massive and threatening, not agile. Each step feels like effort."
+    },
+    "style": {
+      "aesthetic": "pixelated retro style, high quality and modern like Stardew Valley — clean readable sprites with flat shading",
+      "outline": "dark 1-pixel outline around the entire creature",
+      "shading": "flat cluster shading, no smooth gradients",
+      "antialiasing": "none — crisp pixel edges only, no blur",
+      "character_height": "70% of cell height (approximately 180 pixels in each 256-pixel cell)",
+      "character_centering": "horizontally centered in each cell, top of mass touching top guide, base touching bottom guide"
+    },
+    "rules": [
+      "this is ONE image containing 16 small creatures in a grid — NOT 16 separate images",
+      "every creature in all 16 cells is the SAME monster with the SAME form, proportions, and colors",
+      "this is a MONSTER — not a human. Scylla is a multi-headed sea creature, not a person",
+      "MUST match the Scylla idle spritesheet exactly — same monster form, same palette, same mass. Only the movement pose changes from idle to lurching",
+      "maintain the same monster mass and silhouette across all directions — side views should not collapse into a generic blob",
+      "no creature may cross a cell boundary into a neighboring cell",
+      "all tops within a row must align on the row's top guide line",
+      "all bases within a row must align on the row's bottom guide line",
+      "identical top-left lighting across all 16 cells",
+      "no tilt or rotation on any creature"
+    ]
+  }
+}

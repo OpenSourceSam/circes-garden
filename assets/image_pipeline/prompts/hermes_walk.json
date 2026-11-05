@@ -1,0 +1,119 @@
+{
+  "spritesheet": {
+    "canvas": {
+      "width_px": 1024,
+      "height_px": 1024,
+      "aspect_ratio": "1:1",
+      "background": "transparent"
+    },
+    "grid": {
+      "columns": 4,
+      "rows": 4,
+      "cell_width_px": 256,
+      "cell_height_px": 256,
+      "total_cells": 16,
+      "gaps_between_cells": "none — cells touch edge to edge",
+      "borders": "none",
+      "margins": "none",
+      "labels_or_text_anywhere": "none"
+    },
+    "alignment_guides": {
+      "instruction": "The uploaded reference image shows the grid. Black lines (#000000) are cell boundaries. Magenta lines (#FF00FF) are character alignment guides — the character's head must touch the magenta head-line and feet must touch the magenta feet-line in each row. AFTER drawing all characters, DELETE every #FF00FF magenta pixel. Keep characters INSIDE the black #000000 grid cells.",
+      "grid_dividers": {
+        "color": "#000000 black",
+        "positions": "horizontal at y=256, y=512, y=768 and vertical at x=256, x=512, x=768",
+        "purpose": "cell boundaries — no character part may cross these"
+      },
+      "character_guides": {
+        "color": "#FF00FF magenta",
+        "lines": [
+          {"y_px": 38, "role": "row 1 — top of head"},
+          {"y_px": 218, "role": "row 1 — bottom of feet"},
+          {"y_px": 294, "role": "row 2 — top of head"},
+          {"y_px": 474, "role": "row 2 — bottom of feet"},
+          {"y_px": 550, "role": "row 3 — top of head"},
+          {"y_px": 730, "role": "row 3 — bottom of feet"},
+          {"y_px": 806, "role": "row 4 — top of head"},
+          {"y_px": 986, "role": "row 4 — bottom of feet"}
+        ],
+        "purpose": "character height alignment — head touches top guide, feet touch bottom guide",
+        "removal": "delete all #FF00FF magenta pixels from the final image"
+      }
+    },
+    "rows": [
+      {
+        "row_number": 1,
+        "pixel_range_y": "0 to 255",
+        "facing": "front-facing — character looks straight toward the viewer",
+        "clock_direction": "6 o'clock",
+        "what_viewer_sees": "the character's face, chest, and front of body",
+        "column_1": "walk frame 1 — contact pose, front foot touches ground, light quick step",
+        "column_2": "walk frame 2 — passing pose, legs cross as weight transfers",
+        "column_3": "walk frame 3 — contact pose, opposite foot touches ground",
+        "column_4": "walk frame 4 — passing pose, legs cross back completing cycle"
+      },
+      {
+        "row_number": 2,
+        "pixel_range_y": "256 to 511",
+        "facing": "back-facing — character faces away from viewer, showing their back",
+        "clock_direction": "12 o'clock",
+        "what_viewer_sees": "the back of the character's head, back, and rear of body",
+        "column_1": "walk frame 1 — contact",
+        "column_2": "walk frame 2 — passing",
+        "column_3": "walk frame 3 — contact",
+        "column_4": "walk frame 4 — passing"
+      },
+      {
+        "row_number": 3,
+        "pixel_range_y": "512 to 767",
+        "facing": "profile-left — character looks toward 9 o'clock (left edge of image), viewer sees character's RIGHT side",
+        "clock_direction": "9 o'clock",
+        "what_viewer_sees": "the right side of the character's body in profile",
+        "column_1": "walk frame 1 — contact, leading leg extended forward",
+        "column_2": "walk frame 2 — passing, legs cross under body",
+        "column_3": "walk frame 3 — contact, opposite leg extended",
+        "column_4": "walk frame 4 — passing, legs cross back"
+      },
+      {
+        "row_number": 4,
+        "pixel_range_y": "768 to 1023",
+        "facing": "profile-right — character looks toward 3 o'clock (right edge of image), viewer sees character's LEFT side",
+        "clock_direction": "3 o'clock",
+        "what_viewer_sees": "the left side of the character's body in profile",
+        "column_1": "walk frame 1 — contact",
+        "column_2": "walk frame 2 — passing",
+        "column_3": "walk frame 3 — contact",
+        "column_4": "walk frame 4 — passing"
+      }
+    ],
+    "subject": {
+      "name": "Hermes",
+      "type": "pixel art character sprite",
+      "description": "messenger god from Greek mythology, youthful man, quick and mischievous energy",
+      "hair": "short tousled warm blond/gold hair",
+      "outfit": "pale sky-blue and cream Greek garments with gold trim accents, optional small wing motifs on sandals",
+      "skin": "fair-light tone",
+      "expression": "alert, playful confidence",
+      "build": "narrower and lighter than Circe in silhouette — not a warrior, a messenger",
+      "movement_notes": "light, quick walking gait — Hermes is a messenger god, moves with effortless speed"
+    },
+    "style": {
+      "aesthetic": "pixelated retro style, high quality and modern like Stardew Valley — clean readable sprites with flat shading",
+      "outline": "dark 1-pixel outline around the entire character",
+      "shading": "flat cluster shading, no smooth gradients",
+      "antialiasing": "none — crisp pixel edges only, no blur",
+      "character_height": "70% of cell height (approximately 180 pixels in each 256-pixel cell)",
+      "character_centering": "horizontally centered in each cell, head touching top guide, feet touching bottom guide"
+    },
+    "rules": [
+      "this is ONE image containing 16 small characters in a grid — NOT 16 separate images",
+      "every character in all 16 cells is the SAME person with the SAME outfit, proportions, and colors",
+      "MUST match the Hermes idle spritesheet exactly — same face, same outfit, same hair, same palette. Only the pose changes from idle to walking",
+      "no character may cross a cell boundary into a neighboring cell",
+      "all heads within a row must align on the row's top guide line",
+      "all feet within a row must align on the row's bottom guide line",
+      "identical top-left lighting across all 16 cells",
+      "no tilt or rotation on any character"
+    ]
+  }
+}

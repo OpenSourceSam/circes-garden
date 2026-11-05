@@ -1,0 +1,26 @@
+[gd_scene load_steps=3 format=3 uid="uid://cct4j8k2crf01"]
+
+[ext_resource type="Script" path="res://game/entities/interactables/crafting_table.gd" id="1_script"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(40, 32)
+
+[node name="CraftingTable" type="Area2D"]
+collision_layer = 1
+collision_mask = 0
+script = ExtResource("1_script")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_1")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+scale = Vector2(1, 1)
+offset = Vector2(0, 0)
+
+[node name="StatusLabel" type="Label" parent="."]
+offset_left = -54.0
+offset_top = 26.0
+offset_right = 54.0
+offset_bottom = 50.0
+text = "Crafting Table"
+horizontal_alignment = 1

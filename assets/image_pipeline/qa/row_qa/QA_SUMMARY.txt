@@ -1,0 +1,7 @@
+Row Direction QA Summary
+Source: assets/image_pipeline/generated/raw
+Processed: 11, Skipped: 0
+Warnings: 2
+
+  sprites/characters/pig/pig_eat.png: Left/Right rows have low mirror similarity (0%) - rows may be misassigned
+  sprites/characters/pig/pig_sleep.png: Left/Right rows have low mirror similarity (0%) - rows may be misassigned

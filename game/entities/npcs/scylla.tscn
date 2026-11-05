@@ -1,0 +1,35 @@
+[gd_scene load_steps=3 format=3 uid="uid://csc8y4k2mon01"]
+
+[ext_resource type="Script" path="res://game/entities/npcs/scylla.gd" id="1_script"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(48, 48)
+
+[node name="Scylla" type="CharacterBody2D"]
+collision_layer = 1
+collision_mask = 0
+script = ExtResource("1_script")
+idle_sheet = "res://assets/image_pipeline/generated/raw/sprites/characters/scylla/scylla_idle.png"
+walk_sheet = "res://assets/image_pipeline/generated/raw/sprites/characters/scylla/scylla_walk.png"
+idle_fps = 2.8
+walk_fps = 4.5
+start_facing = "left"
+wander_radius = 22.0
+wander_speed = 24.0
+walk_duration = Vector2(1.2, 2.4)
+idle_duration = Vector2(1, 2.2)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_1")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+scale = Vector2(1, 1)
+offset = Vector2(0, -28)
+
+[node name="Label" type="Label" parent="."]
+offset_left = -30.0
+offset_top = -122.0
+offset_right = 30.0
+offset_bottom = -100.0
+text = "Scylla"
+horizontal_alignment = 1

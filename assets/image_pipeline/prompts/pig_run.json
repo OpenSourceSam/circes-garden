@@ -1,0 +1,167 @@
+{
+  "spritesheet": {
+    "canvas": {
+      "width_px": 1024,
+      "height_px": 1024,
+      "aspect_ratio": "1:1",
+      "background": "transparent"
+    },
+    "grid": {
+      "columns": 4,
+      "rows": 4,
+      "cell_width_px": 256,
+      "cell_height_px": 256,
+      "total_cells": 16,
+      "gaps_between_cells": "none — cells touch edge to edge",
+      "borders": "none",
+      "margins": "none",
+      "labels_or_text_anywhere": "none"
+    },
+    "alignment_guides": {
+      "instruction": "The uploaded reference image shows the grid. Black lines (#000000) are cell boundaries. Magenta lines (#FF00FF) are character alignment guides — the character's head must touch the magenta head-line and feet must touch the magenta feet-line in each row. AFTER drawing all characters, DELETE every #FF00FF magenta pixel. Keep characters INSIDE the black #000000 grid cells.",
+      "grid_dividers": {
+        "color": "#000000 black",
+        "positions": "horizontal at y=256, y=512, y=768 and vertical at x=256, x=512, x=768",
+        "purpose": "cell boundaries — no character part may cross these"
+      },
+      "character_guides": {
+        "color": "#FF00FF magenta",
+        "lines": [
+          {"y_px": 38, "role": "row 1 — top of head"},
+          {"y_px": 218, "role": "row 1 — bottom of feet"},
+          {"y_px": 294, "role": "row 2 — top of head"},
+          {"y_px": 474, "role": "row 2 — bottom of feet"},
+          {"y_px": 550, "role": "row 3 — top of head"},
+          {"y_px": 730, "role": "row 3 — bottom of feet"},
+          {"y_px": 806, "role": "row 4 — top of head"},
+          {"y_px": 986, "role": "row 4 — bottom of feet"}
+        ],
+        "purpose": "character height alignment — head touches top guide, feet touch bottom guide",
+        "removal": "delete all #FF00FF magenta pixels from the final image"
+      }
+    },
+    "rows": [
+      {
+        "row_number": 1,
+        "direction": "front (6 o'clock facing camera)",
+        "description": "pig running toward camera — urgent pace, ears flopping with each bounce, legs pumping fast beneath rounded body",
+        "columns": [
+          {
+            "column_number": 1,
+            "description": "run frame 1 — legs stretched wide beneath body in full running stride, ears flopping upward, body slightly lifted"
+          },
+          {
+            "column_number": 2,
+            "description": "run frame 2 — legs gathering beneath body in compact bounce, ears mid-flop downward, body lowered"
+          },
+          {
+            "column_number": 3,
+            "description": "run frame 3 — legs stretched wide in opposite phase of stride, ears flopping downward, body lifted again"
+          },
+          {
+            "column_number": 4,
+            "description": "run frame 4 — legs gathering beneath body completing cycle, ears returning upward, ready to loop to frame 1"
+          }
+        ]
+      },
+      {
+        "row_number": 2,
+        "direction": "back (12 o'clock facing away)",
+        "description": "pig running away from camera — urgent pace from behind, curly tail bouncing, legs pumping beneath body, ears visible flopping",
+        "columns": [
+          {
+            "column_number": 1,
+            "description": "run frame 1 — legs stretched wide beneath body from behind, tail bouncing up, ears visible flopping upward"
+          },
+          {
+            "column_number": 2,
+            "description": "run frame 2 — legs gathering beneath body, tail mid-bounce, ears mid-flop, compact stance"
+          },
+          {
+            "column_number": 3,
+            "description": "run frame 3 — legs stretched wide in opposite phase, tail bouncing down, ears flopping downward"
+          },
+          {
+            "column_number": 4,
+            "description": "run frame 4 — legs gathering beneath body completing cycle, tail returning up, ears returning"
+          }
+        ]
+      },
+      {
+        "row_number": 3,
+        "direction": "profile-left (9 o'clock facing left)",
+        "description": "pig running in left profile — extended running stride with all four legs visible in motion, ears bouncing wildly with each bound, urgent pace clearly visible",
+        "columns": [
+          {
+            "column_number": 1,
+            "description": "run frame 1 — front legs stretched forward, back legs pushed back behind body, ears flopping upward, body extended in full running stride"
+          },
+          {
+            "column_number": 2,
+            "description": "run frame 2 — legs gathering under body in mid-bounce, all four legs visible beneath rounded belly, ears mid-flop downward, compact airborne moment"
+          },
+          {
+            "column_number": 3,
+            "description": "run frame 3 — opposite leg phase with front legs back and back legs forward, ears flopping downward, body extended in opposite stride"
+          },
+          {
+            "column_number": 4,
+            "description": "run frame 4 — legs gathering under body completing run cycle, ears returning upward, preparing to loop to frame 1"
+          }
+        ]
+      },
+      {
+        "row_number": 4,
+        "direction": "profile-right (3 o'clock facing right)",
+        "description": "pig running in right profile — exact mirror of row 3, extended running stride with all four legs visible in motion, ears bouncing wildly, urgent pace",
+        "columns": [
+          {
+            "column_number": 1,
+            "description": "run frame 1 — front legs stretched forward, back legs pushed back behind body, ears flopping upward, body extended in full running stride (mirrored from row 3)"
+          },
+          {
+            "column_number": 2,
+            "description": "run frame 2 — legs gathering under body in mid-bounce, all four legs visible beneath rounded belly, ears mid-flop downward, compact airborne moment (mirrored)"
+          },
+          {
+            "column_number": 3,
+            "description": "run frame 3 — opposite leg phase with front legs back and back legs forward, ears flopping downward, body extended in opposite stride (mirrored)"
+          },
+          {
+            "column_number": 4,
+            "description": "run frame 4 — legs gathering under body completing run cycle, ears returning upward, preparing to loop to frame 1 (mirrored)"
+          }
+        ]
+      }
+    ],
+    "subject": {
+      "name": "Pig",
+      "type": "pixel art animal sprite",
+      "description": "cozy domesticated farm pig, stylized to match a Greek mythology farming game world",
+      "body": "rounded, warm pink/rose tones with earthy shadow tones",
+      "features": "small floppy ears, stubby snout, curly tail, short legs",
+      "expression": "startled but cute, urgently running",
+      "build": "small and rounded — readable at small scale, friendly not realistic",
+      "movement_notes": "urgent running gait, ears flop wildly with each stride, body bounces more than walking"
+    },
+    "style": {
+      "aesthetic": "pixelated retro style, high quality and modern like Stardew Valley — clean readable sprites with flat shading",
+      "outline": "dark 1-pixel outline around the entire character",
+      "shading": "flat cluster shading, no smooth gradients",
+      "antialiasing": "none — crisp pixel edges only, no blur",
+      "character_height": "70% of cell height (approximately 180 pixels in each 256-pixel cell)",
+      "character_centering": "horizontally centered in each cell, head touching top guide, feet touching bottom guide"
+    },
+    "rules": [
+      "this is ONE image containing 16 small pigs in a grid — NOT 16 separate images",
+      "every pig in all 16 cells is the SAME pig with the SAME body shape, proportions, and colors",
+      "this is a PIG — a small, round, cute farm animal. Not a person. Not a boar.",
+      "MUST match the pig_walk spritesheet exactly — same pig, same proportions, same colors. Only the speed and pose change from walking to running",
+      "no pig may cross a cell boundary into a neighboring cell",
+      "all tops within a row must align on the row's top guide line",
+      "all bases within a row must align on the row's bottom guide line",
+      "identical top-left lighting across all 16 cells",
+      "no tilt or rotation on any pig"
+    ]
+  }
+}
