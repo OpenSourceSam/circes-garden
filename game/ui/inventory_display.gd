@@ -37,14 +37,14 @@ func _ready() -> void:
 func _build_ui() -> void:
 	# Create panel container anchored to top-right
 	panel = PanelContainer.new()
-	panel.custom_minimum_size = Vector2(160, 0)
+	panel.custom_minimum_size = Vector2(200, 0)
 
 	# Position in top-right corner (CanvasLayer uses screen coords, not camera)
 	panel.anchor_left = 1.0
 	panel.anchor_right = 1.0
 	panel.anchor_top = 0.0
 	panel.anchor_bottom = 0.0
-	panel.offset_left = -170  # 160 width + 10px margin
+	panel.offset_left = -210  # 200 width + 10px margin
 	panel.offset_right = -10
 	panel.offset_top = 10
 	panel.offset_bottom = 10
@@ -65,7 +65,7 @@ func _build_ui() -> void:
 	title.text = "Inventory"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_override("font", UiStyle.TITLE_FONT)
-	title.add_theme_font_size_override("font_size", 16)
+	title.add_theme_font_size_override("font_size", 20)
 	title.add_theme_color_override("font_color", UiStyle.GOLD_TEXT)
 	vbox.add_child(title)
 
@@ -105,7 +105,7 @@ func _add_item_row(item_id: String, quantity: int) -> void:
 	var icon_texture: Texture2D = _icon_cache.get(item_id)
 	if icon_texture:
 		var icon = TextureRect.new()
-		icon.custom_minimum_size = Vector2(18, 18)
+		icon.custom_minimum_size = Vector2(24, 24)
 		icon.texture = icon_texture
 		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
@@ -121,7 +121,7 @@ func _add_item_row(item_id: String, quantity: int) -> void:
 	var label = Label.new()
 	var display_name = _item_names.get(item_id, item_id)
 	label.text = "%s x%d" % [display_name, quantity]
-	label.add_theme_font_size_override("font_size", 17)
+	label.add_theme_font_size_override("font_size", 22)
 	label.add_theme_color_override("font_color", UiStyle.TEXT)
 	hbox.add_child(label)
 

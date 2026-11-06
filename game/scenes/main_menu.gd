@@ -78,7 +78,7 @@ func _add_subtitle() -> void:
 	subtitle.name = "SubtitleLabel"
 	subtitle.text = StoryText.MENU["subtitle"]
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	subtitle.add_theme_font_size_override("font_size", 26)
+	subtitle.add_theme_font_size_override("font_size", 30)
 	subtitle.add_theme_color_override("font_color", UiStyle.GOLD_TEXT)
 	subtitle.add_theme_color_override("font_outline_color", INK)
 	subtitle.add_theme_constant_override("outline_size", 8)
@@ -139,8 +139,8 @@ func _add_credit() -> void:
 	credit.name = "Credit"
 	credit.text = "Made by Sam Cloutier with Claude Code"
 	credit.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	credit.add_theme_font_size_override("font_size", 18)
-	credit.add_theme_color_override("font_color", Color(CREAM, 0.7))
+	credit.add_theme_font_size_override("font_size", 22)
+	credit.add_theme_color_override("font_color", Color(CREAM, 0.88))
 	credit.add_theme_color_override("font_outline_color", INK)
 	credit.add_theme_constant_override("outline_size", 6)
 	credit.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)

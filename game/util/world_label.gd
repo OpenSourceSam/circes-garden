@@ -3,7 +3,7 @@ extends RefCounted
 ## a dark outline, centred on their node. A label above its node grows upwards and one below it
 ## grows downwards, so a second line never spills onto the sprite it describes.
 
-const FONT_SIZE := 15
+const FONT_SIZE := 16
 ## Labels in the world are drawn zoomed with the camera, so they use a scalable (MSDF) copy of the
 ## text font; the interface panels use the sharper hinted one (see assets/fonts/).
 const FONT := preload("res://assets/fonts/world.tres")
@@ -19,7 +19,10 @@ static func setup(label: Label, edge_y: float, above: bool = true, font_size: in
 	settings.font = FONT
 	settings.font_size = font_size
 	settings.font_color = TEXT_COLOR
-	settings.outline_size = 4
+	settings.outline_size = 3
+	settings.shadow_size = 2
+	settings.shadow_color = Color(0.05, 0.03, 0.02, 0.55)
+	settings.shadow_offset = Vector2(0, 1)
 	settings.outline_color = OUTLINE_COLOR
 	label.label_settings = settings
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER

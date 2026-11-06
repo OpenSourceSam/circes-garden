@@ -101,7 +101,7 @@ func _build_text_column() -> VBoxContainer:
 	speaker_label = Label.new()
 	speaker_label.name = "SpeakerLabel"
 	speaker_label.add_theme_font_override("font", UiStyle.TITLE_FONT)
-	speaker_label.add_theme_font_size_override("font_size", 26)
+	speaker_label.add_theme_font_size_override("font_size", 28)
 	speaker_label.add_theme_color_override("font_color", Color(0.9, 0.8, 0.6, 1.0))
 	column.add_child(speaker_label)
 
@@ -115,8 +115,8 @@ func _build_text_column() -> VBoxContainer:
 	dialogue_label.fit_content = true
 	dialogue_label.scroll_active = false
 	dialogue_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	dialogue_label.add_theme_font_size_override("normal_font_size", 26)
-	dialogue_label.add_theme_font_size_override("italics_font_size", 26)
+	dialogue_label.add_theme_font_size_override("normal_font_size", 28)
+	dialogue_label.add_theme_font_size_override("italics_font_size", 28)
 	dialogue_label.add_theme_font_override("italics_font", UiStyle.ITALIC_FONT)
 	dialogue_label.add_theme_color_override("default_color", Color(1, 0.97, 0.9, 1))
 	dialogue_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -127,8 +127,8 @@ func _build_text_column() -> VBoxContainer:
 	continue_prompt.name = "ContinuePrompt"
 	continue_prompt.text = "Enter  continue"
 	continue_prompt.size_flags_horizontal = Control.SIZE_SHRINK_END
-	continue_prompt.add_theme_font_size_override("font_size", 18)
-	continue_prompt.add_theme_color_override("font_color", Color(0.7, 0.7, 0.7, 1.0))
+	continue_prompt.add_theme_font_size_override("font_size", 21)
+	continue_prompt.add_theme_color_override("font_color", Color(0.85, 0.8, 0.7, 1.0))
 	column.add_child(continue_prompt)
 	return column
 

@@ -55,7 +55,7 @@ func _build_ui() -> void:
 	_panel = PanelContainer.new()
 	_panel.add_theme_stylebox_override("panel", UiStyle.panel(34, 26, 3))
 	var screen := get_viewport().get_visible_rect().size
-	var panel_size := Vector2(660, 790)
+	var panel_size := Vector2(740, 840)
 	_panel.size = panel_size
 	_panel.position = (screen - panel_size) / 2.0
 	_panel.pivot_offset = panel_size / 2.0
@@ -96,8 +96,8 @@ func _build_ui() -> void:
 	_hint_label = Label.new()
 	_hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_hint_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_hint_label.custom_minimum_size = Vector2(580, 56)
-	_hint_label.add_theme_font_size_override("font_size", 20)
+	_hint_label.custom_minimum_size = Vector2(660, 64)
+	_hint_label.add_theme_font_size_override("font_size", 24)
 	_hint_label.add_theme_color_override("font_color", UiStyle.TEXT)
 	vbox.add_child(_hint_label)
 
@@ -105,16 +105,16 @@ func _build_ui() -> void:
 	_riddle_label = Label.new()
 	_riddle_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_riddle_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_riddle_label.custom_minimum_size = Vector2(580, 56)
+	_riddle_label.custom_minimum_size = Vector2(660, 64)
 	_riddle_label.add_theme_font_override("font", UiStyle.ITALIC_FONT)
-	_riddle_label.add_theme_font_size_override("font_size", 20)
+	_riddle_label.add_theme_font_size_override("font_size", 24)
 	_riddle_label.add_theme_color_override("font_color", Color(0.93, 0.85, 0.66))
 	vbox.add_child(_riddle_label)
 
 	var question = Label.new()
 	question.text = "Which herb is this?"
 	question.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	question.add_theme_font_size_override("font_size", 20)
+	question.add_theme_font_size_override("font_size", 24)
 	question.add_theme_color_override("font_color", UiStyle.GOLD_TEXT)
 	vbox.add_child(question)
 
@@ -126,15 +126,15 @@ func _build_ui() -> void:
 	var keys = Label.new()
 	keys.text = "Left / right to choose, E or Enter to answer"
 	keys.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	keys.add_theme_font_size_override("font_size", 15)
-	keys.add_theme_color_override("font_color", Color(UiStyle.TEXT, 0.6))
+	keys.add_theme_font_size_override("font_size", 20)
+	keys.add_theme_color_override("font_color", Color(UiStyle.TEXT, 0.85))
 	vbox.add_child(keys)
 
 	_result_label = Label.new()
 	_result_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_result_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_result_label.custom_minimum_size = Vector2(580, 30)
-	_result_label.add_theme_font_size_override("font_size", 20)
+	_result_label.custom_minimum_size = Vector2(660, 34)
+	_result_label.add_theme_font_size_override("font_size", 24)
 	vbox.add_child(_result_label)
 
 	# Three moly sprigs light up, one per right answer.
@@ -161,8 +161,8 @@ func _build_ui() -> void:
 	pop.tween_property(_panel, "modulate:a", 1.0, 0.2)
 
 func _style_answer(button: Button) -> void:
-	button.custom_minimum_size = Vector2(170, 58)
-	button.add_theme_font_size_override("font_size", 21)
+	button.custom_minimum_size = Vector2(196, 62)
+	button.add_theme_font_size_override("font_size", 25)
 	button.add_theme_color_override("font_color", UiStyle.TEXT)
 	button.add_theme_color_override("font_focus_color", UiStyle.GOLD_TEXT)
 	button.add_theme_color_override("font_hover_color", UiStyle.GOLD_TEXT)

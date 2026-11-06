@@ -97,7 +97,7 @@ func _build_ui() -> void:
 	_text_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_text_label.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
 	_text_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_text_label.add_theme_font_size_override("font_size", 30)
+	_text_label.add_theme_font_size_override("font_size", 34)
 	_text_label.add_theme_constant_override("line_spacing", 6)
 	_text_label.add_theme_color_override("font_color", Color(0.98, 0.95, 0.86))
 	_text_label.add_theme_color_override("font_outline_color", Color(0.08, 0.05, 0.03, 0.9))
@@ -111,7 +111,7 @@ func _build_ui() -> void:
 
 	_page_label = Label.new()
 	_page_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	_page_label.add_theme_font_size_override("font_size", 18)
+	_page_label.add_theme_font_size_override("font_size", 22)
 	_page_label.add_theme_color_override("font_color", Color(0.95, 0.82, 0.52, 0.85))
 	_page_label.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
 	_page_label.offset_left = 40
@@ -123,7 +123,7 @@ func _build_ui() -> void:
 	_prompt_label = Label.new()
 	_prompt_label.text = "Enter  continue      Esc  skip"
 	_prompt_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	_prompt_label.add_theme_font_size_override("font_size", 18)
+	_prompt_label.add_theme_font_size_override("font_size", 22)
 	_prompt_label.add_theme_color_override("font_color", Color(0.95, 0.92, 0.84, 0.8))
 	_prompt_label.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
 	_prompt_label.offset_left = -460

@@ -21,7 +21,7 @@ func _ready() -> void:
 func _build_ui() -> void:
 	# Create panel container anchored to top-left
 	panel = PanelContainer.new()
-	panel.custom_minimum_size = Vector2(250, 0)
+	panel.custom_minimum_size = Vector2(300, 0)
 
 	# Position in top-left corner (CanvasLayer uses screen coords)
 	panel.anchor_left = 0.0
@@ -46,10 +46,10 @@ func _build_ui() -> void:
 
 	# Day label
 	day_label = Label.new()
-	day_label.text = "Day 1"
+	day_label.text = _day_name(1)
 	day_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	day_label.add_theme_font_override("font", UiStyle.TITLE_FONT)
-	day_label.add_theme_font_size_override("font_size", 17)
+	day_label.add_theme_font_size_override("font_size", 22)
 	day_label.add_theme_color_override("font_color", UiStyle.GOLD_TEXT)
 	vbox.add_child(day_label)
 
@@ -62,7 +62,7 @@ func _build_ui() -> void:
 	quest_label = Label.new()
 	quest_label.text = "No active quest"
 	quest_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	quest_label.add_theme_font_size_override("font_size", 18)
+	quest_label.add_theme_font_size_override("font_size", 23)
 	quest_label.add_theme_color_override("font_color", UiStyle.TEXT)
 	vbox.add_child(quest_label)
 
@@ -80,7 +80,7 @@ func _any_moly_ready() -> bool:
 
 func _refresh() -> void:
 	# Update day counter
-	day_label.text = "Day %d" % GameState.current_day
+	day_label.text = _day_name(GameState.current_day)
 
 	# Find active quest (check in reverse order - latest quest wins)
 	var quest_text = "No active quest"
@@ -101,3 +101,8 @@ func _refresh() -> void:
 			break
 
 	quest_label.text = quest_text
+
+## "Day One": the heading's capitals font draws 1 like a Roman I, so days are spelled out.
+func _day_name(day: int) -> String:
+	const WORDS := ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"]
+	return "Day %s" % (WORDS[day] if day >= 0 and day < WORDS.size() else str(day))
