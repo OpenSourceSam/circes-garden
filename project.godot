@@ -36,7 +36,7 @@ window/handheld/orientation=1
 
 window/size/viewport_width=1080
 window/size/viewport_height=1240
-window/stretch/mode="viewport"
+window/stretch/mode="canvas_items"
 
 [gui]
 

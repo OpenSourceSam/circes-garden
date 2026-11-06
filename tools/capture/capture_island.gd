@@ -6,6 +6,9 @@ extends Node
 const SHOT_CENTRES := [Vector2(270, 310), Vector2(270, 760), Vector2(270, 1194)]
 
 func _ready() -> void:
+	# The game draws at the screen's own size (stretch mode canvas_items); for review shots, draw at
+	# the game's own 1080 x 1240 whatever the window size, so every capture has the same scale.
+	get_window().content_scale_mode = Window.CONTENT_SCALE_MODE_VIEWPORT
 	var out_dir := "user://qa"
 	var args := OS.get_cmdline_user_args()
 	if args.size() > 0:

@@ -162,7 +162,7 @@ func _setup_key_cap() -> void:
 func _place_key_cap() -> void:
 	if _key_cap == null:
 		return
-	var font: Font = interaction_label.get_theme_font("font")
+	var font: Font = interaction_label.label_settings.font if interaction_label.label_settings.font else interaction_label.get_theme_font("font")
 	var size: int = interaction_label.label_settings.font_size
 	var text_w := font.get_string_size(interaction_label.text, HORIZONTAL_ALIGNMENT_LEFT, -1, size).x
 	var key_w := font.get_string_size("E", HORIZONTAL_ALIGNMENT_LEFT, -1, size).x

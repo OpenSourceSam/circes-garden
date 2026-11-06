@@ -4,6 +4,9 @@ extends RefCounted
 ## grows downwards, so a second line never spills onto the sprite it describes.
 
 const FONT_SIZE := 15
+## Labels in the world are drawn zoomed with the camera, so they use a scalable (MSDF) copy of the
+## text font; the interface panels use the sharper hinted one (see assets/fonts/).
+const FONT := preload("res://assets/fonts/world.tres")
 const TEXT_COLOR := Color(1.0, 0.96, 0.86)
 const OUTLINE_COLOR := Color(0.13, 0.08, 0.05, 0.95)
 const WIDTH := 200.0
@@ -13,6 +16,7 @@ const HEIGHT := 40.0
 ## line starting there when not, centred on x = 0.
 static func setup(label: Label, edge_y: float, above: bool = true, font_size: int = FONT_SIZE) -> void:
 	var settings := LabelSettings.new()
+	settings.font = FONT
 	settings.font_size = font_size
 	settings.font_color = TEXT_COLOR
 	settings.outline_size = 4

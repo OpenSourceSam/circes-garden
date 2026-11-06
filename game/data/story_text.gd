@@ -175,6 +175,14 @@ const HERB_HINTS := {
 	"Hemlock": "Purple-spotted stem, umbrellas of tiny white flowers. It stops the breath.",
 }
 
+## Hermes' riddle for each herb: a reader of the book knows the answers, and anyone else can work
+## out the name from the riddle (night + shade, hem + lock, rhymes with holy).
+const HERB_RIDDLES := {
+	"Moly": "My name rhymes with holy, and I am the one herb I give away to heroes.",
+	"Nightshade": "Half my name falls when the sun goes down. The other half is what you cast at noon.",
+	"Hemlock": "Stitch the edge of a cloak, bolt the door. Put the two words together and you have me.",
+}
+
 const MINIGAME_TEXT := {
 	"win": "Hermes tosses you moly seeds, almost impressed.",
 	"correct": "Correct! (%d/%d)",

@@ -16,6 +16,7 @@ const HERB_TEXTURES := {
 	"Hemlock": "res://assets/image_pipeline/generated/raw/sprites/ui/herb_hemlock.png",
 }
 const HERB_HINTS := StoryText.HERB_HINTS
+const HERB_RIDDLES := StoryText.HERB_RIDDLES
 
 const REQUIRED_CORRECT := 3
 const HERBS: Array[String] = ["Moly", "Nightshade", "Hemlock"]
@@ -27,6 +28,7 @@ var _busy: bool = false
 var _panel: PanelContainer
 var _herb_display: TextureRect
 var _hint_label: Label
+var _riddle_label: Label
 var _result_label: Label
 var _progress_row: HBoxContainer
 var _herb_card: PanelContainer
@@ -53,7 +55,7 @@ func _build_ui() -> void:
 	_panel = PanelContainer.new()
 	_panel.add_theme_stylebox_override("panel", UiStyle.panel(34, 26, 3))
 	var screen := get_viewport().get_visible_rect().size
-	var panel_size := Vector2(660, 700)
+	var panel_size := Vector2(660, 790)
 	_panel.size = panel_size
 	_panel.position = (screen - panel_size) / 2.0
 	_panel.pivot_offset = panel_size / 2.0
@@ -98,6 +100,16 @@ func _build_ui() -> void:
 	_hint_label.add_theme_font_size_override("font_size", 20)
 	_hint_label.add_theme_color_override("font_color", UiStyle.TEXT)
 	vbox.add_child(_hint_label)
+
+	# Hermes' riddle: the name hides in it, so the lesson is fair to anyone who has not read the book.
+	_riddle_label = Label.new()
+	_riddle_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_riddle_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_riddle_label.custom_minimum_size = Vector2(580, 56)
+	_riddle_label.add_theme_font_override("font", UiStyle.ITALIC_FONT)
+	_riddle_label.add_theme_font_size_override("font_size", 20)
+	_riddle_label.add_theme_color_override("font_color", Color(0.93, 0.85, 0.66))
+	vbox.add_child(_riddle_label)
 
 	var question = Label.new()
 	question.text = "Which herb is this?"
@@ -195,6 +207,7 @@ func _show_round() -> void:
 	_current_herb = herbs[_rng.randi_range(0, herbs.size() - 1)]
 	_herb_display.texture = TextureLoaderUtil.load_texture(HERB_TEXTURES[_current_herb])
 	_hint_label.text = HERB_HINTS[_current_herb]
+	_riddle_label.text = "Hermes: “%s”" % HERB_RIDDLES[_current_herb]
 
 	herbs.shuffle()
 	for herb in herbs:
