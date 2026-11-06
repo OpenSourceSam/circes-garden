@@ -135,6 +135,10 @@ func shake_camera(duration: float = 0.5, strength: float = 6.0) -> void:
 	var camera := get_viewport().get_camera_2d()
 	if camera == null:
 		return
+	# The world camera (world_camera.gd) shakes on top of its own framing.
+	if camera.has_method("shake"):
+		camera.shake(duration, strength)
+		return
 	var elapsed := 0.0
 	while elapsed < duration:
 		var t := elapsed / duration

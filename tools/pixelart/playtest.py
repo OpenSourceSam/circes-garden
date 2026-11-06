@@ -133,12 +133,18 @@ SCRIPTS = {
         ("interact", "can_sail_to_scylla = true", 6.0, "12_craft"),
         ("enter", 4, 0.5, None),
         ("walk", "ArrowDown y>=1100", 40.0, "13_boat"),
-        ("interact", "teleported player to (270.0, 2400.0)", 20.0, None),
+        ("interact", "teleported player to (272.0, 2800.0)", 20.0, None),
         ("wait", 0, 1.5, "14_cove_arrival"),
-        ("walk", "ArrowDown y>=2745", 30.0, "15_scylla"),
+        # North from the pier to the point of rock that faces Scylla across the strait.
+        ("walk", "ArrowUp y<=2510", 30.0, "15_scylla"),
         ("interact", "potion_failed = true", 15.0, "16_potion_fails"),
-        ("enter", 13, 0.5, "17_after_scylla"),
-        ("walk", "ArrowUp y<=2200", 30.0, None),
+        ("enter_until", "[Scylla] cue descend", 20.0, None),
+        ("wait", 0, 1.8, "16b_heads_down"),
+        ("enter_until", "[Scylla] cue strike", 40.0, None),
+        ("wait", 0, 0.3, "16c_strike_rear"),
+        ("wait", 0, 0.3, "16d_strike_hit"),
+        ("enter", 6, 0.5, "17_after_scylla"),
+        ("walk", "ArrowDown y>=2880", 30.0, None),
         ("interact", "teleported player to (270.0, 500.0)", 20.0, None),
         ("wait", 0, 1.5, "18_back_home"),
         ("enter", 2, 0.3, None),
@@ -314,6 +320,17 @@ class Runner:
             if not self.dialogue_open():
                 return
 
+    def enter_until(self, needles: str, timeout: float) -> bool:
+        """Inside a dialogue: press Enter, one press at a time, until a console line shows."""
+        start = len(self.console)
+        deadline = time.time() + timeout
+        while time.time() < deadline:
+            if self.seen_since(start, needles):
+                return True
+            self.page.keyboard.press("Enter")
+            self.pause(0.5)
+        return self.seen_since(start, needles)
+
     def minigame(self, timeout: float) -> bool:
         start = len(self.console)
         deadline = time.time() + timeout
@@ -337,6 +354,8 @@ class Runner:
             elif action == "enter":
                 self.press_through(int(value))
                 self.pause(wait)
+            elif action == "enter_until":
+                ok = self.enter_until(value, float(wait))
             elif action == "wait":
                 self.pause(wait)
             elif action == "wait_for":

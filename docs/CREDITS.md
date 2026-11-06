@@ -353,7 +353,8 @@ https://opengameart.org/content/a-cute-dungeon
 
 ## Everything else
 
-Scylla, the farm beds, icons, herb cards, butterflies, fences, the well, the cave, the crafting table
-and the boat are drawn by code in `tools/pixelart/` for this game. The seven prologue paintings were made
+Scylla, the cliff, whirlpool and mist of her strait, the farm beds, icons, herb cards, butterflies,
+fences, the well, the crafting table and the boat are drawn by code in `tools/pixelart/` for this game.
+The seven prologue paintings were made
 in February 2026 with an image model for this project. Story and characters after Madeline
 Miller's novel *Circe*; this is a fan project.

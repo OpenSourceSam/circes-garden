@@ -41,7 +41,8 @@ func _ready() -> void:
 	_setup_ambience()
 
 func _setup_ambience() -> void:
-	# Drifting pollen over the island, slow mist in the cove.
+	# Drifting pollen over the island. The cove's mist drifts in banks (strait.gd): soft particles
+	# blown up to mist size showed as dark smudges in the browser build.
 	var soft: Texture2D = TextureLoaderUtil.load_texture(PARTICLE_TEXTURE_PATH)
 	var pollen := CPUParticles2D.new()
 	pollen.name = "Pollen"
@@ -62,26 +63,6 @@ func _setup_ambience() -> void:
 	pollen.color = Color(1.0, 0.95, 0.7, 0.55)
 	pollen.z_index = 6
 	add_child(pollen)
-
-	var mist := CPUParticles2D.new()
-	mist.name = "Mist"
-	mist.texture = soft
-	mist.amount = 20
-	mist.lifetime = 9.0
-	mist.preprocess = 8.0
-	mist.position = Vector2(272, 2750)
-	mist.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
-	mist.emission_rect_extents = Vector2(272, 740)
-	mist.direction = Vector2(1, 0)
-	mist.spread = 20.0
-	mist.gravity = Vector2(0, 0)
-	mist.initial_velocity_min = 3.0
-	mist.initial_velocity_max = 7.0
-	mist.scale_amount_min = 2.5
-	mist.scale_amount_max = 5.0
-	mist.color = Color(0.75, 0.8, 0.9, 0.07)
-	mist.z_index = 6
-	add_child(mist)
 
 	# A few butterflies over the flower beds, the terrace and the well. None in the cove.
 	for spot in BUTTERFLIES:

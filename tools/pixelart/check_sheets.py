@@ -24,8 +24,6 @@ SHEETS = {
     "sprites/characters/circe/circe_walk.png": (256, 256, 4, 4),
     "sprites/characters/hermes/hermes_idle.png": (256, 256, 4, 4),
     "sprites/characters/hermes/hermes_walk.png": (256, 256, 4, 4),
-    "sprites/characters/scylla/scylla_idle.png": (384, 384, 4, 4),
-    "sprites/characters/scylla/scylla_walk.png": (384, 384, 4, 4),
     "sprites/characters/pig/pig_walk.png": (256, 256, 4, 4),
     "sprites/characters/pig/pig_run.png": (256, 256, 4, 4),
     "sprites/characters/pig/pig_idle.png": (256, 128, 4, 2),
@@ -49,6 +47,10 @@ STATICS = {
     "sprites/ui/herb_nightshade.png": (64, 64),
     "sprites/ui/herb_hemlock.png": (64, 64),
     "sprites/ui/particle_soft.png": (16, 16),
+    "sprites/characters/scylla/scylla_parts.png": None,
+    "sprites/entities/cove_cliff.png": (544, 292),
+    "sprites/entities/whirlpool.png": (1200, 60),
+    "sprites/entities/mist_banks.png": (480, 92),
     "tilesets/aiaia_tileset_32.png": None,
     "tilesets/scylla_cove_tileset_32.png": None,
     "tilesets/greek_decor_tileset_32.png": None,
@@ -57,6 +59,24 @@ STATICS = {
 
 def binary_alpha(img: Image.Image) -> bool:
     return set(img.getchannel("A").getdata()) <= {0, 255}
+
+
+def check_scylla_parts() -> list[str]:
+    """Every part listed in game/data/scylla_parts.gd lies inside the atlas and has pixels."""
+    import re
+    data = (REPO / "game/data/scylla_parts.gd").read_text(encoding="utf-8")
+    img = Image.open(RAW / "sprites/characters/scylla/scylla_parts.png").convert("RGBA")
+    out = []
+    regions = re.findall(r'"(\w+)": \[(\d+), (\d+), (\d+), (\d+), (\d+), (\d+)\]', data)
+    if not regions:
+        return ["scylla_parts.gd: no regions"]
+    for name, x, y, w, h, _px, _py in regions:
+        x, y, w, h = int(x), int(y), int(w), int(h)
+        if x + w > img.width or y + h > img.height:
+            out.append(f"scylla_parts: {name} lies outside the atlas")
+        elif img.crop((x, y, x + w, y + h)).getbbox() is None:
+            out.append(f"scylla_parts: {name} is empty")
+    return out
 
 
 def main() -> int:
@@ -114,6 +134,7 @@ def main() -> int:
         if img.getbbox() is None:
             problems.append(f"{rel}: empty image")
         ok += 1
+    problems += check_scylla_parts()
     print(f"checked {ok} files, {len(problems)} problems, {len(warnings)} warnings (non-mirrored rows)")
     for p in problems:
         print("  ", p)

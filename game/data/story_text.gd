@@ -3,6 +3,7 @@
 ## Format codes the code fills in: crafting_need_more keeps one %d (moly count);
 ## MINIGAME_TEXT "correct" keeps %d/%d and "wrong" keeps %s (the herb name).
 ## Sleep dialogue ids are built in code as "sleep_day_%d"; their lines are SLEEP_THOUGHTS.
+## A line may carry a "cue" that the scene acts out when the line shows (Scylla's, in scylla.gd).
 
 const LINES := {
 	"hermes_intro": [
@@ -64,7 +65,7 @@ const LINES := {
 	],
 	"scylla_not_ready": [
 		{"speaker": "", "text": "*Gray necks sway in the mist above the cliff, each one longer than a mast.*"},
-		{"speaker": "", "text": "*From somewhere up there comes a sound like a pack of dogs howling at once.*"},
+		{"speaker": "", "text": "*From somewhere up there comes a sound like a pack of dogs howling at once.*", "cue": "howl"},
 		{"speaker": "Circe", "text": "I made that, with a handful of flowers and one jealous night."},
 		{"speaker": "Circe", "text": "I have nothing in my hands she would take from me. Not today."},
 	],
@@ -73,19 +74,19 @@ const LINES := {
 		{"speaker": "Circe", "text": "Back to the boat, and back to my table. The draught first."},
 	],
 	"scylla_cure_attempt": [
-		{"speaker": "", "text": "*Mist fills the strait. Across the water, the whirlpool roars.*"},
+		{"speaker": "", "text": "*Mist fills the strait. Across the water, the whirlpool roars.*", "cue": "roar"},
 		{"speaker": "Circe", "text": "Scylla. It's me, Circe."},
-		{"speaker": "", "text": "*Six heads slide out of the fog on necks longer than masts, gray as the cliff.*"},
+		{"speaker": "", "text": "*Six heads slide out of the fog on necks longer than masts, gray as the cliff.*", "cue": "descend"},
 		{"speaker": "", "text": "*Twelve eyes settle on you, flat and dark as holes in the rock.*"},
 		{"speaker": "Circe", "text": "You laughed at everyone, in those silver sandals. I hated that laugh."},
 		{"speaker": "Circe", "text": "I would give a great deal to hear it again. Please, drink this."},
-		{"speaker": "", "text": "*You throw the vial. One head snaps it out of the air and swallows, glass and all.*"},
-		{"speaker": "", "text": "*All six heads go still. For one breath, the draught holds, and she is calm.*"},
-		{"speaker": "", "text": "*Then she breathes out, and she is exactly what she was.*"},
-		{"speaker": "", "text": "*She screams like a thousand dogs and strikes the rock beside you.*"},
+		{"speaker": "", "text": "*You throw the vial. One head snaps it out of the air and swallows, glass and all.*", "cue": "snap"},
+		{"speaker": "", "text": "*All six heads go still. For one breath, the draught holds, and she is calm.*", "cue": "calm"},
+		{"speaker": "", "text": "*Then she breathes out, and she is exactly what she was.*", "cue": "wake"},
+		{"speaker": "", "text": "*She screams like a thousand dogs and strikes the rock beside you.*", "cue": "strike"},
 		{"speaker": "Circe", "text": "Scylla, please. It's me."},
 		{"speaker": "", "text": "*She does not know you. There is no one left in there to know you.*"},
-		{"speaker": "", "text": "*Her heads swing back toward the open sea, watching for ships.*"},
+		{"speaker": "", "text": "*Her heads swing back toward the open sea, watching for ships.*", "cue": "away"},
 		{"speaker": "Circe", "text": "I'm sorry, Scylla. It changes nothing, and I'm sorry anyway."},
 	],
 	"farm_planting": [

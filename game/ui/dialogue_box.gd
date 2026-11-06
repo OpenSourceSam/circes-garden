@@ -5,6 +5,8 @@ extends CanvasLayer
 signal dialogue_ended(dialogue_id: String)
 ## Each line as it appears, so a scene can act on a moment inside a conversation.
 signal line_shown(dialogue_id: String, text: String)
+## A line's "cue" (story_text.gd), when it has one: what the scene should act out on that line.
+signal line_cue(dialogue_id: String, cue: String)
 
 const TextureLoaderUtil := preload("res://game/util/texture_loader.gd")
 const StoryText := preload("res://game/data/story_text.gd")
@@ -171,6 +173,9 @@ func _display_current_line() -> void:
 	_typing = true
 	_set_portrait(speaker)
 	line_shown.emit(_current_dialogue.id, text)
+	var cue: String = line.get("cue", "")
+	if cue != "":
+		line_cue.emit(_current_dialogue.id, cue)
 	var lower := text.to_lower()
 	if "scream" in lower or "shriek" in lower:
 		SceneManager.shake_camera(0.7, 8.0)

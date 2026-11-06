@@ -18,8 +18,9 @@ from pathlib import Path
 from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).parent))
-from px import sheet, preview, save  # noqa: E402
-from scylla_big import scylla_sheets, CELL as SCYLLA_CELL  # noqa: E402
+from px import preview, save  # noqa: E402
+import scylla_big  # noqa: E402
+import cove_scene  # noqa: E402
 from props import all_props  # noqa: E402
 
 REPO = Path(__file__).resolve().parents[2]
@@ -29,8 +30,9 @@ PREVIEW = Path(__file__).parent / "preview"
 
 
 def build() -> dict[str, Image.Image]:
-    """Characters and the pig come from LPC layers (lpc_compose); Scylla, props, icons and the
-    herb cards are drawn in code; the tilesets are assembled from LPC packs (lpc_tiles)."""
+    """Characters and the pig come from LPC layers (lpc_compose); Scylla's parts, her strait
+    (cliff, whirlpool, mist), props, icons and the herb cards are drawn in code; the tilesets
+    are assembled from LPC packs (lpc_tiles)."""
     import lpc_compose
     import lpc_tiles
     out = {}
@@ -39,8 +41,8 @@ def build() -> dict[str, Image.Image]:
             out[f"sprites/characters/{char.name}/{char.name}_{action}.png"] = img
     for action, img in lpc_compose.pig_sheets().items():
         out[f"sprites/characters/pig/pig_{action}.png"] = img
-    for action, rows in scylla_sheets().items():
-        out[f"sprites/characters/scylla/scylla_{action}.png"] = sheet(rows, SCYLLA_CELL, SCYLLA_CELL)
+    out.update(scylla_big.scylla_images())
+    out.update(cove_scene.cove_images())
     for rel, px in all_props().items():
         out[rel] = px.im
     for rel, px in lpc_tiles.all_tiles().items():
@@ -57,7 +59,7 @@ def main() -> int:
     PREVIEW.mkdir(parents=True, exist_ok=True)
     for rel, img in images.items():
         name = Path(rel).stem
-        grid = (96 if "scylla" in rel else 64) if "characters" in rel else (32 if "tilesets" in rel else None)
+        grid = (None if "scylla" in rel else 64) if "characters" in rel else (32 if "tilesets" in rel else None)
         scale = 2 if "tilesets" in rel else 4
         save(preview(img, scale, grid=grid), PREVIEW / f"{name}_x{scale}.png")
     print(f"{len(images)} images, previews in {PREVIEW}")
@@ -70,7 +72,8 @@ def main() -> int:
         print(f"backed up previous art to {BACKUP}")
     for rel, img in images.items():
         save(img, RAW / rel)
-    print(f"wrote {len(images)} files under {RAW}")
+    scylla_big.write_data()
+    print(f"wrote {len(images)} files under {RAW} and {scylla_big.OUT_GD}")
     return 0
 
 
