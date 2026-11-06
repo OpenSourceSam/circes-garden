@@ -18,13 +18,16 @@ sys.path.insert(0, str(Path(__file__).parent))
 from PIL import Image  # noqa: E402
 
 import lpc_tiles as tiles  # noqa: E402
+import ground  # noqa: E402
 
 REPO = Path(__file__).resolve().parents[2]
 OUT_GD = REPO / "game/data/world_map.gd"
 PREVIEW = Path(__file__).parent / "preview"
 T = 32
 W = 17
-ATLAS_INDEX = {"aiaia": 0, "cove": 1, "decor": 2}
+ATLAS_INDEX = {"aiaia": 0, "cove": 1, "decor": 2, "ground": 3}
+# The island's painted ground (ground.py), cut into unique tiles.
+GROUND_ATLAS = REPO / "assets/image_pipeline/generated/raw/tilesets/aiaia_ground_32.png"
 COVE_ROW0 = 62
 
 # ---------------------------------------------------------------------------
@@ -95,7 +98,7 @@ AIAIA_DECOR = """
 .................
 .................
 .................
-......A..........
+.................
 .................
 .................
 .................
@@ -104,7 +107,7 @@ AIAIA_DECOR = """
 .................
 .................
 ..FFFFF...FFFFF..
-..F...........F..
+..FA..........F..
 ..F...........F..
 ..F...........F..
 ..F...........F..
@@ -118,9 +121,9 @@ AIAIA_DECOR = """
 .................
 ..........n......
 .................
-......q...Q......
 .................
-......q...Q......
+.................
+.................
 .................
 .................
 .................
@@ -139,12 +142,12 @@ AIAIA_DECOR = """
 # Multi-tile props on Aiaia: (prop name, col, row of the TOP-LEFT tile)
 AIAIA_PROPS = [
     # tools/pixelart/check_placement.py checks that no two footprints, shadows or trunks collide.
-    ("house", 1, 1), ("cypress2", 12, 1),
+    ("house", 1, 1), ("cypress_a", 12, 1), ("cypress_b", 14, 1),
     # Two whole columns stand at the back of Hermes' terrace (the broken stubs read as cropped).
     ("column2", 7, 1), ("column2", 9, 1),
-    ("olive", 12, 6), ("olive2", 1, 8), ("round_tree", 13, 10),
-    ("well", 11, 12), ("olive3", 1, 12), ("shrub", 14, 14), ("shrub2", 2, 22),
-    ("big_rock", 4, 9), ("olive", 1, 25), ("olive2", 13, 27), ("rock_s", 5, 28),
+    ("olive_a", 12, 6), ("olive2", 1, 8), ("olive_b", 13, 10),
+    ("well", 11, 12), ("olive_c", 1, 12), ("shrub", 14, 14), ("shrub2", 2, 22),
+    ("big_rock", 4, 9), ("olive_a", 1, 25), ("olive2", 13, 27), ("rock_s", 5, 28),
 ]
 
 # Scylla's strait. North to south: the cliff top (rows 62-64), the strait under the cliff face
@@ -273,7 +276,8 @@ BLOCKING_DECOR = {"F", "b", "B", "O", "A", "h", "k", "T", "n", "o", "q", "Q", "u
 # trees, rocks and the house have shadows in their own art.
 SHADOWS = {"column2": (15, 4), "well": (26, 6), "amphora5": (9, 3), "amphora4": (10, 3), "crate": (14, 4),
            "torch": (7, 2), "sign": (10, 3), "herb_pot": (9, 3), "rock_s": (22, 5)}
-TREE_PROPS = ("olive", "olive2", "olive3", "round_tree", "big_tree", "cypress", "cypress2", "dead_tree")
+TREE_PROPS = ("olive", "olive2", "olive3", "round_tree", "big_tree", "cypress", "cypress2", "cypress_a", "cypress_b",
+              "olive_a", "olive_b", "olive_c", "dead_tree")
 
 OVERLAYS = {"aiaia": {"S": "sand", "~": "sea", "p": "dirt", "t": "soil"}, "cove": {"R": "gravel", "~": "dsea", "v": "cave"}}
 FILLS = {
@@ -413,9 +417,9 @@ def resolve_decor(rows: list[str], row0: int):
             if k == "F":
                 l, rt, u, d = is_f(c - 1, r), is_f(c + 1, r), is_f(c, r - 1), is_f(c, r + 1)
                 if l and rt:
-                    name = "fence_h"
+                    name = ("fence_h", "fence_h", "fence_h1", "fence_h2")[_rng(c, r + row0, 5).randrange(4)]
                 elif u and d:
-                    name = "fence_v"
+                    name = ("fence_v", "fence_v", "fence_v1", "fence_v2")[_rng(c, r + row0, 5).randrange(4)]
                 elif rt and d:
                     name = "fence_tl"
                 elif l and d:
@@ -463,6 +467,11 @@ def blocked_rects(ground_rows, decor_rows, props, row0: int):
             rows_blocked = range(r + h - 1, r + h)
         elif name in ("house", "shrine"):
             rows_blocked = range(r + max(0, h - 3), r + h)
+        elif name == "big_rock":
+            # The standing stones block their lower half only: Circe walks behind their tops, so the
+            # strip between them and the house is wide enough to pass (Hermes could push her into
+            # a one-tile gap and pin her there).
+            rows_blocked = range(r + h - 2, r + h)
         else:
             rows_blocked = range(r, r + h)
         for rr in rows_blocked:
@@ -502,6 +511,80 @@ def render_preview(base, over, decor, props, atlases, row0: int, name: str) -> N
     img.save(PREVIEW / f"map_{name}.png")
 
 
+def avoid_boxes() -> list[tuple[int, int, int, int]]:
+    """Ground where no flowers or tufts are painted: under the house, rocks, the well and the
+    columns, round each tree's trunk, and under the entities that stand on the grass."""
+    boxes = []
+    for name, c, r in AIAIA_PROPS:
+        _, _, _, w, h = tiles.PROPS[name]
+        x0, y0, x1, y1 = c * T, r * T, (c + w) * T, (r + h) * T
+        if name in TREE_PROPS:
+            boxes.append((x0, y0 - 8, x1, y1 + 4))     # no flowers peeping over a canopy
+        else:
+            boxes.append((x0, y0, x1, y1 + 4))
+    for r, line in enumerate(_rows(AIAIA_DECOR)):
+        for c, k in enumerate(line):
+            if k not in ".F":
+                boxes.append((c * T - 2, r * T, c * T + T + 2, r * T + T + 4))
+    for (x, y, hw, hh) in ENTITY_GROUND:
+        boxes.append((x - hw, y - hh, x + hw, y + 6))
+    return boxes
+
+
+# Entities on the island's grass (world.tscn): centre x, feet y, half width, height above the feet.
+# The worktable stands beside the path below the terrace; the sleep spot is the house's front door.
+ENTITY_GROUND = [(356, 368, 34, 30), (112, 232, 26, 14), (430, 800, 70, 60)]
+# The pig pen's mud wallow (centre x, y, radius x, y) and the area its straw is scattered over.
+PEN_MUD = (414, 821, 21, 8)
+PEN_STRAW = (390, 776, 478, 830)
+# Stepping stones from the main path to the front door (world pixels, door end first).
+DOOR_PATH = [(112, 230), (140, 239), (168, 248), (196, 255), (221, 259)]
+# Hand-placed plantings: lavender either side of the front, flowers along the house and the terrace.
+PLANTINGS = [(48, 236, "lavender"), (80, 235, "white"), (150, 233, "lavender"), (24, 252, "yellow"),
+             (212, 232, "lilac"), (210, 150, "lavender"), (330, 150, "white"), (205, 280, "pink"),
+             (332, 272, "lavender"), (338, 190, "yellow"),
+             (150, 414, "tufts"), (196, 417, "tufts"), (236, 413, "tufts"), (172, 958, "tufts"), (208, 957, "tufts")]
+
+
+def shadow_casters(atlases, decor_rows):
+    """(picture, x, y, foot y) for every prop and small object on the island, for ground.py's
+    cast shadows. The foot is the lowest row of solid pixels (trees: the trunk's foot)."""
+    import numpy as np
+    order = {v: k for k, v in ATLAS_INDEX.items()}
+    out = []
+    for (ai, tx, ty, w, h, c, r, *_) in resolve_decor(decor_rows, 0) + resolve_props(AIAIA_PROPS):
+        arr = np.asarray(atlases[order[ai]].crop((tx * T, ty * T, (tx + w) * T, (ty + h) * T)).convert("RGBA"))
+        rows_solid = np.nonzero((arr[..., 3] >= 200).any(axis=1))[0]
+        if len(rows_solid) == 0:
+            continue
+        foot = r * T + int(rows_solid[-1])
+        name = next((n for n, v in tiles.PROPS.items() if v[1:3] == (tx, ty) and v[0] == order[ai]), "")
+        if name in TREE_PROPS:
+            # A tree's canopy throws a rounder shadow (a flat band looked like a stripe on the grass).
+            out.append((arr, c * T, r * T, foot - 10, 0.28, 0.22))
+        else:
+            out.append((arr, c * T, r * T, foot))
+    return out
+
+
+def bake_island(rows, decor_rows, base, over, atlases):
+    """Paint the island ground (ground.py) and point every island cell at its own baked tile."""
+    order = {v: k for k, v in ATLAS_INDEX.items()}
+    im = ground.bake(rows, decor_rows, base, over, atlases, order, avoid_boxes(), PLANTINGS, DOOR_PATH,
+                     shadow_casters(atlases, decor_rows), pen=(PEN_MUD, PEN_STRAW))
+    atlas, grid = ground.slice_tiles(im)
+    GROUND_ATLAS.parent.mkdir(parents=True, exist_ok=True)
+    atlas.save(GROUND_ATLAS)
+    atlases["ground"] = atlas
+    PREVIEW.mkdir(parents=True, exist_ok=True)
+    im.save(PREVIEW / "ground_aiaia.png")
+    gi = ATLAS_INDEX["ground"]
+    new_base = [[(gi, tx, ty) for (tx, ty) in row] for row in grid]
+    new_over = [[None] * len(row) for row in grid]
+    print(f"baked island ground: {atlas.width // T * (atlas.height // T)} tile slots")
+    return new_base, new_over
+
+
 def build(write_gd: bool = True) -> None:
     atlases = tiles.build()
     a_rows, a_dec = _rows(AIAIA), _rows(AIAIA_DECOR)
@@ -510,6 +593,7 @@ def build(write_gd: bool = True) -> None:
     assert len(c_rows) == len(c_dec) == 48, (len(c_rows), len(c_dec))
 
     a_base, a_over = resolve_ground(a_rows, "aiaia", 0)
+    a_base, a_over = bake_island(a_rows, a_dec, a_base, a_over, atlases)
     c_base, c_over = resolve_ground(c_rows, "cove", COVE_ROW0)
     # Open sea between the zones (rows 47-61): dark sea from the cove atlas over stone.
     sea_names = tiles.TILES["cove"]
@@ -551,7 +635,8 @@ def build(write_gd: bool = True) -> None:
         "const COLUMNS := %d" % W,
         'const ATLASES := ["res://assets/image_pipeline/generated/raw/tilesets/aiaia_tileset_32.png", '
         '"res://assets/image_pipeline/generated/raw/tilesets/scylla_cove_tileset_32.png", '
-        '"res://assets/image_pipeline/generated/raw/tilesets/greek_decor_tileset_32.png"]',
+        '"res://assets/image_pipeline/generated/raw/tilesets/greek_decor_tileset_32.png", '
+        '"res://assets/image_pipeline/generated/raw/tilesets/aiaia_ground_32.png"]',
         "const GROUND_ROWS: Array = [", *rows_literal(base), "]",
         "const OVERLAY_ROWS: Array = [", *rows_literal(over), "]",
         "## Decor: [atlas_index, tx, ty, width_tiles, height_tiles, col, row, shadow_rx, shadow_ry]",

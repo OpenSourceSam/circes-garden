@@ -67,6 +67,7 @@ func _ready() -> void:
 	collision_mask = 0
 	z_index = 1   # over the rocks in the strait
 	WorldLabel.setup(label, 18.0, false)
+	label.hide()      # the scene tells who she is; a name tag over her read as a game menu
 	_rng.seed = 6
 	_texture = TextureLoaderUtil.load_texture(Parts.TEXTURE)
 	for part_name in Parts.REGIONS:
@@ -94,7 +95,7 @@ func prompt_text() -> String:
 	return "Face Scylla" if GameState.get_flag("quest_4_active") else "Look at Scylla"
 
 func world_label() -> Label:
-	return label
+	return null
 
 func interact() -> void:
 	# Listen before opening: the first line's cue fires as the box opens.

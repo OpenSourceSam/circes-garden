@@ -80,12 +80,13 @@ func _fade_in(duration: float) -> void:
 # ============================================
 
 func night_transition(day_number: int) -> void:
-	# Fade to a starry night, show the new day, fade back. Callers do not await this.
+	# A warm dusk glow, then a starry night with the new day's card, then a pink dawn that clears.
+	# Callers do not await this. (sleep_spot.gd brings Circe back out as the dawn starts.)
 	var layer := CanvasLayer.new()
 	layer.layer = 90
 	get_tree().root.add_child(layer)
 	var sky := ColorRect.new()
-	sky.color = Color(0.03, 0.04, 0.12, 0.0)
+	sky.color = Color(0.95, 0.52, 0.3, 0.0)
 	sky.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	sky.set_anchors_preset(Control.PRESET_FULL_RECT)
 	layer.add_child(sky)
@@ -114,9 +115,12 @@ func night_transition(day_number: int) -> void:
 	banner.offset_bottom = 30
 	layer.add_child(banner)
 
+	var dusk := create_tween()
+	dusk.tween_property(sky, "color", Color(0.93, 0.48, 0.3, 0.34), 0.45)
+	await dusk.finished
 	var tween := create_tween()
 	tween.set_parallel(true)
-	tween.tween_property(sky, "color:a", 0.92, 0.6)
+	tween.tween_property(sky, "color", Color(0.03, 0.04, 0.12, 0.92), 0.6)
 	for star in stars:
 		tween.tween_property(star, "color:a", 0.9, 0.9).set_delay(0.2)
 	tween.tween_property(banner, "theme_override_colors/font_color:a", 1.0, 0.6).set_delay(0.5)
@@ -124,11 +128,14 @@ func night_transition(day_number: int) -> void:
 	await get_tree().create_timer(0.9).timeout
 	var out := create_tween()
 	out.set_parallel(true)
-	out.tween_property(sky, "color:a", 0.0, 0.7)
+	out.tween_property(sky, "color", Color(1.0, 0.78, 0.62, 0.3), 0.6)
 	for star in stars:
 		out.tween_property(star, "color:a", 0.0, 0.4)
 	out.tween_property(banner, "theme_override_colors/font_color:a", 0.0, 0.5)
 	await out.finished
+	var clear := create_tween()
+	clear.tween_property(sky, "color:a", 0.0, 0.6)
+	await clear.finished
 	layer.queue_free()
 
 func shake_camera(duration: float = 0.5, strength: float = 6.0) -> void:

@@ -48,7 +48,7 @@ z_index = -20
 position = Vector2(270, 232)
 
 [node name="CraftingTable" parent="." instance=ExtResource("7_craft")]
-position = Vector2(270, 400)
+position = Vector2(356, 344)
 
 [node name="FarmPlot1" parent="." instance=ExtResource("5_farm")]
 position = Vector2(130, 600)
@@ -63,17 +63,18 @@ position = Vector2(368, 600)
 plot_id = Vector2i(2, 0)
 
 [node name="SleepSpot" parent="." instance=ExtResource("6_sleep")]
-position = Vector2(270, 800)
+position = Vector2(112, 236)
 
 [node name="BoatAiaia" parent="." instance=ExtResource("2_boat")]
 position = Vector2(270, 1100)
 destination = Vector2(272, 2800)
 requires_flag = "can_sail_to_scylla"
-sprite_offset = Vector2(0, 30)
+sprite_offset = Vector2(30, 36)
 
 [node name="BoatScylla" parent="." instance=ExtResource("2_boat")]
 position = Vector2(272, 2912)
 destination = Vector2(270, 500)
+sprite_offset = Vector2(30, 84)
 
 [node name="Strait" type="Node2D" parent="."]
 script = ExtResource("13_strait")
@@ -82,19 +83,19 @@ script = ExtResource("13_strait")
 position = Vector2(272, 2430)
 
 [node name="PigAiaia" parent="." instance=ExtResource("11_pig")]
-position = Vector2(406, 792)
+position = Vector2(404, 800)
 roam_radius = 14.0
 start_state = "idle"
 start_facing = "right"
 
 [node name="PigPen2" parent="." instance=ExtResource("11_pig")]
-position = Vector2(446, 814)
+position = Vector2(420, 818)
 roam_radius = 14.0
 start_state = "eat"
 start_facing = "left"
 
 [node name="PigPen3" parent="." instance=ExtResource("11_pig")]
-position = Vector2(458, 784)
+position = Vector2(456, 796)
 roam_radius = 12.0
 start_state = "eat"
 start_facing = "right"

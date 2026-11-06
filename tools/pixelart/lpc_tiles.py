@@ -69,6 +69,74 @@ def terrain_block_tile(bc: int, k: int, code: str) -> Image.Image:
     return tile_at(img(TERRAIN), bc * 96 + lx * T, k * BLOCK_H + ly * T)
 
 
+# Leaf colours for each tree, so the trees sit in the olive and sage grass (ground.py) instead of
+# the packs' bright greens: (hue in degrees, saturation factor, value factor). The shading of each
+# sprite is kept; only its greens move.
+FOLIAGE = {
+    "olive": (82, 0.42, 1.06), "olive2": (74, 0.62, 0.98), "olive3": (80, 0.5, 0.96),
+    "round_tree": (76, 0.6, 0.98), "big_tree": (73, 0.62, 0.98), "shrub": (79, 0.55, 0.85),
+    "shrub2": (78, 0.55, 0.95), "cypress": (104, 0.55, 0.82), "cypress2": (104, 0.55, 0.82),
+}
+
+
+# Grey stones of the pack lean lilac; on the island they are warmed toward the sand and the path.
+WARM_STONE = {"rock_s", "big_rock"}
+
+
+def foliage(im: Image.Image, name: str) -> Image.Image:
+    import paint
+    if name in WARM_STONE:
+        arr = np.asarray(im.convert("RGBA")).astype(float) / 255.0
+        hsv = paint.rgb_to_hsv(arr[..., :3])
+        h = hsv[..., 0] * 360
+        m = (h > 190) & (h < 330) & (arr[..., 3] > 0)
+        hsv[..., 0] = np.where(m, 36 / 360, hsv[..., 0])
+        hsv[..., 1] = np.where(m, np.clip(hsv[..., 1] * 0.75 + 0.03, 0, 1), hsv[..., 1])
+        out = arr.copy()
+        out[..., :3] = paint.hsv_to_rgb(hsv)
+        return Image.fromarray(np.clip(out * 255 + 0.5, 0, 255).astype(np.uint8), "RGBA")
+    if name not in FOLIAGE:
+        return im
+    # One shared set of leaf colours for every tree (the pack's trees were drawn with different
+    # numbers of shades and near-black shadow sides, so side by side they looked like the work
+    # of different artists). Each tree's leaf brightness is stretched to the same seven steps.
+    ramp = LEAF_SILVER if name == "olive" else (LEAF_DARK if name.startswith("cypress") else LEAF_GREEN)
+    arr = np.asarray(im.convert("RGBA")).astype(float) / 255.0
+    hsv = paint.rgb_to_hsv(arr[..., :3])
+    h = hsv[..., 0] * 360
+    m = (h > 45) & (h < 180) & (hsv[..., 1] > 0.18) & (arr[..., 3] > 0.9)
+    if not m.any():
+        return im
+    lum = arr[..., 0] * 0.3 + arr[..., 1] * 0.55 + arr[..., 2] * 0.15
+    lo, hi = np.percentile(lum[m], 3), np.percentile(lum[m], 97)
+    t = np.clip((lum - lo) / max(hi - lo, 1e-6), 0, 1)
+    idx = np.clip(np.round(t * (len(ramp) - 1)), 0, len(ramp) - 1).astype(int)
+    out = np.asarray(im.convert("RGBA")).copy()
+    pal = np.array([c[:3] for c in ramp], dtype=np.uint8)
+    out[m, :3] = pal[idx[m]]
+    # Near-black shadow pixels inside the crown (grey, so not caught above) become the darkest
+    # leaf colour instead of black; the outline and the trunk keep their own colours.
+    crown = np.zeros_like(m)
+    ys, xs = np.nonzero(m)
+    if len(ys):
+        crown[ys.min():ys.max() + 1, :] = True
+    black = (arr[..., 3] > 0.9) & (arr[..., :3].max(axis=-1) < 0.16) & crown & ~m
+    clear = arr[..., 3] < 0.1
+    edge = np.zeros_like(m)                          # outline pixels touch the transparent outside
+    edge[1:-1, 1:-1] = clear[:-2, 1:-1] | clear[2:, 1:-1] | clear[1:-1, :-2] | clear[1:-1, 2:]
+    out[black & ~edge, :3] = pal[0]
+    return Image.fromarray(out, "RGBA")
+
+
+def _hexc(s: str):
+    return tuple(int(s[i:i + 2], 16) for i in (1, 3, 5)) + (255,)
+
+
+LEAF_GREEN = [_hexc(c) for c in ("#28351b", "#354621", "#45592a", "#566c32", "#697f3c", "#7e9348", "#97a959")]
+LEAF_SILVER = [_hexc(c) for c in ("#2c3426", "#3b4732", "#4c5a40", "#5e6d50", "#718161", "#869674", "#9dab87")]
+LEAF_DARK = [_hexc(c) for c in ("#1b2a1a", "#243822", "#2f4829", "#3c5a31", "#4c6d3a", "#638545", "#7c9a52")]
+
+
 def mood(im: Image.Image, saturation: float = 0.9, contrast: float = 1.05, warmth: int = 3) -> Image.Image:
     rgb = ImageEnhance.Contrast(ImageEnhance.Color(im.convert("RGB")).enhance(saturation)).enhance(contrast)
     arr = np.array(rgb).astype(int)
@@ -400,7 +468,7 @@ def build() -> dict[str, Image.Image]:
     trees = img(TREES); conifers = img(CONIFERS); rocks = img(ROCKS)
 
     def prop(sheet, box, name, max_w=4, max_h=5):
-        decor.put(mood(sprite_to_tiles(pick_box(sheet, box), max_w, max_h)), name)
+        decor.put(foliage(mood(sprite_to_tiles(pick_box(sheet, box), max_w, max_h)), name), name)
 
     # Trees are cut along their own outline (canopy and shadow), found by components(), so no
     # tree is sliced by a hand-typed box. `near` is any point inside the tree on the sheet.
@@ -408,7 +476,7 @@ def build() -> dict[str, Image.Image]:
 
     def tree(near, name, max_w=4, max_h=4):
         sprite = fade_shadow_edges(pick_component(trees, tree_boxes, near))
-        decor.put(mood(sprite_to_tiles(sprite, max_w, max_h)), name)
+        decor.put(foliage(mood(sprite_to_tiles(sprite, max_w, max_h)), name), name)
 
     tree((640, 290), "olive")          # dark gnarled tree with roots
     tree((370, 160), "olive2")         # dark round tree
@@ -419,8 +487,8 @@ def build() -> dict[str, Image.Image]:
     prop(trees, (64, 0, 128, 64), "shrub2", 2, 2)
     prop(conifers, (225, 0, 300, 165), "cypress", 2, 6)
     conifer_boxes = components(conifers, min_size=8, block=2)
-    decor.put(mood(sprite_to_tiles(fade_shadow_edges(pick_component(conifers, conifer_boxes, (500, 75))), 3, 5)),
-              "cypress2")
+    decor.put(foliage(mood(sprite_to_tiles(fade_shadow_edges(pick_component(conifers, conifer_boxes, (500, 75))), 3, 5)),
+                      "cypress2"), "cypress2")
     prop(rocks, (0, 0, 64, 64), "rock_s", 2, 2)
     prop(rocks, (288, 2, 388, 100), "big_rock", 4, 4)       # two standing stones
     prop(rocks, (0, 512, 64, 576), "rock_sd", 2, 2)
@@ -443,7 +511,15 @@ def build() -> dict[str, Image.Image]:
         r.paste((0, 0, 0, 0), (0, 0, T, T))
         return r
 
-    decor.put(mood(house_front()), "house")
+    import house as cottage
+    import cypress as cypress_art
+    decor.put(cottage.house(), "house")
+    decor.put(cypress_art.cypress(seed=3, height=140, widest=13.5), "cypress_a")    # drawn in code
+    decor.put(cypress_art.cypress(seed=8, height=118, widest=12.0), "cypress_b")
+    import olive as olive_art                                # olive trees drawn in code (olive.py)
+    decor.put(olive_art.olive(4, 4, 1), "olive_a")
+    decor.put(olive_art.olive(3, 4, 2), "olive_b")
+    decor.put(olive_art.olive(5, 4, 3), "olive_c")           # drawn in code (house.py); the LPC front is kept below for reference
     # Small temple/shrine for the terrace: pediment roof over two columns.
     shrine = Image.new("RGBA", (5 * T, 6 * T), (0, 0, 0, 0))
     shrine.alpha_composite(roof(), (0, 0))
@@ -453,13 +529,20 @@ def build() -> dict[str, Image.Image]:
 
     # Small hand-made bits kept from the code generator (fences, beds, well, cave, torch...).
     gen_decor = gen.decor_atlas()
-    for name in ("fence_h", "fence_v", "fence_post", "fence_tl", "fence_tr", "fence_bl", "fence_br",
-                 "bed0", "bed1", "bush0", "bush1", "herb_pot", "crate", "torch", "sign", "dock_post",
-                 "seaweed0", "seaweed1", "bones", "stump"):
+    # Fences, the crate, the lantern post, the signpost and the well are redrawn with shading in
+    # smallprops.py; the rest of the small bits still come from the first generator (tiles.py).
+    import smallprops
+    for kind in ("h", "v", "post", "tl", "tr", "bl", "br", "end_l", "end_r"):
+        decor.put(smallprops.fence(kind), f"fence_{kind}")
+    for kind in ("h", "v"):
+        for v in (1, 2):
+            decor.put(smallprops.fence(kind, v), f"fence_{kind}{v}")
+    decor.put(smallprops.crate(), "crate")
+    decor.put(smallprops.lantern_post(), "torch")
+    decor.put(smallprops.signpost(), "sign")
+    for name in ("bed0", "bed1", "bush0", "bush1", "herb_pot", "dock_post", "seaweed0", "seaweed1", "bones", "stump"):
         cx, cy = gen.TILES["decor"][name]
         decor.put(gen_decor.im.crop((cx * T, cy * T, (cx + 1) * T, (cy + 1) * T)), name)
-    for kind in ("end_l", "end_r"):
-        decor.put(gen.fence_tile(kind).im, f"fence_{kind}")
     # Dock posts that stand against the pier's side: shifted to the edge of their tile.
     cx, cy = gen.TILES["decor"]["dock_post"]
     post = gen_decor.im.crop((cx * T, cy * T, (cx + 1) * T, (cy + 1) * T))
@@ -467,7 +550,8 @@ def build() -> dict[str, Image.Image]:
         shifted = Image.new("RGBA", (T, T), (0, 0, 0, 0))
         shifted.alpha_composite(post, (max(0, dx), 0), (max(0, -dx), 0))
         decor.put(shifted, name)
-    for name in ("well", "cave", "dead_tree", "wreck"):
+    decor.put(smallprops.well(), "well")
+    for name in ("cave", "dead_tree", "wreck"):
         _, cx, cy, w, h = gen.PROPS[name]
         decor.put(gen_decor.im.crop((cx * T, cy * T, (cx + w) * T, (cy + h) * T)), name)
 

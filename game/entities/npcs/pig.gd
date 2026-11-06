@@ -1,5 +1,6 @@
 extends Node2D
 ## A pig that roams near where it was placed, picking walk, run, eat, sleep or idle at random.
+## When Circe walks near, a pig that is awake stops and turns to look at her.
 
 const TextureLoaderUtil := preload("res://game/util/texture_loader.gd")
 const SpriteSheet := preload("res://game/util/sprite_sheet.gd")
@@ -23,6 +24,11 @@ const PIG_SLEEP_PATH := "res://assets/image_pipeline/generated/raw/sprites/chara
 
 @onready var sprite: AnimatedSprite2D = $Sprite
 
+## How close Circe has to come before an awake pig stops to watch her (the pen is about four
+## tiles from the path, so pigs look up as she walks by).
+const NOTICE_DISTANCE := 140.0
+var _player: Node2D = null
+
 var _origin: Vector2
 var _target: Vector2
 var _state: String = "idle"
@@ -31,7 +37,8 @@ var _facing: String = "right"
 var _rng := RandomNumberGenerator.new()
 
 func _ready() -> void:
-	z_index = 3
+	# Sorted with the fences by y (world.gd), so the pen's front rail passes in front of a pig.
+	z_index = 0
 	_origin = global_position
 	_rng.seed = int(global_position.x * 991.0 + global_position.y * 977.0)
 	_setup_animations()
@@ -43,6 +50,7 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	_state_timer -= delta
+	_watch_circe()
 
 	if _state == "walk" or _state == "run":
 		var speed := walk_speed if _state == "walk" else run_speed
@@ -57,6 +65,23 @@ func _process(delta: float) -> void:
 
 	if _state_timer <= 0.0:
 		_choose_next_state()
+
+func _watch_circe() -> void:
+	if _state == "sleep":
+		return
+	if _player == null or not is_instance_valid(_player):
+		_player = get_tree().get_first_node_in_group("player") as Node2D
+		if _player == null:
+			return
+	var offset := _player.global_position - global_position
+	if offset.length() > NOTICE_DISTANCE or absf(offset.x) < 4.0:
+		return
+	var face := "right" if offset.x > 0.0 else "left"
+	if _state != "idle" or face != _facing:
+		_facing = face
+		_state = "idle"
+		_state_timer = _rng.randf_range(1.2, 2.2)
+		_play_if_exists("idle_%s" % face)
 
 func _setup_animations() -> void:
 	# Walk and run sheets have four facings; idle, eat and sleep only face left or right.

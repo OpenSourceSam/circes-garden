@@ -16,11 +16,3 @@ shape = SubResource("RectangleShape2D_1")
 [node name="Sprite" type="Sprite2D" parent="."]
 scale = Vector2(1, 1)
 offset = Vector2(0, 0)
-
-[node name="StatusLabel" type="Label" parent="."]
-offset_left = -54.0
-offset_top = 26.0
-offset_right = 54.0
-offset_bottom = 50.0
-text = "Crafting Table"
-horizontal_alignment = 1

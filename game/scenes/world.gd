@@ -13,6 +13,16 @@ const TILE_SIZE: int = WorldMapData.TILE
 const CELL_ATLAS_STRIDE := 10000
 const CELL_ROW_STRIDE := 100
 const BUTTERFLY_SCRIPT := preload("res://game/entities/ambient/butterfly.gd")
+const GULL_SCRIPT := preload("res://game/entities/ambient/gull.gd")
+const SHIMMER_SCRIPT := preload("res://game/entities/ambient/shimmer.gd")
+## The house's chimney top (the house is drawn by tools/pixelart/house.py at tile 1, 1).
+const CHIMNEY_TOP := Vector2(149, 31)
+## [centre, radius, speed, phase] of each gull's slow circle over the sea.
+const GULLS := [
+	[Vector2(280, 1260), Vector2(190, 60), 0.2, 0.0],
+	[Vector2(410, 1120), Vector2(90, 34), -0.31, 2.0],
+	[Vector2(150, 1340), Vector2(110, 40), 0.26, 4.1],
+]
 const GroundShadow := preload("res://game/util/ground_shadow.gd")
 ## [position, wing colour]: pale yellow, white and lilac, the colours of the flowers in the paintings.
 const BUTTERFLIES := [
@@ -20,7 +30,7 @@ const BUTTERFLIES := [
 	[Vector2(432, 556), Color(0.96, 0.96, 0.98)],
 	[Vector2(340, 170), Color(0.82, 0.72, 0.95)],
 	[Vector2(400, 420), Color(0.98, 0.93, 0.62)],
-	[Vector2(150, 930), Color(0.96, 0.96, 0.98)],
+	[Vector2(196, 868), Color(0.96, 0.96, 0.98)],
 ]
 
 var _ending_transition_started: bool = false
@@ -64,6 +74,45 @@ func _setup_ambience() -> void:
 	pollen.color = Color(1.0, 0.95, 0.7, 0.55)
 	pollen.z_index = 6
 	add_child(pollen)
+
+	# Smoke from the chimney: a thin, slow plume drifting off to the right.
+	var smoke := CPUParticles2D.new()
+	smoke.name = "ChimneySmoke"
+	smoke.texture = soft
+	smoke.amount = 9
+	smoke.lifetime = 5.0
+	smoke.preprocess = 5.0
+	smoke.position = CHIMNEY_TOP
+	smoke.direction = Vector2(0.25, -1)
+	smoke.spread = 8.0
+	smoke.gravity = Vector2(3, -2)
+	smoke.initial_velocity_min = 6.0
+	smoke.initial_velocity_max = 9.0
+	smoke.scale_amount_min = 0.35
+	smoke.scale_amount_max = 0.55
+	var grow := Curve.new()
+	grow.add_point(Vector2(0, 0.5))
+	grow.add_point(Vector2(1, 1.6))
+	smoke.scale_amount_curve = grow
+	var fade := Gradient.new()
+	fade.set_color(0, Color(0.94, 0.93, 0.9, 0.5))
+	fade.set_color(1, Color(0.94, 0.93, 0.9, 0.0))
+	smoke.color_ramp = fade
+	smoke.z_index = 7
+	add_child(smoke)
+
+	# Glints of light on the sea, and gulls circling over it.
+	var shimmer: Node2D = SHIMMER_SCRIPT.new()
+	shimmer.name = "Shimmer"
+	add_child(shimmer)
+	for g in GULLS:
+		var gull: Node2D = GULL_SCRIPT.new()
+		gull.name = "Gull%d" % get_child_count()
+		gull.centre = g[0]
+		gull.radius = g[1]
+		gull.speed = g[2]
+		gull.phase = g[3]
+		add_child(gull)
 
 	# A few butterflies over the flower beds, the terrace and the well. None in the cove.
 	for spot in BUTTERFLIES:

@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://game/entities/interactables/sleep_spot.gd" id="1_sleep"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sleep"]
-size = Vector2(32, 24)
+size = Vector2(40, 20)
 
 [node name="SleepSpot" type="Area2D"]
 collision_layer = 1
@@ -12,15 +12,3 @@ script = ExtResource("1_sleep")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_sleep")
-
-[node name="Sprite" type="Sprite2D" parent="."]
-scale = Vector2(1, 1)
-offset = Vector2(0, 0)
-
-[node name="DayLabel" type="Label" parent="."]
-offset_left = -54.0
-offset_top = 26.0
-offset_right = 54.0
-offset_bottom = 46.0
-text = "Day 1"
-horizontal_alignment = 1

@@ -3,19 +3,19 @@ extends "res://game/entities/npcs/wandering_npc.gd"
 ## lesson and his last one ends the game.
 
 const DialogueBox := preload("res://game/ui/dialogue_box.gd")
-const WorldLabel := preload("res://game/util/world_label.gd")
 const HERB_MINIGAME := preload("res://game/scenes/herb_minigame.tscn")
 
 func _ready() -> void:
 	super()
-	WorldLabel.setup($Label, -46.0)
+	# No floating name: the prompt names him when Circe is near ("E  Talk to Hermes").
+	$Label.hide()
 	preload("res://game/util/ground_shadow.gd").attach(self, Vector2(0, 18), Vector2(13, 5))
 
 func prompt_text() -> String:
 	return "Talk to Hermes"
 
 func world_label() -> Label:
-	return $Label
+	return null
 
 func interact() -> void:
 	var box = DialogueBox.open(self, _current_dialogue_id())

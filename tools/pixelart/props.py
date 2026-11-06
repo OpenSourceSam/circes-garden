@@ -1,4 +1,4 @@
-"""Static props (64x64, boat 128x64) and 32x32 inventory icons."""
+"""Static props (64x64; the boat, 176x104, is drawn in boat_art.py) and 32x32 inventory icons."""
 from __future__ import annotations
 
 from px import OUTLINE, WHITE, Px, rgb, darken, lighten
@@ -26,6 +26,15 @@ SEED_LIGHT = rgb("#6b4a2e")
 
 
 def boat() -> Px:
+    import boat_art
+    im = boat_art.boat()
+    p = Px(im.width, im.height)
+    p.im = im
+    return p
+
+
+def boat_v1() -> Px:
+    """The first boat (128 x 64), kept for reference; the game uses boat() above."""
     p = Px(128, 64)
     # Hull
     p.trapezoid(64, 38, 100, 54, 70, WOOD)
@@ -49,6 +58,15 @@ def boat() -> Px:
 
 
 def crafting_table() -> Px:
+    import smallprops
+    im = smallprops.worktable()
+    p = Px(im.width, im.height)
+    p.im = im
+    return p
+
+
+def crafting_table_v1() -> Px:
+    """The first worktable, kept for reference; the game uses crafting_table() above."""
     p = Px(64, 64)
     # Legs
     p.rect(12, 40, 15, 56, WOOD_DARK)

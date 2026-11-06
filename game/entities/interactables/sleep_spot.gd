@@ -1,26 +1,21 @@
 extends Area2D
-## Circe's bed. Shows a night's thought, then advances the day so the moly grows.
+## Circe's front door. Going in for the night shows a night's thought; then Circe steps into the
+## doorway, the island fades to a starry night with the new day's card (SceneManager), and she
+## steps back out onto the doorstep in the morning. The day advances so the moly grows.
 
-const TextureLoaderUtil := preload("res://game/util/texture_loader.gd")
 const StoryText := preload("res://game/data/story_text.gd")
-const WorldLabel := preload("res://game/util/world_label.gd")
 const DialogueBox := preload("res://game/ui/dialogue_box.gd")
-const SLEEP_TEXTURE_PATH := "res://assets/image_pipeline/generated/raw/sprites/entities/sleep_spot.png"
-
-@onready var sprite: Sprite2D = $Sprite
-@onready var day_label: Label = $DayLabel
-
-func _ready() -> void:
-	preload("res://game/util/ground_shadow.gd").attach(self, Vector2(0, 23), Vector2(24, 6))
-	WorldLabel.setup(day_label, 22.0, false)
-	sprite.texture = TextureLoaderUtil.load_texture(SLEEP_TEXTURE_PATH)
-	day_label.text = "Rest (Day %d)" % GameState.current_day
+## How far Circe walks up into the doorway before the night falls, in pixels.
+const STEP_IN := 16.0
+## When she steps back out: as the dawn starts (see SceneManager.night_transition).
+const BACK_OUT_AFTER := 2.5
 
 func prompt_text() -> String:
-	return "Sleep until morning"
+	return "Go inside and sleep"
 
+## No floating label: the prompt says what the door is for.
 func world_label() -> Label:
-	return day_label
+	return null
 
 func interact() -> void:
 	var day := GameState.current_day
@@ -35,4 +30,24 @@ func _on_dialogue_ended(dialogue_id: String) -> void:
 	GameState.advance_day()
 	SceneManager.night_transition(GameState.current_day)
 	AudioController.play_sfx("ui_confirm")
-	day_label.text = "Rest (Day %d)" % GameState.current_day
+	_go_inside()
+
+func _go_inside() -> void:
+	var player := get_tree().get_first_node_in_group("player") as Node2D
+	if player == null:
+		return
+	player.set_controls_enabled(false)
+	var doorstep := Vector2(global_position.x, global_position.y)
+	var inside := doorstep + Vector2(0, -STEP_IN)
+	var walk_in := create_tween()
+	walk_in.tween_property(player, "global_position", inside, 0.4)
+	walk_in.parallel().tween_property(player, "modulate:a", 0.0, 0.4)
+	await get_tree().create_timer(BACK_OUT_AFTER).timeout
+	if not is_instance_valid(player):
+		return
+	player.global_position = doorstep
+	var walk_out := create_tween()
+	walk_out.tween_property(player, "modulate:a", 1.0, 0.45)
+	await walk_out.finished
+	if is_instance_valid(player):
+		player.set_controls_enabled(true)

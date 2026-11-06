@@ -1,9 +1,9 @@
 """The three moly beds in Circe's garden, one 64x64 image per growth stage.
 
-A bed is a low mound of dark, damp earth with a ragged edge, clods and a lit top, so it reads
-as soil, not as a wooden box. Three moly grow in it: seeds in their holes, two-leaf sprouts,
-young plants with closed white buds, then the milk-white star flowers of the herb lesson.
-Three variants (0, 1, 2) give the three beds their own outline, clods and plant spacing.
+The bed itself (tilled earth inside a border of fieldstones) is painted into the island ground
+(yard.py); each plot only draws its three planting spots and what grows in them: hoed soil,
+seeds in their holes, two-leaf sprouts, young plants with closed white buds, then the milk-white
+star flowers of the herb lesson. Three variants (0, 1, 2) give the plots their own spacing.
 """
 from __future__ import annotations
 
@@ -31,7 +31,19 @@ XS = (21, 32, 43)        # the three plants
 BASE_Y = 44              # where their stems meet the soil
 
 
+def _spots(p: Px, xs) -> None:
+    """Three hoed spots of loose, darker earth where the moly goes, no outline (the bed's earth
+    is painted under them)."""
+    for x in xs:
+        for dy in range(-2, 3):
+            half = [2, 4, 5, 4, 2][dy + 2]
+            for dx in range(-half, half + 1):
+                p.dot(x + dx, BASE_Y + dy, EARTH_D if dy > -1 else EARTH)
+        p.dot(x - 2, BASE_Y - 2, EARTH_HI); p.dot(x + 1, BASE_Y - 2, EARTH_L); p.dot(x + 3, BASE_Y - 1, EARTH_L)
+
+
 def _bed(p: Px, variant: int = 0) -> None:
+    """The old free-standing mound (before the beds were painted into the ground); unused."""
     rng = random.Random(41 + variant * 13)
     # Ragged mound: an ellipse with a wobbling edge.
     cx, cy, rx, ry = 32, 44, 23, 10
@@ -93,27 +105,29 @@ def _star(p: Px, x: int, y: int) -> None:
 
 def plot(stage: str, variant: int = 0) -> Px:
     p = Px(64, 64)
-    _bed(p, variant)
     XS = tuple(x + d for x, d in zip(globals()["XS"], ((0, 0, 0), (-1, 1, 2), (1, -1, -2))[variant % 3]))
+    _spots(p, XS)
+    plants = Px(64, 64)
     if stage == "planted":
         for x in XS:
-            p.ellipse(x - 2, BASE_Y - 1, x + 2, BASE_Y + 2, EARTH_D)
-            p.dot(x, BASE_Y, SEED)
-            p.dot(x, BASE_Y - 2, LEAF_L)          # the first green tip, so planting shows
+            plants.ellipse(x - 2, BASE_Y - 1, x + 2, BASE_Y + 2, EARTH_D)
+            plants.dot(x, BASE_Y, SEED)
+            plants.dot(x, BASE_Y - 2, LEAF_L)          # the first green tip, so planting shows
     elif stage == "stage_1":
         for x in XS:
-            _sprout(p, x, 1)
+            _sprout(plants, x, 1)
     elif stage == "stage_2":
         for x in XS:
-            _sprout(p, x, 2)
-            _bud(p, x, BASE_Y - 14)
+            _sprout(plants, x, 2)
+            _bud(plants, x, BASE_Y - 14)
     elif stage == "ready":
         for x in XS:
-            _sprout(p, x, 3)
-            _star(p, x, BASE_Y - 21)
+            _sprout(plants, x, 3)
+            _star(plants, x, BASE_Y - 21)
         for (gx, gy) in ((12, 18), (52, 20), (26, 14), (40, 12)):
-            p.dot(gx, gy, GLINT)                  # a few motes of light: the moly is ready
-    p.outline(OUTLINE)
+            plants.dot(gx, gy, GLINT)                  # a few motes of light: the moly is ready
+    plants.outline(OUTLINE)
+    p.paste(plants, 0, 0)
     return p
 
 

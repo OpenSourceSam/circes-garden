@@ -31,7 +31,7 @@ SHEETS = {
     "sprites/characters/pig/pig_sleep.png": (256, 128, 4, 2),
 }
 STATICS = {
-    "sprites/entities/boat.png": (128, 64),
+    "sprites/entities/boat.png": (176, 104),
     "sprites/entities/crafting_table.png": (64, 64),
     "sprites/entities/sleep_spot.png": (64, 64),
     "sprites/entities/farm_plot.png": (64, 64),
@@ -139,7 +139,8 @@ def main() -> int:
                 problems.append(f"{rel}: size {img.size} is not a multiple of 32")
         elif img.size != size:
             problems.append(f"{rel}: size {img.size}, expected {size}")
-        if not binary_alpha(img) and "tilesets" not in rel and "particle" not in rel:   # soft edges by design
+        # Soft edges by design: tilesets, particles, and the boat's shadow and ripples on the water.
+        if not binary_alpha(img) and "tilesets" not in rel and "particle" not in rel and "boat" not in rel:
             problems.append(f"{rel}: semi-transparent pixels")
         if img.getbbox() is None:
             problems.append(f"{rel}: empty image")

@@ -12,9 +12,20 @@ const BOAT_TEXTURE_PATH := "res://assets/image_pipeline/generated/raw/sprites/en
 
 @onready var sprite: Sprite2D = $Sprite
 
+## The boat rides the swell: one pixel up and down, slowly (whole pixels, so the art stays crisp).
+const BOB_SPEED := 1.6
+var _rest_position := Vector2.ZERO
+var _time := 0.0
+
 func _ready() -> void:
 	sprite.texture = TextureLoaderUtil.load_texture(BOAT_TEXTURE_PATH)
 	sprite.position += sprite_offset
+	_rest_position = sprite.position
+	_time = fmod(global_position.x * 0.37 + global_position.y * 0.11, TAU)
+
+func _process(delta: float) -> void:
+	_time += delta * BOB_SPEED
+	sprite.position = _rest_position + Vector2(0, roundf(sin(_time)))
 
 func prompt_text() -> String:
 	return "Take the boat"
