@@ -244,8 +244,8 @@ def pig_sheets() -> dict[str, Image.Image]:
                 if action == "idle" and c == 2:
                     fr = fr.transform(fr.size, Image.Transform.AFFINE, (1, 0, 0, 0, 1, 1))  # 1-px breath
                 if action == "sleep" and c != 3:
-                    zx = 44 if direction == "left" else 14
-                    zy = 26 - c * 3
+                    zx = 12 if direction == "left" else 48     # above the head, rising
+                    zy = 12 - c * 3
                     for dx, dy in ((0, 0), (1, 0), (2, 0), (2, 1), (1, 2), (0, 3), (1, 3), (2, 3)):
                         fr.putpixel((zx + dx, zy + dy), (255, 255, 255, 255))
                 sheet.alpha_composite(fr, (c * CELL, r * CELL))

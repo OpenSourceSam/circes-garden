@@ -17,7 +17,7 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-from PIL import Image, ImageEnhance
+from PIL import Image, ImageOps, ImageEnhance
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).parent))
@@ -221,6 +221,110 @@ def greek(px: int, py: int, w: int = 1, h: int = 1) -> Image.Image:
     return tile_at(img(GREEK), px * T, py * T, w * T, h * T)
 
 
+def despeckle(atlas, prefix: str, min_pixels: int = 8) -> None:
+    """Clear tiny islands of opaque pixels (fewer than `min_pixels`, 4-connected) from every tile
+    whose name starts with `prefix`."""
+    for name, (cx, cy) in list(TILES[atlas.name].items()):
+        if not name.startswith(prefix):
+            continue
+        tile = atlas.im.crop((cx * T, cy * T, cx * T + T, cy * T + T))
+        a = np.array(tile.getchannel("A")) > 0
+        seen = np.zeros_like(a)
+        px = tile.load()
+        for y0 in range(T):
+            for x0 in range(T):
+                if not a[y0, x0] or seen[y0, x0]:
+                    continue
+                stack, comp = [(x0, y0)], []
+                seen[y0, x0] = True
+                while stack:
+                    x, y = stack.pop()
+                    comp.append((x, y))
+                    for nx, ny in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+                        if 0 <= nx < T and 0 <= ny < T and a[ny, nx] and not seen[ny, nx]:
+                            seen[ny, nx] = True
+                            stack.append((nx, ny))
+                if len(comp) < min_pixels:
+                    for x, y in comp:
+                        px[x, y] = (0, 0, 0, 0)
+        atlas.im.paste(tile, (cx * T, cy * T))
+
+
+def wavy_edge(atlas, fill_name: str, edge_name: str, variant: int) -> Image.Image:
+    """A north edge tile cut along a soft wave: sand from `fill_name`, the rim colours sampled from
+    the sheet's own `edge_name` tile. Every variant meets the next at the same depth (at x = 0 and
+    x = 32), so they can be mixed in any order along a shore."""
+    import math
+    def tile(name):
+        cx, cy = TILES[atlas.name][name]
+        return atlas.im.crop((cx * T, cy * T, cx * T + T, cy * T + T))
+    fill, edge = tile(fill_name), tile(edge_name)
+    # Rim colours: the darkest and a middle opaque colour of the sheet's edge tile.
+    opaque = sorted({edge.getpixel((x, y))[:3] for x in range(T) for y in range(T) if edge.getpixel((x, y))[3] > 200},
+                    key=sum)
+    dark, mid = opaque[len(opaque) // 8], opaque[len(opaque) // 3]
+    phases = ((0.3, 1.9, 4.1), (2.2, 0.7, 3.3), (4.4, 2.9, 0.4))[variant % 3]
+    amps = (2.6, 1.4, 0.8)
+    base = 9.0
+    out = fill.copy()
+    px = out.load()
+    for x in range(T):
+        d = base + sum(a * (math.sin(2 * math.pi * (k + 1) * x / T + p) - math.sin(p))
+                       for k, (a, p) in enumerate(zip(amps, phases)))
+        depth = int(round(d))
+        for y in range(T):
+            if y < depth:
+                px[x, y] = (0, 0, 0, 0)
+            elif y == depth:
+                px[x, y] = (*dark, 255)
+            elif y <= depth + 2:
+                px[x, y] = (*mid, 255)
+    return out
+
+
+def freestanding(column: Image.Image) -> Image.Image:
+    """Give a column from the sheet a flat, finished top. The sheet's capitals have a notched
+    abacus made to meet a beam above, which on a lone column reads as a broken or sliced top."""
+    c = column.copy()
+    light, mid, edge, dark = (207, 197, 172, 255), (175, 162, 151, 255), (154, 143, 143, 255), (76, 74, 93, 255)
+    for x in range(T):
+        c.putpixel((x, 0), edge if x < T - 1 else dark)
+        for y in (1, 2, 3):
+            if x == T - 1:
+                colour = dark
+            elif x in (0, T - 2) or (y == 1 and x == 1):
+                colour = mid if y > 1 else edge
+            else:
+                colour = light
+            c.putpixel((x, y), colour)
+    return c
+
+
+def house_front() -> Image.Image:
+    """Circe's house, 5 x 6 tiles: a tiled roof seen from above, framed by its gable walls, over a
+    stone front with a doorway, an amphora and a pot. The roof's middle strip is repeated to widen
+    it; the sheet's roof had see-through pixels along one seam, which are filled from just above.
+    (The earlier house used only the left half of the sheet's symmetrical gable, so its roof
+    ended in a straight cut down the middle.)"""
+    h = Image.new("RGBA", (5 * T, 6 * T), (0, 0, 0, 0))
+    for i, col in enumerate((16, 17, 17, 17, 18)):
+        h.alpha_composite(greek(col, 2, 1, 4), (i * T, 0))
+    px = h.load()
+    for y in range(4 * T):
+        for x in range(6, 5 * T - 6):
+            if y > 12 and px[x, y][3] < 255:
+                px[x, y] = px[x, y - 4]
+    for y in (94, 95):                     # the same seam as a dark line across both gable walls
+        for x in list(range(0, 10)) + list(range(5 * T - 10, 5 * T)):
+            px[x, y] = px[x, y - 4]
+    h.alpha_composite(greek(7, 6, 1, 2), (0, 4 * T))                     # stone with a patch of brick
+    h.alpha_composite(greek(16, 6, 3, 2), (1 * T, 4 * T))                # doorway
+    h.alpha_composite(ImageOps.mirror(greek(7, 6, 1, 2)), (4 * T, 4 * T))
+    h.alpha_composite(greek(6, 18), (4 * T, 5 * T))                      # pot by the door
+    h.alpha_composite(greek(8, 18), (0, 5 * T))                          # jug by the door
+    return h
+
+
 def build() -> dict[str, Image.Image]:
     TILES["aiaia"].clear(); TILES["cove"].clear(); TILES["decor"].clear(); PROPS.clear()
     aiaia, cove, decor = Atlas("aiaia"), Atlas("cove"), Atlas("decor")
@@ -234,11 +338,16 @@ def build() -> dict[str, Image.Image]:
         for _ in range(rng.randrange(2, 4)):
             x, y = rng.randrange(2, T - 3), rng.randrange(2, T - 3)
             col = rng.choice([(246, 243, 231, 255), (242, 200, 75, 255), (224, 122, 168, 255)])
-            for dx, dy in ((0, 0), (1, 0), (0, 1), (1, 1)):
+            # A five-petal flower with a pale centre and a stem; one or four pixels read as dirt.
+            for dx, dy in ((1, 0), (0, 1), (2, 1), (1, 2)):
                 t.putpixel((x + dx, y + dy), col)
-            t.putpixel((x + 1, y + 2), (47, 107, 38, 255))
+            t.putpixel((x + 1, y + 1), (255, 236, 150, 255))
+            t.putpixel((x + 1, y + 3), (47, 107, 38, 255))
         aiaia.put(t, f"grassf{i}")
     add_overlay(aiaia, "sand", 5, 1)               # beach sand over grass
+    despeckle(aiaia, "sand_")                      # the sheet's sand edges leave loose specks in the grass
+    for v in range(3):
+        aiaia.put(wavy_edge(aiaia, "sand_c", "sand_n", v), f"sand_nv{v}")
     add_overlay(aiaia, "sea", 0, 2)                # water with sandy shore edge
     add_overlay(aiaia, "dirt", 3, 1)               # dirt path over grass
     add_overlay(aiaia, "cobble", 5, 3, fills=1)    # pale cobblestone (terrace surround)
@@ -246,6 +355,9 @@ def build() -> dict[str, Image.Image]:
         aiaia.put(mood(greek(gx, gy)), f"marble{i}")
     for i, (gx, gy) in enumerate(((12, 11), (13, 11), (12, 12), (13, 12))):
         aiaia.put(mood(greek(gx, gy)), f"mosaic{i}")
+    for j, v in enumerate("tmb"):                  # raised stone platform, 3 x 3 set for the terrace
+        for i, h in enumerate("lcr"):
+            aiaia.put(mood(greek(6 + i, 9 + j)), f"slab_{v}{h}")
     # Tilled soil: dark, slightly wavy furrows with lit ridges and a few clods, so the beds read
     # as earth and not as wooden planks (straight full-width lines looked like boards).
     for i in range(4):
@@ -263,6 +375,16 @@ def build() -> dict[str, Image.Image]:
             arr[y, x, :3] = np.minimum(arr[y, x, :3] * 1.3, 255)
             arr[y + 1, x + 1, :3] = (arr[y + 1, x + 1, :3] * 0.7).astype(np.int16)
         aiaia.put(Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8), "RGBA"), f"soil{i}")
+    # The farm bed as an overlay with the dirt path's ragged LPC edges: each soil edge tile is a soil
+    # tile cut to the shape of the matching dirt edge tile (a plain rectangle looked pasted on).
+    def tile_img(name: str) -> Image.Image:
+        cx, cy = TILES["aiaia"][name]
+        return aiaia.im.crop((cx * T, cy * T, cx * T + T, cy * T + T))
+    for k, code in enumerate(("ise", "isw", "ine", "inw", "nw", "n", "ne", "w", "c", "e", "sw", "s", "se",
+                              "f0", "f1", "f2")):
+        soil = tile_img(f"soil{k % 4}").copy()
+        soil.putalpha(tile_img(f"dirt_{code}").getchannel("A"))
+        aiaia.put(soil, f"soil_{code}")
     import tiles as gen
     aiaia.put(gen.plank_tile(60, True).im, "plank_v")
 
@@ -290,13 +412,15 @@ def build() -> dict[str, Image.Image]:
 
     tree((640, 290), "olive")          # dark gnarled tree with roots
     tree((370, 160), "olive2")         # dark round tree
-    tree((770, 290), "olive3")         # bright round tree
+    tree((770, 290), "olive3", 5, 4)   # bright round tree (5 wide, so its shadow is not cut)
     tree((175, 160), "round_tree", 3, 4)
     tree((590, 150), "big_tree", 3, 4)
-    prop(trees, (0, 28, 64, 66), "shrub", 2, 2)
+    tree((32, 47), "shrub", 2, 2)      # cut along its outline (a fixed box sliced its top flat)
     prop(trees, (64, 0, 128, 64), "shrub2", 2, 2)
     prop(conifers, (225, 0, 300, 165), "cypress", 2, 6)
-    prop(conifers, (440, 0, 560, 150), "cypress2", 3, 5)
+    conifer_boxes = components(conifers, min_size=8, block=2)
+    decor.put(mood(sprite_to_tiles(fade_shadow_edges(pick_component(conifers, conifer_boxes, (500, 75))), 3, 5)),
+              "cypress2")
     prop(rocks, (0, 0, 64, 64), "rock_s", 2, 2)
     prop(rocks, (288, 2, 388, 100), "big_rock", 4, 4)       # two standing stones
     prop(rocks, (0, 512, 64, 576), "rock_sd", 2, 2)
@@ -306,13 +430,7 @@ def build() -> dict[str, Image.Image]:
     prop(rocks, (512, 610, 560, 700), "spire_d", 2, 3)
     # Greek architecture pieces.
     decor.put(mood(greek(0, 0, 1, 4)), "column")          # full Ionic column, 1x4
-    decor.put(mood(greek(0, 9, 1, 4)), "column2")
-    stub = greek(0, 7, 1, 2).copy()                       # lower half of a column...
-    for x in range(T):                                    # ...with a broken, jagged top
-        depth = (3, 5, 7, 4, 2, 6, 8, 5, 3, 1, 4, 6)[x % 12]
-        for y in range(depth):
-            stub.putpixel((x, y), (0, 0, 0, 0))
-    decor.put(mood(stub), "column_short")
+    decor.put(mood(freestanding(greek(0, 9, 1, 4))), "column2")
     for i, gx in enumerate((0, 1, 2, 4, 6, 9)):
         decor.put(mood(greek(gx, 18)), f"amphora{i}")
     decor.put(mood(greek(12, 9, 2, 2)), "altar")          # round altar 2x2
@@ -325,14 +443,7 @@ def build() -> dict[str, Image.Image]:
         r.paste((0, 0, 0, 0), (0, 0, T, T))
         return r
 
-    # Circe's house: tiled roof (4x4) over stone walls (4x2) with a door.
-    house = Image.new("RGBA", (5 * T, 6 * T), (0, 0, 0, 0))
-    house.alpha_composite(roof(), (0, 0))                        # pediment roof
-    house.alpha_composite(greek(7, 6, 5, 2), (0, 4 * T))         # stone walls
-    house.alpha_composite(greek(12, 6, 1, 2), (2 * T, 4 * T))    # door
-    house.alpha_composite(greek(6, 18), (4 * T, 5 * T))          # pot by the door
-    house.alpha_composite(greek(1, 18), (0, 5 * T))              # amphora by the door
-    decor.put(mood(house), "house")
+    decor.put(mood(house_front()), "house")
     # Small temple/shrine for the terrace: pediment roof over two columns.
     shrine = Image.new("RGBA", (5 * T, 6 * T), (0, 0, 0, 0))
     shrine.alpha_composite(roof(), (0, 0))
@@ -347,6 +458,15 @@ def build() -> dict[str, Image.Image]:
                  "seaweed0", "seaweed1", "bones", "stump"):
         cx, cy = gen.TILES["decor"][name]
         decor.put(gen_decor.im.crop((cx * T, cy * T, (cx + 1) * T, (cy + 1) * T)), name)
+    for kind in ("end_l", "end_r"):
+        decor.put(gen.fence_tile(kind).im, f"fence_{kind}")
+    # Dock posts that stand against the pier's side: shifted to the edge of their tile.
+    cx, cy = gen.TILES["decor"]["dock_post"]
+    post = gen_decor.im.crop((cx * T, cy * T, (cx + 1) * T, (cy + 1) * T))
+    for name, dx in (("dock_post_r", 12), ("dock_post_l", -12)):
+        shifted = Image.new("RGBA", (T, T), (0, 0, 0, 0))
+        shifted.alpha_composite(post, (max(0, dx), 0), (max(0, -dx), 0))
+        decor.put(shifted, name)
     for name in ("well", "cave", "dead_tree", "wreck"):
         _, cx, cy, w, h = gen.PROPS[name]
         decor.put(gen_decor.im.crop((cx * T, cy * T, (cx + w) * T, (cy + h) * T)), name)

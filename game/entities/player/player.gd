@@ -4,6 +4,7 @@ extends CharacterBody2D
 const TextureLoaderUtil := preload("res://game/util/texture_loader.gd")
 const SpriteSheet := preload("res://game/util/sprite_sheet.gd")
 const WorldLabel := preload("res://game/util/world_label.gd")
+const GroundShadow := preload("res://game/util/ground_shadow.gd")
 const CIRCE_IDLE_PATH := "res://assets/image_pipeline/generated/raw/sprites/characters/circe/circe_idle.png"
 const CIRCE_WALK_PATH := "res://assets/image_pipeline/generated/raw/sprites/characters/circe/circe_walk.png"
 const DUST_TEXTURE_PATH := "res://assets/image_pipeline/generated/raw/sprites/ui/particle_soft.png"
@@ -26,6 +27,8 @@ func _ready() -> void:
 	add_to_group("player")
 	WorldLabel.setup(interaction_label, -30.0)
 	interaction_label.hide()
+	_setup_key_cap()
+	GroundShadow.attach(self, Vector2(0, 18), Vector2(13, 5))
 	_setup_animations()
 	_setup_dust()
 
@@ -56,6 +59,8 @@ func _physics_process(delta: float) -> void:
 	var moving := input_dir.length() > 0.01
 	_update_animation(input_dir, moving)
 	_dust.emitting = moving
+	if moving:
+		_retarget()
 	_report_position(delta, moving)
 
 func _report_position(delta: float, moving: bool) -> void:
@@ -81,21 +86,34 @@ func set_controls_enabled(enabled: bool) -> void:
 	if enabled:
 		refresh_prompt()
 
-func _on_interaction_zone_body_entered(body: Node) -> void:
-	if body != self and body.has_method("interact"):
-		_set_target(body)
+func _on_interaction_zone_body_entered(_body: Node) -> void:
+	call_deferred("_retarget")
 
-func _on_interaction_zone_body_exited(body: Node) -> void:
-	if body == _nearby_interactable:
-		_set_target(null)
+func _on_interaction_zone_body_exited(_body: Node) -> void:
+	call_deferred("_retarget")
 
-func _on_interaction_zone_area_entered(area: Area2D) -> void:
-	if area.has_method("interact"):
-		_set_target(area)
+func _on_interaction_zone_area_entered(_area: Area2D) -> void:
+	call_deferred("_retarget")
 
-func _on_interaction_zone_area_exited(area: Area2D) -> void:
-	if area == _nearby_interactable:
-		_set_target(null)
+func _on_interaction_zone_area_exited(_area: Area2D) -> void:
+	call_deferred("_retarget")
+
+## The target is always the nearest thing in reach. (Taking the one entered last picked the far
+## garden plot when two plots were both in reach.)
+func _retarget() -> void:
+	var zone: Area2D = $InteractionZone
+	var best: Node = null
+	var best_distance := INF
+	var candidates: Array = zone.get_overlapping_areas() + zone.get_overlapping_bodies()
+	for node in candidates:
+		if node == self or not node.has_method("interact"):
+			continue
+		var distance := global_position.distance_squared_to(node.global_position)
+		if distance < best_distance:
+			best = node
+			best_distance = distance
+	if best != _nearby_interactable:
+		_set_target(best)
 
 ## One prompt at a time: while Circe is in reach of something, its own floating label is hidden
 ## and the prompt above her head says what E will do ("E  Talk to Hermes").
@@ -123,6 +141,35 @@ func refresh_prompt() -> void:
 	if _nearby_interactable.has_method("prompt_text"):
 		action = _nearby_interactable.prompt_text()
 	interaction_label.text = "E  %s" % action
+	_place_key_cap()
+
+## A small key cap drawn behind the "E" of the prompt, so it reads as a key to press and the
+## prompt reads as an instruction (a bare E looked like a typo or a name tag).
+var _key_cap: Panel
+
+func _setup_key_cap() -> void:
+	_key_cap = Panel.new()
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.13, 0.08, 0.05, 0.85)
+	style.border_color = Color(0.85, 0.72, 0.45)
+	style.set_border_width_all(1)
+	style.set_corner_radius_all(3)
+	_key_cap.add_theme_stylebox_override("panel", style)
+	_key_cap.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_key_cap.show_behind_parent = true
+	interaction_label.add_child(_key_cap)
+
+func _place_key_cap() -> void:
+	if _key_cap == null:
+		return
+	var font: Font = interaction_label.get_theme_font("font")
+	var size: int = interaction_label.label_settings.font_size
+	var text_w := font.get_string_size(interaction_label.text, HORIZONTAL_ALIGNMENT_LEFT, -1, size).x
+	var key_w := font.get_string_size("E", HORIZONTAL_ALIGNMENT_LEFT, -1, size).x
+	var line_h := font.get_height(size)
+	var x0 := (interaction_label.size.x - text_w) / 2.0
+	_key_cap.position = Vector2(x0 - 4.0, interaction_label.size.y - line_h - 1.0)
+	_key_cap.size = Vector2(key_w + 8.0, line_h + 1.0)
 
 func _setup_animations() -> void:
 	var frames := SpriteFrames.new()

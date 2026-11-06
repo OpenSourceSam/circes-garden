@@ -13,6 +13,7 @@ const TILE_SIZE: int = WorldMapData.TILE
 const CELL_ATLAS_STRIDE := 10000
 const CELL_ROW_STRIDE := 100
 const BUTTERFLY_SCRIPT := preload("res://game/entities/ambient/butterfly.gd")
+const GroundShadow := preload("res://game/util/ground_shadow.gd")
 ## [position, wing colour]: pale yellow, white and lilac, the colours of the flowers in the paintings.
 const BUTTERFLIES := [
 	[Vector2(112, 560), Color(0.98, 0.93, 0.62)],
@@ -146,6 +147,8 @@ func _build_decor(textures: Array) -> void:
 		sprite.offset = Vector2(0, -d[4] * TILE_SIZE)
 		sprite.position = Vector2(d[5] * TILE_SIZE, (d[6] + d[4]) * TILE_SIZE)
 		add_child(sprite)
+		if d.size() > 8 and d[7] > 0:
+			GroundShadow.attach(sprite, Vector2(d[3] * TILE_SIZE / 2.0, -3.0), Vector2(d[7], d[8]))
 
 func _build_blockers() -> void:
 	var body := StaticBody2D.new()

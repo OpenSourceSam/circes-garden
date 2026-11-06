@@ -31,8 +31,62 @@ body {
 	touch-action: none;
 }
 
+/* The game keeps its tall shape (1080 x 1240). The script below sizes the canvas to the largest
+   box of that shape that fits the window. The space around it shows the garden painting, blurred
+   and darkened, instead of black bands, with the controls and a credit when there is room. */
+#room {
+	position: fixed;
+	inset: -40px;
+	background-position: center;
+	background-size: cover;
+	filter: blur(30px) brightness(0.5) saturate(1.1);
+}
+
+#room-vignette {
+	position: fixed;
+	inset: 0;
+	background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.45) 100%);
+}
+
 #canvas {
 	display: block;
+	position: fixed;
+	left: 0;
+	top: 0;
+	box-shadow: 0 0 70px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(216, 184, 114, 0.22);
+}
+
+.side-card {
+	display: none;
+	position: fixed;
+	bottom: 48px;
+	box-sizing: border-box;
+	padding: 0 28px;
+	text-align: center;
+	font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
+	font-size: 17px;
+	line-height: 1.9;
+	color: rgba(247, 238, 219, 0.82);
+}
+
+.side-card h2 {
+	margin: 0 0 6px;
+	font-family: 'Cinzel', Georgia, serif;
+	font-weight: 500;
+	font-size: 15px;
+	letter-spacing: 0.16em;
+	text-transform: uppercase;
+	color: var(--gold);
+}
+
+.side-card a {
+	color: var(--gold);
+	text-decoration: none;
+	border-bottom: 1px solid var(--gold-soft);
+}
+
+.side-card a:hover {
+	border-bottom-color: var(--gold);
 }
 
 #canvas:focus {
@@ -191,6 +245,20 @@ kbd {
 		$GODOT_HEAD_INCLUDE
 	</head>
 	<body>
+		<div id="room"></div>
+		<div id="room-vignette"></div>
+		<div id="help-card" class="side-card">
+			<h2>How to play</h2>
+			<div><kbd>←</kbd><kbd>↑</kbd><kbd>↓</kbd><kbd>→</kbd> walk</div>
+			<div><kbd>E</kbd> talk, plant, use</div>
+			<div><kbd>Enter</kbd> continue</div>
+			<div><kbd>Esc</kbd> skip the prologue</div>
+		</div>
+		<div id="about-card" class="side-card">
+			<h2>Circe's Garden</h2>
+			<div>Made by Sam Cloutier<br>with Claude Code</div>
+			<div><a href="https://github.com/OpenSourceSam/circes-garden" target="_blank" rel="noopener">How it was made ↗</a></div>
+		</div>
 		<canvas id="canvas">
 			Your browser does not support the canvas tag.
 		</canvas>
@@ -220,6 +288,54 @@ const GODOT_CONFIG = $GODOT_CONFIG;
 const GODOT_THREADS_ENABLED = $GODOT_THREADS_ENABLED;
 const engine = new Engine(GODOT_CONFIG);
 
+// Fit the canvas to the game's own shape and centre it (the export sets canvas_resize_policy to
+// None, so the engine renders at whatever size this sets). Cards sit in the side space when wide.
+const GAME_ASPECT = 1080 / 1240;
+const SIDE_CARD_MIN = 230;
+function layoutStage() {
+	const canvas = document.getElementById('canvas');
+	const w = window.innerWidth;
+	const h = window.innerHeight;
+	let cw = w;
+	let ch = Math.round(w / GAME_ASPECT);
+	if (ch > h) {
+		ch = h;
+		cw = Math.round(h * GAME_ASPECT);
+	}
+	const left = Math.floor((w - cw) / 2);
+	canvas.style.width = cw + 'px';
+	canvas.style.height = ch + 'px';
+	canvas.style.left = left + 'px';
+	canvas.style.top = Math.floor((h - ch) / 2) + 'px';
+	const ratio = window.devicePixelRatio || 1;
+	const pw = Math.round(cw * ratio);
+	const ph = Math.round(ch * ratio);
+	if (canvas.width !== pw || canvas.height !== ph) {
+		canvas.width = pw;
+		canvas.height = ph;
+	}
+	const help = document.getElementById('help-card');
+	const about = document.getElementById('about-card');
+	const roomy = left >= SIDE_CARD_MIN;
+	help.style.display = about.style.display = roomy ? 'block' : 'none';
+	help.style.width = about.style.width = left + 'px';
+	help.style.left = '0px';
+	about.style.left = (left + cw) + 'px';
+}
+layoutStage();
+window.addEventListener('resize', layoutStage);
+setInterval(layoutStage, 1000);
+
+// The engine listens for keys on the canvas, so a click beside the game hands focus straight back.
+document.addEventListener('mousedown', function (evt) {
+	const canvas = document.getElementById('canvas');
+	if (evt.target === canvas || (evt.target.closest && evt.target.closest('a'))) {
+		return;
+	}
+	evt.preventDefault();
+	canvas.focus();
+});
+
 (function () {
 	const statusOverlay = document.getElementById('status');
 	const statusNotice = document.getElementById('status-notice');
@@ -230,6 +346,7 @@ const engine = new Engine(GODOT_CONFIG);
 	const loadingLine = document.getElementById('loading-line');
 
 	backdrop.style.backgroundImage = 'url("' + splash.getAttribute('src') + '")';
+	document.getElementById('room').style.backgroundImage = backdrop.style.backgroundImage;
 	if (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) {
 		document.getElementById('phone-note').style.display = 'block';
 	}
@@ -339,6 +456,7 @@ const engine = new Engine(GODOT_CONFIG);
 				}
 			},
 		}).then(() => {
+			layoutStage();
 			hideOverlay();
 		}, displayFailureNotice);
 	}

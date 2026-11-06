@@ -11,6 +11,7 @@ const CRAFTING_TEXTURE_PATH := "res://assets/image_pipeline/generated/raw/sprite
 @onready var status_label: Label = $StatusLabel
 
 func _ready() -> void:
+	preload("res://game/util/ground_shadow.gd").attach(self, Vector2(0, 23), Vector2(24, 6))
 	WorldLabel.setup(status_label, 22.0, false)
 	sprite.texture = TextureLoaderUtil.load_texture(CRAFTING_TEXTURE_PATH)
 	GameState.flag_changed.connect(_on_flag_changed)
@@ -31,7 +32,7 @@ func interact() -> void:
 func prompt_text() -> String:
 	if GameState.get_flag("quest_3_active"):
 		return "Brew the Calming Draught"
-	return "Your worktable"
+	return "Look at your worktable"
 
 func world_label() -> Label:
 	return status_label
@@ -44,10 +45,10 @@ func _on_inventory_changed(_item_id: String, _quantity: int) -> void:
 
 func _update_display() -> void:
 	if GameState.get_flag("quest_4_complete"):
-		status_label.text = "Crafting Table"
+		status_label.text = "Worktable"
 	elif GameState.get_flag("quest_3_complete"):
 		status_label.text = "Draught brewed!"
 	elif GameState.get_flag("quest_3_active"):
 		status_label.text = "Calming Draught\n(%d/%d moly)" % [GameState.get_item_count("moly"), GameState.MOLY_PER_DRAUGHT]
 	else:
-		status_label.text = "Crafting Table"
+		status_label.text = "Worktable"

@@ -236,16 +236,19 @@ def plank_tile(seed: int, vertical: bool = True) -> Px:
 
 # --- props (transparent) ----------------------------------------------------
 def fence_tile(kind: str) -> Px:
+    """One fence tile. 'h' and 'v' are runs, 'tl'..'br' corners, 'end_l' / 'end_r' the last tile of
+    a horizontal run (rails stop at the post instead of running on into the grass)."""
     t = Px(T, T)
-    if kind in ("h", "tl", "tr", "bl", "br"):
-        x0 = 14 if kind in ("tl", "bl") else 0
-        x1 = 17 if kind in ("tr", "br") else T - 1
+    if kind in ("h", "tl", "tr", "bl", "br", "end_l", "end_r"):
+        x0 = 14 if kind in ("tl", "bl", "end_l") else 0
+        x1 = 17 if kind in ("tr", "br", "end_r") else T - 1
         t.rect(x0, 10, x1, 12, WOOD_L); t.rect(x0, 20, x1, 22, WOOD_L)
     if kind in ("v", "tl", "tr", "bl", "br"):
         y0 = 10 if kind in ("tl", "tr") else 0
         y1 = 22 if kind in ("bl", "br") else T - 1
         t.rect(14, y0, 17, y1, WOOD)
-    if kind == "post" or kind in ("tl", "tr", "bl", "br", "h"):
+    # Every tile has a post, the side runs included, so a side fence reads as posts and a rail.
+    if kind in ("post", "tl", "tr", "bl", "br", "h", "v", "end_l", "end_r"):
         t.rect(13, 6, 18, 27, WOOD); t.rect(13, 6, 18, 8, WOOD_L)
     t.outline(OUTLINE)
     return t

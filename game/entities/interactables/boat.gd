@@ -7,11 +7,14 @@ const BOAT_TEXTURE_PATH := "res://assets/image_pipeline/generated/raw/sprites/en
 
 @export var destination: Vector2 = Vector2.ZERO
 @export var requires_flag: String = ""
+## Shifts the picture only (not the place Circe walks to), e.g. to keep the sail off a pier.
+@export var sprite_offset: Vector2 = Vector2.ZERO
 
 @onready var sprite: Sprite2D = $Sprite
 
 func _ready() -> void:
 	sprite.texture = TextureLoaderUtil.load_texture(BOAT_TEXTURE_PATH)
+	sprite.position += sprite_offset
 
 func prompt_text() -> String:
 	return "Take the boat"

@@ -9,6 +9,7 @@ const HERB_MINIGAME := preload("res://game/scenes/herb_minigame.tscn")
 func _ready() -> void:
 	super()
 	WorldLabel.setup($Label, -46.0)
+	preload("res://game/util/ground_shadow.gd").attach(self, Vector2(0, 18), Vector2(13, 5))
 
 func prompt_text() -> String:
 	return "Talk to Hermes"

@@ -19,8 +19,13 @@ const STAGE_TEXTURES := {
 var _textures: Dictionary = {}
 
 func _ready() -> void:
+	# Each of the three beds has its own drawing (the _v1 and _v2 files), so they are not one
+	# picture repeated.
 	for key in STAGE_TEXTURES:
-		_textures[key] = TextureLoaderUtil.load_texture(STAGE_TEXTURES[key])
+		var path: String = STAGE_TEXTURES[key]
+		if plot_id.x > 0:
+			path = path.replace(".png", "_v%d.png" % plot_id.x)
+		_textures[key] = TextureLoaderUtil.load_texture(path)
 	GameState.crop_planted.connect(_on_plot_changed)
 	GameState.crop_harvested.connect(_on_plot_changed)
 	GameState.day_advanced.connect(_on_day_advanced)

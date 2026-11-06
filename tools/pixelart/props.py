@@ -29,6 +29,9 @@ def boat() -> Px:
     p = Px(128, 64)
     # Hull
     p.trapezoid(64, 38, 100, 54, 70, WOOD)
+    # The inside of the hull, seen from above the rim, with a thwart (seat) across it.
+    p.rect(18, 33, 109, 37, WOOD_DARK)
+    p.rect(40, 34, 88, 35, WOOD)
     p.hline(14, 113, 38, WOOD_LIGHT)
     p.hline(20, 108, 44, WOOD_DARK)
     p.hline(26, 102, 50, WOOD_DARK)
@@ -145,6 +148,11 @@ def all_props() -> dict[str, Px]:
         "sprites/entities/farm_plot_stage_1.png": garden.plot("stage_1"),
         "sprites/entities/farm_plot_stage_2.png": garden.plot("stage_2"),
         "sprites/entities/farm_plot_stage_ready.png": garden.plot("ready"),
+        # The second and third beds' own drawings (farm_plot.gd adds _v1 / _v2 by plot number).
+        **{f"sprites/entities/farm_plot_stage_{name}_v{v}.png": garden.plot(stage, v)
+           for v in (1, 2)
+           for name, stage in (("empty", "empty"), ("planted", "planted"), ("1", "stage_1"),
+                               ("2", "stage_2"), ("ready", "ready"))},
         "sprites/ui/icon_moly_seed.png": icon_moly_seed(),
         "sprites/ui/icon_moly.png": icon_moly(),
         "sprites/ui/icon_calming_draught.png": icon_calming_draught(),

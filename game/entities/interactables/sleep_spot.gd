@@ -11,6 +11,7 @@ const SLEEP_TEXTURE_PATH := "res://assets/image_pipeline/generated/raw/sprites/e
 @onready var day_label: Label = $DayLabel
 
 func _ready() -> void:
+	preload("res://game/util/ground_shadow.gd").attach(self, Vector2(0, 23), Vector2(24, 6))
 	WorldLabel.setup(day_label, 22.0, false)
 	sprite.texture = TextureLoaderUtil.load_texture(SLEEP_TEXTURE_PATH)
 	day_label.text = "Rest (Day %d)" % GameState.current_day

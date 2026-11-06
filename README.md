@@ -34,7 +34,7 @@ That is the ending in the book, and it is the ending here.
 
 | The prologue | The island | Hermes' herb lesson |
 |---|---|---|
-| ![The prologue: Circe on a cliff at sunset](docs/screenshots/prologue.png) | ![Circe on Aiaia, with Hermes on his terrace](docs/screenshots/terrace.png) | ![The herb lesson: nightshade on a cream card, with three answers](docs/screenshots/lesson.png) |
+| ![The prologue: Circe on a cliff at sunset](docs/screenshots/prologue.png) | ![Circe on Aiaia, with Hermes on his terrace](docs/screenshots/terrace.png) | ![The herb lesson: hemlock on a cream card, with three answers](docs/screenshots/lesson.png) |
 
 ## How it was made, in plain words
 

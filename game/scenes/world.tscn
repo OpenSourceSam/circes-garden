@@ -45,21 +45,21 @@ color = Color(0.2, 0.3, 0.5, 1)
 z_index = -20
 
 [node name="Hermes" parent="." instance=ExtResource("3_hermes")]
-position = Vector2(270, 200)
+position = Vector2(270, 232)
 
 [node name="CraftingTable" parent="." instance=ExtResource("7_craft")]
 position = Vector2(270, 400)
 
 [node name="FarmPlot1" parent="." instance=ExtResource("5_farm")]
-position = Vector2(170, 600)
+position = Vector2(130, 600)
 plot_id = Vector2i(0, 0)
 
 [node name="FarmPlot2" parent="." instance=ExtResource("5_farm")]
-position = Vector2(270, 600)
+position = Vector2(192, 600)
 plot_id = Vector2i(1, 0)
 
 [node name="FarmPlot3" parent="." instance=ExtResource("5_farm")]
-position = Vector2(370, 600)
+position = Vector2(368, 600)
 plot_id = Vector2i(2, 0)
 
 [node name="SleepSpot" parent="." instance=ExtResource("6_sleep")]
@@ -69,6 +69,7 @@ position = Vector2(270, 800)
 position = Vector2(270, 1100)
 destination = Vector2(272, 2800)
 requires_flag = "can_sail_to_scylla"
+sprite_offset = Vector2(0, 30)
 
 [node name="BoatScylla" parent="." instance=ExtResource("2_boat")]
 position = Vector2(272, 2912)
@@ -83,14 +84,20 @@ position = Vector2(272, 2430)
 [node name="PigAiaia" parent="." instance=ExtResource("11_pig")]
 position = Vector2(406, 792)
 roam_radius = 14.0
+start_state = "idle"
+start_facing = "right"
 
 [node name="PigPen2" parent="." instance=ExtResource("11_pig")]
 position = Vector2(446, 814)
 roam_radius = 14.0
+start_state = "eat"
+start_facing = "left"
 
 [node name="PigPen3" parent="." instance=ExtResource("11_pig")]
 position = Vector2(458, 784)
 roam_radius = 12.0
+start_state = "eat"
+start_facing = "right"
 
 [node name="DialogueBox" parent="." instance=ExtResource("8_dialogue")]
 

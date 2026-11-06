@@ -3,6 +3,7 @@
 A bed is a low mound of dark, damp earth with a ragged edge, clods and a lit top, so it reads
 as soil, not as a wooden box. Three moly grow in it: seeds in their holes, two-leaf sprouts,
 young plants with closed white buds, then the milk-white star flowers of the herb lesson.
+Three variants (0, 1, 2) give the three beds their own outline, clods and plant spacing.
 """
 from __future__ import annotations
 
@@ -26,28 +27,28 @@ WHITE_S = rgb("#d6cfbd")
 POLLEN = rgb("#f0c64a")
 GLINT = rgb("#fff6c8")
 
-XS = (18, 32, 46)        # the three plants
+XS = (21, 32, 43)        # the three plants
 BASE_Y = 44              # where their stems meet the soil
 
 
-def _bed(p: Px) -> None:
-    rng = random.Random(41)
+def _bed(p: Px, variant: int = 0) -> None:
+    rng = random.Random(41 + variant * 13)
     # Ragged mound: an ellipse with a wobbling edge.
-    cx, cy, rx, ry = 32, 44, 27, 11
+    cx, cy, rx, ry = 32, 44, 23, 10
     for y in range(cy - ry - 2, cy + ry + 2):
         for x in range(cx - rx - 2, cx + rx + 3):
             a = math.atan2((y - cy) / ry, (x - cx) / rx)
-            wobble = 1.0 + 0.06 * math.sin(a * 7) + 0.04 * math.sin(a * 13 + 1)
+            wobble = 1.0 + 0.06 * math.sin(a * 7 + variant * 2.1) + 0.04 * math.sin(a * 13 + 1 + variant * 1.3)
             d = math.hypot((x - cx) / rx, (y - cy) / ry)
             if d <= wobble:
                 top = (y - cy) / ry
                 colour = EARTH_L if top < -0.45 else (EARTH_D if top > 0.55 else EARTH)
                 p.dot(x, y, colour)
     # A furrow along the row of plants, and scattered clods.
-    for x in range(10, 55):
+    for x in range(13, 52):
         p.dot(x, BASE_Y + 1 + (1 if (x // 6) % 2 else 0), EARTH_D)
     for _ in range(26):
-        x, y = rng.randrange(9, 56), rng.randrange(36, 53)
+        x, y = rng.randrange(12, 53), rng.randrange(37, 52)
         if p.im.getpixel((x, y))[3]:
             p.dot(x, y, EARTH_HI if rng.random() < 0.5 else EARTH_D)
 
@@ -90,9 +91,10 @@ def _star(p: Px, x: int, y: int) -> None:
     p.rect(x - 1, y - 1, x, y, POLLEN)
 
 
-def plot(stage: str) -> Px:
+def plot(stage: str, variant: int = 0) -> Px:
     p = Px(64, 64)
-    _bed(p)
+    _bed(p, variant)
+    XS = tuple(x + d for x, d in zip(globals()["XS"], ((0, 0, 0), (-1, 1, 2), (1, -1, -2))[variant % 3]))
     if stage == "planted":
         for x in XS:
             p.ellipse(x - 2, BASE_Y - 1, x + 2, BASE_Y + 2, EARTH_D)

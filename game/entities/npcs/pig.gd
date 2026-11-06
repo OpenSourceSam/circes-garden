@@ -10,6 +10,9 @@ const PIG_EAT_PATH := "res://assets/image_pipeline/generated/raw/sprites/charact
 const PIG_SLEEP_PATH := "res://assets/image_pipeline/generated/raw/sprites/characters/pig/pig_sleep.png"
 
 @export var roam_radius: float = 80.0
+## How the pig is first seen (pigs side by side should not look like one picture pasted twice).
+@export var start_state: String = ""
+@export var start_facing: String = ""
 @export var walk_speed: float = 22.0
 @export var run_speed: float = 44.0
 @export var idle_duration: Vector2 = Vector2(1.0, 2.6)
@@ -32,7 +35,11 @@ func _ready() -> void:
 	_origin = global_position
 	_rng.seed = int(global_position.x * 991.0 + global_position.y * 977.0)
 	_setup_animations()
-	_enter_state("idle")
+	preload("res://game/util/ground_shadow.gd").attach(self, Vector2(0, 14), Vector2(17, 5))
+	var cell := int(global_position.x) / 8 + int(global_position.y) / 8
+	_facing = start_facing if start_facing != "" else ("right" if cell % 2 == 1 else "left")
+	_enter_state(start_state if start_state != "" else "idle")
+	sprite.frame = cell % 4
 
 func _process(delta: float) -> void:
 	_state_timer -= delta
