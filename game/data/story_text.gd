@@ -1,7 +1,6 @@
 ## Story text for Circe's Garden. Edit here, not in the entity scripts.
 ## Written 2026-10-25. Speakers: "Circe", "Hermes", or "" for narration.
 ## Format codes the code fills in: crafting_need_more keeps one %d (moly count);
-## MINIGAME_TEXT "correct" keeps %d/%d and "wrong" keeps %s (the herb name).
 ## Sleep dialogue ids are built in code as "sleep_day_%d"; their lines are SLEEP_THOUGHTS.
 ## A line may carry a "cue" that the scene acts out when the line shows (Scylla's, in scylla.gd).
 
@@ -169,37 +168,35 @@ const CREDITS := {
 	"prompt": "Press Enter to return to the title screen",
 }
 
-const HERB_HINTS := {
-	"Moly": "Black root, milk-white flower. Hermes calls it his gift against sorcery.",
-	"Nightshade": "Purple bells and glossy black berries. A sleep you do not wake from.",
-	"Hemlock": "Purple-spotted stem, umbrellas of tiny white flowers. It stops the breath.",
-}
-
-## Hermes' riddle for each herb: a reader of the book knows the answers, and anyone else can work
-## out the name from the riddle (night + shade, hem + lock, rhymes with holy).
-const HERB_RIDDLES := {
-	"Moly": "My name rhymes with holy, and I am the one herb I give away to heroes.",
-	"Nightshade": "Half my name falls when the sun goes down. The other half is what you cast at noon.",
-	"Hemlock": "Stitch the edge of a cloak, bolt the door. Put the two words together and you have me.",
-}
-
-const MINIGAME_TEXT := {
+## Hermes' flash cards (herb_minigame.gd): he shows herbs one at a time, pictures only, and Circe hands
+## them back in order. He drinks the brew, so a mistake ends with a god on the floor.
+const FLASH_TEXT := {
+	"intro": "I show each herb once. Hand them back in order. I'll drink whatever you brew, so do try.",
+	"watch": "Watch closely.",
+	"repeat": "Now hand them to me, in order.",
+	"lookalikes": "Look-alikes: wild carrot has no purple spots on its stem. Bilberries are blue, not black.",
+	"fewer": "Hermes sighs and shows you one card fewer.",
+	"order_was": "The order was:",
 	"win": "Hermes tosses you moly seeds, almost impressed.",
-	"correct": "Correct! (%d/%d)",
-	"wrong": "No, that was %s. Hermes winces for you.",
 }
 
-## Hermes reacts to each right answer; the herb lesson takes them in order.
+## Hermes reacts to each round won; the lesson takes them in order.
 const MINIGAME_CORRECT_QUIPS := [
 	"Right. Hermes looks faintly disappointed.",
 	"Right again. He claims he taught you that.",
 ]
 
-## And to each wrong one; %s is the herb it really was.
-const MINIGAME_WRONG_QUIPS := [
-	"No, that was %s. Hermes winces for you.",
-	"%s. Hermes mimes dying, at length.",
-	"That was %s. \"A second monster, then,\" says Hermes.",
+## Hermes, flat on his back, after a wrong herb.
+const FLASH_FAIL_WRONG := [
+	"I'm immortal. Your next guest won't be.",
+	"Wonderful. I can taste colours. That is not a good sign.",
+	"If I could die, this would be an embarrassing way to do it.",
+]
+
+## And after the time runs out.
+const FLASH_FAIL_SLOW := [
+	"Too slow. I got bored and drank the lot.",
+	"Scylla eats six sailors in the time you take to pick one herb.",
 ]
 
 ## Shown instead of the quest 2 title once the moly has flowered.

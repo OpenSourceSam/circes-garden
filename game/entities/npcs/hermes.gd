@@ -72,6 +72,7 @@ func _on_dialogue_ended(dialogue_id: String) -> void:
 	if dialogue_id == "hermes_intro":
 		GameState.set_flag("met_hermes", true)
 		var minigame = HERB_MINIGAME.instantiate()
+		minigame.hermes = self  # he drinks the brew when Circe gets it wrong
 		get_tree().root.add_child(minigame)
 		minigame.minigame_completed.connect(GameState.complete_herb_lesson)
 	elif dialogue_id == "hermes_epilogue":

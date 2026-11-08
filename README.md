@@ -20,7 +20,7 @@ Play on a laptop or desktop with a keyboard (Chrome, Edge or Firefox). On a phon
 3. The prologue is a short series of paintings with narration. Press **Enter** to turn each one, or **Esc** to skip it.
 4. On the island, hold the **arrow keys** (or **W A S D**) to walk. The box in the top-left corner always shows what to do next.
 5. Hermes is just above you, on the stone terrace at the top of the screen. Walk up to him and press **E** to talk. Press **Enter** to move the conversation along.
-6. He gives you a herb lesson: **left** and **right** pick a herb, **E** confirms. Three right answers win.
+6. He tests you with herb flash cards: watch the herbs he shows, then pick them back in the same order. **Left** and **right** choose, **E** picks. Three rounds win.
 
 Those five minutes show the core of the game: the story, the characters and the herb lesson.
 The whole game takes about 20 minutes, through farming, brewing a potion, sailing to the monster Scylla, and the ending.
@@ -34,7 +34,7 @@ That is the ending in the book, and it is the ending here.
 
 | The prologue | The island | Hermes' herb lesson |
 |---|---|---|
-| ![The prologue: Circe on a cliff at sunset](docs/screenshots/prologue.png) | ![Circe on Aiaia, with Hermes on his terrace](docs/screenshots/terrace.png) | ![The herb lesson: hemlock on a cream card, with three answers](docs/screenshots/lesson.png) |
+| ![The prologue: Circe on a cliff at sunset](docs/screenshots/prologue.png) | ![Circe on Aiaia, with Hermes on his terrace](docs/screenshots/terrace.png) | ![Hermes' flash cards: three answer slots above five herb cards](docs/screenshots/lesson.png) |
 
 ## How it was made, in plain words
 

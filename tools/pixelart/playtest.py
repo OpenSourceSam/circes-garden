@@ -38,7 +38,7 @@ BAD_CONSOLE = ("No loader found", "Failed to load resource", "Uncaught", "ERROR:
 #   wait                  just wait
 #   wait_for <substring>  wait until a console line contains it (wait = timeout)
 #   interact <substring>  press E; if no console line with substring appears, nudge and retry
-#   minigame              press Enter on the focused answer until "[Minigame] complete"
+#   minigame              play the herb flash cards from the printed answer until "[Minigame] complete"
 SCRIPTS = {
     "default": [
         ("wait", 0, 2.0, "00_menu"),
@@ -51,7 +51,7 @@ SCRIPTS = {
         ("enter", 12, 1.0, "04_minigame"),  # hermes_intro has 12 lines
         ("wait_for", "[Minigame] round", 15.0, "04b_herb_lesson"),
         ("wait", 0, 2.0, "04c_herb_lesson"),
-        ("minigame", "", 150.0, "05_minigame_done"),
+        ("minigame", "", 300.0, "05_minigame_done"),
         ("hold", "ArrowDown", 3.6, "06_farm"),
         ("hold", "ArrowLeft", 1.0, None),
         ("hold", "ArrowRight", 1.0, "07_walk_right"),
@@ -70,7 +70,7 @@ SCRIPTS = {
         ("interact", "start hermes_intro", 15.0, "g03_hermes"),
         ("enter", 3, 1.0, None),
         ("enter", 3, 1.5, "g04_minigame"),
-        ("minigame", "", 150.0, None),
+        ("minigame", "", 300.0, None),
         ("wait_for", "quest_2_active = true", 20.0, None),
         ("walk", "ArrowDown y>=600", 15.0, None),
         ("walk", "ArrowLeft x<=196", 10.0, None),
@@ -94,6 +94,26 @@ SCRIPTS = {
         ("walk", "ArrowRight x>=272", 10.0, None),
         ("walk", "ArrowDown y>=1000", 12.0, "g07_beach"),
     ],
+    # Pictures of Hermes' flash cards: watching, Circe's turn, and a failure (ArrowRight then Enter
+    # picks the second herb, which is wrong four times in five).
+    "lesson": [
+        ("wait", 0, 2.0, None),
+        ("key", "Enter", 1.5, None),
+        ("enter", 7, 2.5, None),
+        ("walk", "ArrowUp y<=282", 8.0, None),
+        ("interact", "start hermes_intro", 15.0, None),
+        ("enter", 12, 1.0, "L0_intro"),
+        ("wait_for", "[Minigame] round 1", 15.0, None),
+        ("wait", 0, 1.6, "L1_watch"),
+        ("wait_for", "[Minigame] answer", 20.0, "L2_your_turn"),
+        ("key", "ArrowRight", 0.4, None),
+        ("key", "Enter", 0.5, "L3_wrong"),
+        ("wait", 0, 0.5, "L4_fail_a"),
+        ("wait", 0, 0.5, "L5_fail_b"),
+        ("wait", 0, 0.8, "L6_fail_c"),
+        ("wait_for", "try again ready", 10.0, "L7_order_was"),
+        ("minigame", "", 300.0, "L8_passed"),
+    ],
     "full": [
         ("wait", 0, 2.0, "00_menu"),
         ("key", "Enter", 1.5, None),
@@ -103,7 +123,7 @@ SCRIPTS = {
         ("walk", "ArrowUp y<=282", 8.0, None),
         ("interact", "start hermes_intro", 15.0, "03_hermes_talk"),
         ("enter", 6, 1.0, "04_minigame"),
-        ("minigame", "", 150.0, None),
+        ("minigame", "", 300.0, None),
         ("wait_for", "quest_2_active = true", 20.0, "05_seeds_given"),
         ("walk", "ArrowDown y>=600", 12.0, None),
         ("walk", "ArrowLeft x<=196", 8.0, None),
@@ -346,14 +366,49 @@ class Runner:
             self.pause(0.5)
         return self.seen_since(start, needles)
 
+    _ANSWER_RE = re.compile(r"\[Minigame\] answer ([\d,]+)")
+
     def minigame(self, timeout: float) -> bool:
+        """Hermes' flash cards: the game prints the answer as positions in the row of five herbs
+        ("[Minigame] answer 3,0,4"), with focus on the first herb; move with the arrows and press Enter.
+        After a failure ("try again ready"), Enter starts the round again."""
         start = len(self.console)
+        handled = start
+        # A failure from an earlier step may already be waiting for Enter.
+        last = next((line for line in reversed(self.console) if "[Minigame]" in line), "")
+        if "try again ready" in last.split("[Minigame]")[-1]:
+            self.page.keyboard.press("Enter")
+            self.pause(0.5)
         deadline = time.time() + timeout
         while time.time() < deadline:
             if self.seen_since(start, "[Minigame] complete"):
                 return True
-            self.page.keyboard.press("Enter")
-            self.pause(1.5)
+            if self.dialogue_open():  # Hermes is still talking: the lesson opens when he is done
+                self.page.keyboard.press("Enter")
+                self.pause(0.45)
+                continue
+            new = self.console[handled:]
+            handled = len(self.console)
+            answer = None
+            for line in new:
+                found = self._ANSWER_RE.findall(line)
+                if found:
+                    answer = [int(i) for i in found[-1].split(",")]
+                if "[Minigame] try again ready" in line:
+                    self.page.keyboard.press("Enter")
+                    self.pause(0.5)
+            if answer:
+                self.pause(0.4)
+                cur = 0
+                for target in answer:
+                    key = "ArrowRight" if target > cur else "ArrowLeft"
+                    for _ in range(abs(target - cur)):
+                        self.page.keyboard.press(key)
+                        self.pause(0.15)
+                    cur = target
+                    self.page.keyboard.press("Enter")
+                    self.pause(0.3)
+            self.pause(0.3)
         return self.seen_since(start, "[Minigame] complete")
 
     def run(self, steps) -> None:

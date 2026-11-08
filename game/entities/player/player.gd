@@ -131,7 +131,8 @@ func _set_target(target: Node) -> void:
 		var label: Label = target.world_label()
 		if label:
 			label.hide()
-	interaction_label.show()
+	# No prompt while a dialogue or the herb lesson has the controls.
+	interaction_label.visible = is_processing_unhandled_input()
 
 ## Re-reads the prompt from the target, e.g. after a plot was planted or harvested.
 func refresh_prompt() -> void:

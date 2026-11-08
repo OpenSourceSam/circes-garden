@@ -5,6 +5,10 @@ Each card is 64x64 with a transparent background (the game puts it on a cream ca
   (black root and white flower, as in the Odyssey and in Miller's Circe);
 - nightshade: branching stem, broad leaves, drooping purple bells and glossy black berries;
 - hemlock: tall stem blotched with purple, feathery leaves, umbrellas of tiny white flowers.
+
+Two harmless look-alikes, the pairs foragers really learn, for Hermes' flash cards:
+- wild carrot: like hemlock, but a plain green, hairy stem and one dense lacy dome of flowers;
+- bilberry: a low shrub with small oval leaves, pink urn-shaped flowers and dusty blue berries.
 """
 from __future__ import annotations
 
@@ -32,6 +36,12 @@ BELL_D = rgb("#55317a")
 BERRY = rgb("#1d1626")
 BERRY_L = rgb("#6c5a86")
 SPOT = rgb("#7a2a5c")
+PINK = rgb("#e2a0b2")
+PINK_L = rgb("#f3c8d2")
+PINK_D = rgb("#b06e86")
+BLUE = rgb("#3a4c8c")
+BLUE_L = rgb("#93a4d2")
+BLUE_D = rgb("#26315e")
 
 
 def _soil(p: Px) -> None:
@@ -135,8 +145,9 @@ def hemlock() -> Px:
     p = Px(64, 64)
     _soil(p)
     _stem(p, [(32, 54), (32, 30), (31, 14)])
-    for y in (50, 45, 40, 34, 27, 21):
-        p.dot(32, y, SPOT); p.dot(33, y + 1, darken(SPOT))
+    for y in (51, 47, 43, 38, 33, 28, 23, 18):
+        p.dot(32, y, SPOT); p.dot(32, y + 1, SPOT)
+        p.dot(33, y, darken(SPOT)); p.dot(33, y + 1, darken(SPOT))
     # Feathery leaves: a rachis with small paired leaflets.
     for (x, y, ang, n) in ((31, 46, -160, 6), (33, 42, -20, 6), (31, 34, -145, 4), (33, 31, -35, 4)):
         a = math.radians(ang)
@@ -160,15 +171,96 @@ def hemlock() -> Px:
     return p
 
 
+def _feathery_leaves(p: Px, sprigs) -> None:
+    """Hemlock-type leaves: a rachis with small paired leaflets."""
+    for (x, y, ang, n) in sprigs:
+        a = math.radians(ang)
+        for i in range(n):
+            bx = x + math.cos(a) * i * 2.4
+            by = y + math.sin(a) * i * 2.4
+            p.dot(round(bx), round(by), STEM_D)
+            for side in (-1, 1):
+                lx = bx - math.sin(a) * side * 2.2
+                ly = by + math.cos(a) * side * 2.2
+                p.dot(round(lx), round(ly), LEAF)
+                p.dot(round(lx + math.cos(a)), round(ly + math.sin(a)), LEAF_L if side < 0 else LEAF_D)
+
+
+def wild_carrot() -> Px:
+    p = Px(64, 64)
+    _soil(p)
+    _stem(p, [(32, 54), (32, 30), (31, 15)])
+    # Fine hairs along a plain green stem: no purple anywhere.
+    for y in (50, 44, 38, 32, 26, 20):
+        p.dot(31, y, LEAF_L); p.dot(34, y + 3, LEAF_L)
+    _feathery_leaves(p, ((31, 47, -165, 6), (33, 43, -15, 6), (31, 35, -140, 4), (33, 32, -40, 4)))
+    # One dense, flat-topped lacy dome on many spokes, not hemlock's separate small umbrellas.
+    hub = (31, 16)
+    for x in range(20, 45, 3):
+        _stem(p, [hub, (x, 10)], STEM, STEM)
+    # Hundreds of tiny florets: small clusters packed into a dome, with dark gaps between them.
+    cx, cy, rx, ry = 31.5, 9.0, 13.5, 5.5
+    for y in range(3, 14):
+        for x in range(17, 47):
+            if ((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2 > 1.0:
+                continue
+            if (x % 3 == 0 and y % 3 == 1) or (x % 3 == 2 and y % 3 == 2 and x % 2):
+                continue
+            p.dot(x, y, WHITE_S if y >= 11 or (x + 2 * y) % 7 == 0 else WHITE)
+    p.outline(OUTLINE)
+    return p
+
+
+def bilberry() -> Px:
+    p = Px(64, 64)
+    _soil(p)
+    # A low, bushy shrub: angular green stems that branch near the ground.
+    for pts in (
+        [(31, 54), (29, 46), (24, 40), (20, 32)],
+        [(32, 54), (33, 45), (31, 37), (33, 28)],
+        [(33, 54), (37, 47), (42, 41), (45, 33)],
+        [(29, 46), (36, 41)],
+    ):
+        _stem(p, pts)
+    # Small oval leaves along the stems.
+    for (x, y, ang) in ((24, 40, -150), (20, 33, -110), (26, 44, 170), (31, 37, -160), (33, 29, -70),
+                        (34, 41, -20), (42, 41, -30), (45, 34, -70), (39, 46, 10), (30, 47, -175)):
+        _leaf(p, x, y, ang, 6, 2.0)
+    # Pink urn-shaped flowers, hanging.
+    for (x, y) in ((19, 36), (35, 31), (46, 37)):
+        p.ellipse(x - 2, y - 2, x + 2, y + 3, PINK)
+        p.dot(x - 1, y - 1, PINK_L)
+        p.dot(x + 1, y + 2, PINK_D); p.dot(x, y + 3, PINK_D)
+    # Round blue berries with a dusty bloom and a small crown underneath.
+    for (x, y) in ((24, 46), (29, 41), (38, 45), (43, 47), (27, 50)):
+        p.ellipse(x - 2, y - 2, x + 2, y + 2, BLUE)
+        p.dot(x - 1, y - 1, BLUE_L); p.dot(x, y - 1, BLUE_L)
+        p.dot(x + 1, y + 1, BLUE_D); p.dot(x, y + 2, BLUE_D)
+    p.outline(OUTLINE)
+    return p
+
+
+def card_back_flower() -> Px:
+    """The small white flower in the middle of a face-down flash card."""
+    p = Px(11, 11)
+    for (x, y) in ((5, 1), (5, 9), (1, 3), (9, 3), (1, 7), (9, 7)):
+        p.ellipse(x - 1, y - 1, x + 1, y + 1, WHITE)
+    p.ellipse(3, 3, 7, 7, WHITE)
+    p.dot(5, 5, POLLEN)
+    return p
+
+
 def herb_card(kind: str) -> Px:
-    return {"moly": moly, "nightshade": nightshade, "hemlock": hemlock}[kind]()
+    return {"moly": moly, "nightshade": nightshade, "hemlock": hemlock,
+            "wild_carrot": wild_carrot, "bilberry": bilberry}[kind]()
 
 
 if __name__ == "__main__":
     from pathlib import Path
     from PIL import Image
-    out = Image.new("RGBA", (3 * 64 * 4 + 40, 64 * 4 + 20), (237, 222, 184, 255))
-    for i, k in enumerate(("moly", "nightshade", "hemlock")):
+    kinds = ("moly", "nightshade", "bilberry", "hemlock", "wild_carrot")
+    out = Image.new("RGBA", (len(kinds) * 266 + 10, 64 * 4 + 20), (237, 222, 184, 255))
+    for i, k in enumerate(kinds):
         im = herb_card(k).im.resize((256, 256), Image.Resampling.NEAREST)
         out.alpha_composite(im, (10 + i * 266, 10))
     dest = Path(__file__).parent / "preview" / "herbs_x4.png"
