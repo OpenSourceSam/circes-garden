@@ -468,10 +468,10 @@ def blocked_rects(ground_rows, decor_rows, props, row0: int):
         elif name in ("house", "shrine"):
             rows_blocked = range(r + max(0, h - 3), r + h)
         elif name == "big_rock":
-            # The standing stones block their lower half only: Circe walks behind their tops, so the
-            # strip between them and the house is wide enough to pass (Hermes could push her into
-            # a one-tile gap and pin her there).
-            rows_blocked = range(r + h - 2, r + h)
+            # The standing stones block only their foot, like a tree's trunk: Circe walks behind their
+            # tops, so the strip between them and the house is wide enough to pass (Hermes could
+            # push her into a one-tile gap and pin her there).
+            rows_blocked = range(r + h - 1, r + h)
         else:
             rows_blocked = range(r, r + h)
         for rr in rows_blocked:
