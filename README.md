@@ -30,7 +30,6 @@ The whole game takes about 20 minutes, through farming, brewing a potion, sailin
 Circe, exiled to the island of Aiaia, tries to undo the worst thing she ever did: turning the nymph Scylla into a monster.
 Hermes drops by, teases her, and teaches her about a magic herb called moly. She grows it, brews a Calming Draught, and sails to Scylla.
 The draught calms Scylla for one breath. Then she is the monster again. Circe sails home and tends her garden.
-That is the ending in the book, and it is the ending here.
 
 | The prologue | The island | Hermes' herb lesson |
 |---|---|---|
